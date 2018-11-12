@@ -21,9 +21,22 @@ The Mapwize UI fragment comes with the following components:
 
 ## Installation
 
+MapwizeUI is compatible with MapwizeForMapbox 1.7.0 and above. The library won't work with lower version.
+
 ### Gradle
 
-TODO
+Add the following maven repository to your project :
+
+```
+maven { url "https://jitpack.io" }
+maven { url 'https://maven.mapwize.io'}
+```
+
+Then, in your application project, import the MapwizeUI module :
+
+```
+implementation 'com.github.Mapwize:mapwize-ui-android:${lib-version}'
+```
 
 ### Manual
 
@@ -36,7 +49,7 @@ The activity that embeds the Fragment must implement `OnFragmentInteractionListe
 
 ```java
 void onMenuButtonClick() // The user clicked on the menu button (left button on the search bar)
-void onInformationButtonClick(Place place); // The user clicked on the informations button (in the bottom view when a view is selected)
+void onInformationButtonClick(MapwizeObject mapwizeObject); // See Information Button section below
 void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin); // The fragment is ready to use
 ```
 
@@ -46,10 +59,10 @@ Mapwize Fragment can be instantiated with the constructor :
 public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions)
 ```
 
-Example: 
+### Simple example
 
 ```java
-MapOptions opts = new MapOptions.Builder().build();
+MapOptions opts = new MapOptions.Builder().build()
 MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
 ```
 
@@ -58,7 +71,9 @@ MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
 To have the map centered on a venue at start up:
 
 ```java
-MapOptions opts = new MapOptions.Builder().build();
+MapOptions opts = new MapOptions.Builder()
+                                .centerOnVenue("YOUR_VENUE_ID")
+                                .build();
 MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
 ```
 
@@ -67,7 +82,9 @@ MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
 To have the map centered on a place with the place selected: 
 
 ```java
-MapOptions opts = new MapOptions.Builder().build();
+MapOptions opts = new MapOptions.Builder()
+                                .centerOnPlace("YOUR_PLACE_ID")
+                                .build();
 MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
 ```
 
@@ -83,17 +100,19 @@ The following parameters are available for map initialization:
 - `restrictContentToVenue` to show only the related venue on the map. Builder takes either a venueId or a venue object.
 - `restrictContentToOrganization` to show only the venues of that organization on the map. Builder takes an organization id.
 
-### Dynamic components
+## Information button
 
-Dans certains cas, il peut être intéressant de pouvoir afficher ou non certains composants. C'est notamment le cas pour le boutton information quand une place est selectionnée.
+When users select a Place or a PlaceList, either by clicking on the map or using the search engine, you might want to give the possibility to the user to open a page of your app about it. Think about shops or exhibitors for example for which your app probably has a page with all the details about.
 
-Le fragment dispose d'une méthode qui permet de configurer un UIBehaviour qui est une interface contenant la méthode suivante : 
+The proposed solution is to display an "information" button on the bottom view in the Fragment.
+
+Using the UIBehaviour interface, you can use the method `shouldDisplayInformationButton` to say if the button should be displayed or not. Return true to display the button for the given Mapwize object.
 
 ```java
 boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject);
 ```
 
-Un exemple d'utilisation :
+Example to display the information button only for Places and not for PlaceLists:
 
 ```java
 @Override
@@ -107,23 +126,30 @@ boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
 }
 ```
 
-### Colors 
+When the information button is clicked, the listener `onInformationButtonClick` is called with the selected Mapwize object.
 
-The fragment uses two colors to display his content :
+```java
+void onInformationButtonClick(MapwizeObject mapwizeObject); 
+```
+
+## Colors 
+
+The fragment uses two colors to display its content:
 
 ```xml
 <color name="colorAccent">#C51586</color>
 <color name="mapwize_main_color">#C51586</color>
 ```
 
-You can override them in your colors.xml file to customize colors.
-'colorAccent' changes the loading bar's color.
-'mapwize_main_color' changes ui main color such as buttons.
+You can override them in your `colors.xml` file to customize colors.
 
-### Translations
+- `colorAccent` changes the loading bar's color.
+- `mapwize_main_color` changes UI main color such as buttons.
 
-The fragment contains some strings that you may want to translate or change. 
-You can override them in your strings.xml file to customize colors.
+## Translations
+
+The fragment contains some strings that you may want to translate or change.
+You can override them in your `strings.xml` file.
 
 ```xml
 <string name="time_placeholder">%1$d min</string>
@@ -140,5 +166,5 @@ You can override them in your strings.xml file to customize colors.
 <string name="destination">Destination</string>
 ```
 
-Be carreful with string that contains placeholder. If you want to change them, you have to ensure that they still contain a place holder value.
-Example : if you replace "Floor %1$s" with "My floor" without place holder, your application will crash.
+Be careful with strings containing placeholders. Please ensure that the exact placeholders are kept!
+For example, if you replace "Floor %1$s" with "My floor" without placeholder, your application will crash.
