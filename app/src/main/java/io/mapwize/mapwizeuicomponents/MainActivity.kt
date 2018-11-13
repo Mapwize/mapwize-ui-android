@@ -22,9 +22,13 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Uncomment and fill place holder to test MapwizeUI on your venue
         val opts = MapOptions.Builder()
-                .restrictContentToVenue("56b20714c3fa800b00d8f0b5")
-                .centerOnPlace("5bc49413bf0ed600114db27c").build()
+                //.restrictContentToOrganization("YOUR_ORGANIZATION_ID")
+                //.restrictContentToVenue("YOUR_VENUE_ID")
+                //.centerOnVenue("YOUR_VENUE_ID")
+                //.centerOnPlace("YOUR_PLACE_ID")
+                .build()
         mapwizeFragment = MapwizeFragment.newInstance(opts)
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
@@ -43,11 +47,11 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
     }
 
     override fun onMenuButtonClick() {
-        Log.i("Debug", "Menu click")
+        // TODO Do something with menu click
     }
 
     override fun onInformationButtonClick(place: Place?) {
-        Log.i("Debug", "Info click " + place?.name)
+        // TODO Do something with information button
     }
 
     /**
