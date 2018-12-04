@@ -100,6 +100,15 @@ The following parameters are available for map initialization:
 - `restrictContentToVenue` to show only the related venue on the map. Builder takes either a venueId or a venue object.
 - `restrictContentToOrganization` to show only the venues of that organization on the map. Builder takes an organization id.
 
+### UI Settings
+
+The following parameters are available to show or hide some components :
+
+`menuButtonHidden` set to true to hide the menu button in the search bar
+`followUserButtonHidden` set to true to hide the follow user mode button
+`floorControllerHidden` set to true to hide the floor controller
+`compassHidden` set to true to hide the compass
+
 ## Information button
 
 When users select a Place or a PlaceList, either by clicking on the map or using the search engine, you might want to give the possibility to the user to open a page of your app about it. Think about shops or exhibitors for example for which your app probably has a page with all the details about.

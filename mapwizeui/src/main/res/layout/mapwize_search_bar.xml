@@ -33,16 +33,22 @@
                 app:layout_constraintBottom_toBottomOf="parent">
                 <ImageView
                     android:id="@+id/mapwizeSearchBarLeftButton"
-                    android:layout_width="48dp"
+                    android:layout_width="40dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_menu_black_24dp"
-                    android:padding="12dp"/>
+                    android:paddingBottom="12dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="4dp"/>
                 <ImageView
                     android:id="@+id/mapwizeSearchBarBackButton"
-                    android:layout_width="48dp"
+                    android:layout_width="40dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:padding="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="4dp"
                     android:visibility="gone"/>
             </FrameLayout>
 
@@ -55,6 +61,7 @@
                 android:lines="1"
                 android:maxLines="1"
                 android:singleLine="true"
+                android:layout_marginLeft="8dp"
                 app:layout_constraintStart_toEndOf="@+id/mapwizeSearchBarLeftFrame"
                 app:layout_constraintEnd_toStartOf="@+id/mapwizeSearchBarRightFrame"
                 app:layout_constraintTop_toTopOf="parent"

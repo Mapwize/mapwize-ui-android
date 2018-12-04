@@ -43,6 +43,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         BottomCardView.BottomCardListener{
 
     private static String ARG_OPTIONS = "param_options";
+    private static String ARG_UI_SETTINGS = "param_ui_settings";
 
     // Component listener
     private OnFragmentInteractionListener listener;
@@ -52,6 +53,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     // Component initialization params
     private MapOptions initializeOptions = null;
+    private MapwizeFragmentUISettings initializeUiSettings = null;
     private Place initializePlace = null;
 
     // Component map & mapwize
@@ -83,6 +85,23 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
+        MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
+        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        mf.setArguments(bundle);
+        return mf;
+    }
+
+    /**
+     * Create a instance of MapwizeFragment
+     * @param mapOptions used to setup the SDK
+     * @param uiSettings used to display/hide UI elements
+     * @return a new instance of MapwizeFragment
+     */
+    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
+        MapwizeFragment mf = new MapwizeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_OPTIONS, mapOptions);
+        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
         mf.setArguments(bundle);
         return mf;
     }
@@ -111,6 +130,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         Bundle bundle = getArguments();
         if (bundle != null) {
             initializeOptions = bundle.getParcelable(ARG_OPTIONS);
+            initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
         }
     }
 
@@ -124,6 +144,16 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadViews(view);
+
+        if (initializeUiSettings.isFloorControllerHidden()) {
+            floorControllerView.setVisibility(View.GONE);
+        }
+        if (initializeUiSettings.isFollowUserButtonHidden()) {
+            followUserButton.setVisibility(View.GONE);
+        }
+        if (initializeUiSettings.isCompassHidden()) {
+            compassView.setVisibility(View.GONE);
+        }
 
         // Use the custom Mapwize style instead of Mapbox style
         mapView.setStyleUrl("https://outdoor.mapwize.io/styles/mapwize/style.json?key=" +
@@ -151,10 +181,10 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             mapboxMap = mMap;
 
             // Initialize UI Components
-            initCompass(compassView);
-            initFollowUserModeButton(followUserButton);
-            initFloorController(floorControllerView);
-            initSearchBar(searchBarView);
+            initCompass(compassView, initializeUiSettings);
+            initFollowUserModeButton(followUserButton, initializeUiSettings);
+            initFloorController(floorControllerView, initializeUiSettings);
+            initSearchBar(searchBarView, initializeUiSettings);
             initDirectionBar(searchDirectionView);
             initUniversesButton(universesButton);
             initBottomCardView(bottomCardView);
@@ -248,21 +278,34 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         bottomCardView.setListener(this);
     }
 
-    private void initFloorController(FloorControllerView floorControllerView) {
-        floorControllerView.setMapwizePlugin(mapwizePlugin);
+    private void initFloorController(FloorControllerView floorControllerView, MapwizeFragmentUISettings uiSettings) {
+        if (uiSettings.isFloorControllerHidden()) {
+            floorControllerView.setVisibility(View.GONE);
+        }
+        else {
+            floorControllerView.setMapwizePlugin(mapwizePlugin);
+        }
     }
 
-    private void initFollowUserModeButton(FollowUserButton followUserButton) {
-        followUserButton.setMapwizePlugin(mapwizePlugin);
+    private void initFollowUserModeButton(FollowUserButton followUserButton, MapwizeFragmentUISettings uiSettings) {
+        if (uiSettings.isFollowUserButtonHidden()) {
+            followUserButton.setVisibility(View.GONE);
+        }
+        else {
+            followUserButton.setMapwizePlugin(mapwizePlugin);
+        }
     }
 
-    private void initCompass(CompassView compassView) {
-        compassView.setMapboxMap(mapboxMap);
-        compassView.fadeCompassViewFacingNorth(true);
-        compassView.setOnCompassClickListener(this);
+    private void initCompass(CompassView compassView, MapwizeFragmentUISettings uiSettings) {
+        if (!uiSettings.isCompassHidden()) {
+            compassView.setMapboxMap(mapboxMap);
+            compassView.fadeCompassViewFacingNorth(true);
+            compassView.setOnCompassClickListener(this);
+        }
     }
 
-    private void initSearchBar(SearchBarView searchBarView) {
+    private void initSearchBar(SearchBarView searchBarView, MapwizeFragmentUISettings uiSettings) {
+        searchBarView.setMenuHidden(uiSettings.isMenuButtonHidden());
         searchBarView.setMapwizePlugin(mapwizePlugin);
         searchBarView.setListener(this);
         searchBarView.setResultList(searchResultList);
@@ -324,7 +367,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
                     }
                 });
             }
-            this.listener.onFragmentReady(mapboxMap, mapwizePlugin);
+            if (this.listener != null) {
+                this.listener.onFragmentReady(mapboxMap, mapwizePlugin);
+            }
         });
     }
 

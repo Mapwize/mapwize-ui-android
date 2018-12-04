@@ -48,6 +48,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     private SearchResultList resultList;
     private ProgressBar resultProgressBar;
     private SearchDataManager searchDataManager;
+    private boolean menuHidden;
 
     private boolean isSearching = false;
 
@@ -223,6 +224,13 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
 
     }
 
+    public void setMenuHidden(boolean isDisplayed) {
+        this.menuHidden = isDisplayed;
+        if (this.menuHidden) {
+            this.leftImageView.setVisibility(View.GONE);
+        }
+    }
+
     /**
      * Call if the search query is empty.
      * Get data from searchDataManager
@@ -261,7 +269,9 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
      */
     private void setupDefault() {
         isSearching = false;
-        leftImageView.setVisibility(View.VISIBLE);
+        if (!menuHidden) {
+            leftImageView.setVisibility(View.VISIBLE);
+        }
         backImageView.setVisibility(View.GONE);
         if (mapwizePlugin.getVenue() != null) {
             rightImageView.setVisibility(View.VISIBLE);

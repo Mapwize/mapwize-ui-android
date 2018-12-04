@@ -190,7 +190,12 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      */
     @Override
     public void setContent(NavigationInfo navigationInfo) {
-        // TODO add behavior as soon as navigation is developed
+        directionFrameLayout.setVisibility(View.VISIBLE);
+        objectInfoFrameLayout.setVisibility(View.GONE);
+        long time = Math.round(navigationInfo.getDuration() / 60);
+        String timPlaceHolder = getResources().getString(R.string.time_placeholder);
+        directionTimeTextView.setText(String.format(timPlaceHolder,time));
+        directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
     }
 
     /**
