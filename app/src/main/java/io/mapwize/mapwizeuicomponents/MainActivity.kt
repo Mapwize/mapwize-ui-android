@@ -7,6 +7,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
 import io.mapwize.mapwizecomponents.ui.MapwizeFragment
+import io.mapwize.mapwizecomponents.ui.MapwizeFragmentUISettings
 import io.mapwize.mapwizeformapbox.api.MapwizeObject
 import io.mapwize.mapwizeformapbox.api.Place
 import io.mapwize.mapwizeformapbox.map.ClickEvent
@@ -33,7 +34,15 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
                 //.centerOnVenue("YOUR_VENUE_ID")
                 //.centerOnPlace("YOUR_PLACE_ID")
                 .build()
-        mapwizeFragment = MapwizeFragment.newInstance(opts)
+
+        // Uncomment and change value to test different settings configuration
+        var uiSettings = MapwizeFragmentUISettings.Builder()
+                //.menuButtonHidden(true)
+                //.followUserButtonHidden(false)
+                //.floorControllerHidden(false)
+                //.compassHidden(true)
+                .build()
+        mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
         ft.add(fragmentContainer.id, mapwizeFragment!!)
