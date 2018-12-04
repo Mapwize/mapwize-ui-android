@@ -35,6 +35,8 @@ import io.mapwize.mapwizeformapbox.map.DirectionOptions;
 import io.mapwize.mapwizeformapbox.map.FollowUserMode;
 import io.mapwize.mapwizeformapbox.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
+import io.mapwize.mapwizeformapbox.map.NavigationInfo;
+import io.mapwize.mapwizeformapbox.map.OnNavigationUpdateListener;
 
 /**
  * Search direction module
@@ -292,12 +294,12 @@ public class SearchDirectionView extends ConstraintLayout implements
         if (from == null ||to == null) {
             return;
         }
-        Api.getDirection(fromDirectionPoint, toDirectionPoint, isAccessible, new ApiCallback<Direction>() {
+        Api.getDirection(from, to, isAccessible, new ApiCallback<Direction>() {
             @Override
             public void onSuccess(final Direction object) {
                 Handler uiHandler = new Handler(Looper.getMainLooper());
                 Runnable runnable = () -> {
-                    startDirection(fromDirectionPoint, toDirectionPoint, object, true);
+                    startDirection(from, to, object, true);
                 };
                 uiHandler.post(runnable);
 
@@ -328,13 +330,28 @@ public class SearchDirectionView extends ConstraintLayout implements
             optsBuilder.setToStartingFloor(false);
         }
 
-        mapwizePlugin.setFollowUserMode(FollowUserMode.NONE);
-        if (mapwizePlugin.getDirection() != direction) {
-            mapwizePlugin.removeMarkers();
-            mapwizePlugin.setDirection(direction);
-        }
+        mapwizePlugin.stopNavigation();
 
-        directionInfoView.setContent(direction);
+        if (mapwizePlugin.getUserPosition() != null && mapwizePlugin.getUserPosition().getFloor() != null) {
+            mapwizePlugin.startNavigation(direction, optsBuilder.build(), navigationInfo -> {
+                if (navigationInfo.getLocationDelta() > 20 && mapwizePlugin.getUserPosition() != null && mapwizePlugin.getUserPosition().getFloor() != null) {
+                    tryToStartDirection(new MapwizeIndoorLocation(mapwizePlugin.getUserPosition()), toPoint, isAccessible);
+                }
+                else {
+                    directionInfoView.setContent(navigationInfo);
+                }
+            });
+            directionInfoView.setContent(direction);
+        }
+        else {
+            mapwizePlugin.setFollowUserMode(FollowUserMode.NONE);
+            if (mapwizePlugin.getDirection() != direction) {
+                mapwizePlugin.removeMarkers();
+                mapwizePlugin.setDirection(direction);
+            }
+
+            directionInfoView.setContent(direction);
+        }
 
     }
 
