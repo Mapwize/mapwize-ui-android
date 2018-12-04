@@ -367,7 +367,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
                     }
                 });
             }
-            this.listener.onFragmentReady(mapboxMap, mapwizePlugin);
+            if (this.listener != null) {
+                this.listener.onFragmentReady(mapboxMap, mapwizePlugin);
+            }
         });
     }
 
