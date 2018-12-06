@@ -46,7 +46,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
 
     private void initLayout() {
         this.setVerticalScrollBarEnabled(false);
-        viewSize = (int)getContext().getResources().getDimension(R.dimen.mapwize_floor_button_size);
+        viewSize = (int) getContext().getResources().getDimension(R.dimen.mapwize_floor_button_size);
         linearLayout = new LinearLayout(this.getContext());
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 viewSize,
@@ -64,6 +64,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
 
     /**
      * Set mapwize plugin
+     *
      * @param mapwizePlugin used to listener floor and floors changed event
      */
     public void setMapwizePlugin(@NonNull MapwizePlugin mapwizePlugin) {
@@ -74,23 +75,22 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
 
     /**
      * Called by mapwize when the current floor has changed
+     *
      * @param floor the new current floor
      */
     @Override
     public void onFloorChange(@Nullable Double floor) {
-        for (int i = 0; i< linearLayout.getChildCount(); i++) {
-            TextView tv  = (TextView) linearLayout.getChildAt(i);
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            TextView tv = (TextView) linearLayout.getChildAt(i);
             Double tvValue = Double.parseDouble(tv.getText().toString());
             if (floor != null && floor.equals(tvValue)) {
                 tv.setBackgroundResource(R.drawable.mapwize_floor_controller_selected_floor);
-            }
-            else {
+            } else {
                 tv.setBackgroundResource(R.drawable.rounded_button);
             }
             if (directionFloors.indexOf(tvValue) != -1) {
                 tv.setTextColor(ContextCompat.getColor(this.getContext(), R.color.mapwize_main_color));
-            }
-            else {
+            } else {
                 tv.setTextColor(Color.BLACK);
             }
         }
@@ -98,35 +98,36 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
 
     /**
      * Called by mapwize when the list of available floors changed
+     *
      * @param floors the new available floors
      */
     @Override
     public void onFloorsChange(@NonNull List<Double> floors) {
         linearLayout.removeAllViews();
-        for (Double value : floors) {
-            TextView b = new TextView(getContext());
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    viewSize,viewSize
-            );
-            params.setMargins(0,5,0,5);
-            b.setElevation(4);
-            b.setLayoutParams(params);
-            if (value%1>0) {
-                b.setText(String.valueOf(value));
+        if (floors.size() > 1) {
+            for (Double value : floors) {
+                TextView b = new TextView(getContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        viewSize, viewSize
+                );
+                params.setMargins(0, 5, 0, 5);
+                b.setElevation(4);
+                b.setLayoutParams(params);
+                if (value % 1 > 0) {
+                    b.setText(String.valueOf(value));
+                } else {
+                    b.setText(String.valueOf(Math.round(value)));
+                }
+                b.setGravity(Gravity.CENTER);
+                b.setBackgroundResource(R.drawable.rounded_button);
+                b.setOnClickListener(v -> {
+                    TextView tv = (TextView) v;
+                    Double floor = Double.parseDouble(tv.getText().toString());
+                    mapwizePlugin.setFloor(floor);
+                });
+                linearLayout.addView(b);
             }
-            else {
-                b.setText(String.valueOf(Math.round(value)));
-            }
-            b.setGravity(Gravity.CENTER);
-            b.setBackgroundResource(R.drawable.rounded_button);
-            b.setOnClickListener(v -> {
-                TextView tv = (TextView)v;
-                Double floor = Double.parseDouble(tv.getText().toString());
-                mapwizePlugin.setFloor(floor);
-            });
-            linearLayout.addView(b);
         }
-
         this.onFloorChange(mapwizePlugin.getFloor());
     }
 
