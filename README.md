@@ -102,6 +102,8 @@ The following parameters are available for map initialization:
 
 ### UI Settings
 
+UISettings are use for initialization only. Changing this after the initialization won't impact the user interface.
+
 The following parameters are available to show or hide some components :
 
 `menuButtonHidden` set to true to hide the menu button in the search bar
@@ -119,6 +121,7 @@ Using the UIBehaviour interface, you can use the method `shouldDisplayInformatio
 
 ```java
 boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject);
+boolean shouldDisplayFloorController(List<Double> floors);
 ```
 
 Example to display the information button only for Places and not for PlaceLists:

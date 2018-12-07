@@ -30,7 +30,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     private List<Universe> universes;
     private List<Integer> indexForUniverses;
-    Map<String, Universe> universeById;
+    private Map<String, Universe> universeById;
     private List mSearchSuggestions = new ArrayList<>();
     private OnItemClickListener mListener;
     private String language = "en";
@@ -55,10 +55,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             List<Universe> mapwizeObjectUniverses = mapwizeObject.getUniverses();
             if (mapwizeObjectUniverses != null) {
                 for (Universe mapwizeObjectUniverse : mapwizeObjectUniverses) {
-                    mapObjectByUniverse.get(universeById.get(mapwizeObjectUniverse.getId())).add(mapwizeObject);
+                    if (universeById.containsKey(mapwizeObjectUniverse.getId()) &&
+                            mapObjectByUniverse.containsKey(universeById.get(mapwizeObjectUniverse.getId()))) {
+                        mapObjectByUniverse.get(universeById.get(mapwizeObjectUniverse.getId())).add(mapwizeObject);
+                    }
                 }
-            }
-            else {
+            } else {
                 mapObjectByUniverse.get(universeById.get(universes.get(0).getId())).add(mapwizeObject);
             }
         }
@@ -185,7 +187,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     if (object instanceof Place) {
                         Universe universe = null;
                         if (indexForUniverses != null) {
-                            for (int i=indexForUniverses.size()-1;i>=0;i--) {
+                            for (int i = indexForUniverses.size() - 1; i >= 0; i--) {
                                 Integer index = indexForUniverses.get(i);
                                 if (adapterPosition <= index) {
                                     universe = universes.get(i);
@@ -193,9 +195,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                             }
                         }
                         if (universe == null && universeById != null) {
-                            universe = universeById.get(((Place)object).getUniverses().get(0).getId());
+                            universe = universeById.get(((Place) object).getUniverses().get(0).getId());
                         }
-                        mListener.onSearchResult((Place)object, universe);
+                        mListener.onSearchResult((Place) object, universe);
                     }
                     if (object instanceof PlaceList) {
                         mListener.onSearchResult((PlaceList) object);
@@ -210,7 +212,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     public interface OnItemClickListener {
         void onSearchResult(Place place, Universe universe);
+
         void onSearchResult(PlaceList placeList);
+
         void onSearchResult(Venue venue);
     }
 }

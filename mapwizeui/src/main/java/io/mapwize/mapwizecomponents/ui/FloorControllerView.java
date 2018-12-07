@@ -28,6 +28,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
     private LinearLayout linearLayout;
     private int viewSize = 0;
     private MapwizePlugin mapwizePlugin;
+    private UIBehaviour uiBehaviour;
 
     public FloorControllerView(@NonNull Context context) {
         super(context);
@@ -42,6 +43,14 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
     public FloorControllerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initLayout();
+    }
+
+    public UIBehaviour getUiBehaviour() {
+        return uiBehaviour;
+    }
+
+    public void setUiBehaviour(UIBehaviour uiBehaviour) {
+        this.uiBehaviour = uiBehaviour;
     }
 
     private void initLayout() {
@@ -103,6 +112,9 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
     @Override
     public void onFloorsChange(@NonNull List<Double> floors) {
         linearLayout.removeAllViews();
+        if (!uiBehaviour.shouldDisplayFloorController(floors)) {
+            return;
+        }
         for (Double value : floors) {
             TextView b = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
