@@ -6,6 +6,7 @@
 - Adding shouldDisplayFloorController method
 - Providing default value to the methods in UIBehaviour
 - UIBehaviour can now be set before the onFragmentReady call
+- Fixing crash with search bar if not loading or if universe does not exist
 
 ## Version 1.0.1
 
