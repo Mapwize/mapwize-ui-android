@@ -25,7 +25,7 @@ import io.mapwize.mapwizeformapbox.map.NavigationInfo;
 public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView{
 
     private BottomCardListener listener;
-    private MapwizeFragment.UIBehaviour componentsFunctions;
+    private UIBehaviour uiBehaviour;
 
     private FrameLayout objectInfoFrameLayout;
     private FrameLayout directionFrameLayout;
@@ -80,16 +80,16 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * displayed or not
      * @return the DisplayComponentsFunctions
      */
-    public MapwizeFragment.UIBehaviour getComponentsFunctions() {
-        return componentsFunctions;
+    public UIBehaviour getUIBehaviour() {
+        return uiBehaviour;
     }
 
     /**
      * Set the display components functions object that determine if an UI Component should be
      * displayed or not
      */
-    public void setComponentsFunctions(MapwizeFragment.UIBehaviour componentsFunctions) {
-        this.componentsFunctions = componentsFunctions;
+    public void setUIBehaviour(UIBehaviour uiBehaviour) {
+        this.uiBehaviour = uiBehaviour;
     }
 
     /**
@@ -125,7 +125,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         }
         titleImageView.setVisibility(View.VISIBLE);
 
-        if (componentsFunctions != null && componentsFunctions.shouldDisplayInformationButton(place)) {
+        if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(place)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -157,7 +157,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             subtitleTextView.setVisibility(View.GONE);
         }
         titleImageView.setVisibility(View.VISIBLE);
-        if (componentsFunctions != null && componentsFunctions.shouldDisplayInformationButton(placeList)) {
+        if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(placeList)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
