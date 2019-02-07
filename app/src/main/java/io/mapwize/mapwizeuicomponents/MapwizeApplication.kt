@@ -8,7 +8,7 @@ class MapwizeApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        AccountManager.start(this, "YOUR_API_KEY_HERE")
+        AccountManager.start(this, "ContexeoDevAppAPIKEY")
     }
 
 }

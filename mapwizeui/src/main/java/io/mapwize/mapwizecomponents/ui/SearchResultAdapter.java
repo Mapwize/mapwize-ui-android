@@ -137,8 +137,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
             holder.floorView.setVisibility(View.VISIBLE);
             holder.leftIcon.setVisibility(View.VISIBLE);
-            NumberFormat nf = new DecimalFormat("###.###");
-            holder.floorView.setText(String.format(context.getResources().getString(R.string.floor_placeholder), nf.format(place.getFloor())));
+            if (place.getFloor() != null) {
+                NumberFormat nf = new DecimalFormat("###.###");
+                holder.floorView.setText(String.format(context.getResources().getString(R.string.floor_placeholder), nf.format(place.getFloor())));
+                holder.floorView.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.floorView.setVisibility(View.GONE);
+            }
             holder.itemView.setClickable(true);
         }
 
