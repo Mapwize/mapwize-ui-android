@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.indoorlocation.core.IndoorLocation;
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.Api;
 import io.mapwize.mapwizeformapbox.api.ApiCallback;
@@ -235,8 +236,13 @@ public class SearchDirectionView extends ConstraintLayout implements
         if (fromDirectionPoint instanceof Place) {
             mapwizePlugin.removePromotedPlace((Place) fromDirectionPoint);
         }
-        if (directionPoint == null) {
-            fromDirectionPoint = new MapwizeIndoorLocation(mapwizePlugin.getUserPosition());
+        if (directionPoint == null && mapwizePlugin.getUserPosition() != null) {
+            IndoorLocation userPosition = mapwizePlugin.getUserPosition();
+            if (userPosition == null) {
+                fromEditText.setText(null);
+                return;
+            }
+            fromDirectionPoint = new MapwizeIndoorLocation(userPosition);
             fromEditText.setText(getResources().getString(R.string.current_location));
         }
         else if (directionPoint instanceof MapwizeIndoorLocation){
@@ -266,7 +272,12 @@ public class SearchDirectionView extends ConstraintLayout implements
             mapwizePlugin.removePromotedPlace((Place) toDirectionPoint);
         }
         if (directionPoint == null) {
-            toDirectionPoint = new MapwizeIndoorLocation(mapwizePlugin.getUserPosition());
+            IndoorLocation userPosition = mapwizePlugin.getUserPosition();
+            if (userPosition == null) {
+                toEditText.setText(null);
+                return;
+            }
+            toDirectionPoint = new MapwizeIndoorLocation(userPosition);
             toEditText.setText(getResources().getString(R.string.current_location));
         }
         else if (directionPoint instanceof MapwizeIndoorLocation){
@@ -371,6 +382,7 @@ public class SearchDirectionView extends ConstraintLayout implements
      * Show the result list
      */
     private void setupInSearch() {
+        swapButton.setVisibility(View.INVISIBLE);
         isSearching = true;
         resultList.show();
         mapwizeDirectionMainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
@@ -408,6 +420,7 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     private void setupDefault() {
         isSearching = false;
+        swapButton.setVisibility(View.VISIBLE);
         mapwizeDirectionMainLayout.setBackgroundColor(Color.TRANSPARENT);
         resultList.hide();
     }
