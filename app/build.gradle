@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
-    implementation 'io.mapwize.indoormaps:MapwizeForMapbox:1.7.1'
+    implementation 'io.mapwize.indoormaps:MapwizeForMapbox:1.7+'
     implementation 'com.github.indoorlocation:manual-indoor-location-provider-android:1.0.0'
     implementation project(path: ':mapwizeui')
     //implementation 'com.github.Mapwize:mapwize-ui-android:1.0.0'

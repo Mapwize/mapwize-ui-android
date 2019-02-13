@@ -1,5 +1,14 @@
 # UI Components Changelog
 
+## 1.0.4
+
+- Adding no result found in search result list
+- Improving search direction UI behaviour
+- Changing select and unselect methods visibility
+- Adding grantAccess and setDirection methods
+- Adding language button
+- Adding initialization method that takes MapboxMapOptions as parameter
+
 ## 1.0.3
 
 - Hidding swap button when in search

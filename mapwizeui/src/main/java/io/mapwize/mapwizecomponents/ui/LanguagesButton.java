@@ -97,7 +97,7 @@ public class LanguagesButton extends AppCompatImageButton {
         });
         this.mapwizePlugin.addOnVenueExitListener(venue -> {
             this.languages = new ArrayList<>();
-            setVisibility(View.GONE);
+            setVisibility(View.INVISIBLE);
         });
     }
 

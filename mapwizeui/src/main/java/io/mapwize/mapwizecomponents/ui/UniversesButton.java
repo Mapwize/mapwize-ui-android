@@ -97,7 +97,7 @@ public class UniversesButton extends AppCompatImageButton {
         });
         this.mapwizePlugin.addOnVenueExitListener(venue -> {
             this.universes = new ArrayList<>();
-            setVisibility(View.GONE);
+            setVisibility(View.INVISIBLE);
         });
     }
 
@@ -108,6 +108,15 @@ public class UniversesButton extends AppCompatImageButton {
         if (universes.size() > 1) {
             setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * Refresh the universe
+     * Useful after a access request
+     */
+    public void refreshVenue(Venue venue) {
+        this.universes = venue.getUniverses();
+        showIfNeeded();
     }
 
     /**

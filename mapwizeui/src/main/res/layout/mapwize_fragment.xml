@@ -8,13 +8,10 @@
     android:animateLayoutChanges="true"
     android:id="@+id/mapwizeFragmentLayout">
 
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView"
+    <FrameLayout
+        android:id="@+id/mapViewContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:mapbox_uiCompass="false"
-        app:mapbox_uiLogo="false"
-        app:mapbox_uiAttribution="false"/>
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/headerFrameLayout"
@@ -72,8 +69,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <io.mapwize.mapwizecomponents.ui.UniversesButton
-        android:id="@+id/mapwizeUniversesButton"
+    <io.mapwize.mapwizecomponents.ui.LanguagesButton
+        android:id="@+id/mapwizeLanguagessButton"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginTop="4dp"
@@ -81,10 +78,25 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:elevation="6dp"
-        android:src="@drawable/ic_apps_black_24dp"
+        android:src="@drawable/ic_language_black_24dp"
         android:background="@drawable/mapwize_circle_view"
         app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
         app:layout_constraintStart_toStartOf="parent"/>
+
+    <io.mapwize.mapwizecomponents.ui.UniversesButton
+        android:id="@+id/mapwizeUniversesButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        app:layout_goneMarginStart="16dp"
+        android:elevation="6dp"
+        android:src="@drawable/ic_apps_black_24dp"
+        android:background="@drawable/mapwize_circle_view"
+        app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
+        app:layout_constraintStart_toEndOf="@+id/mapwizeLanguagessButton"/>
 
     <io.mapwize.mapwizecomponents.ui.FloorControllerView
         android:id="@+id/mapwizeFloorController"
