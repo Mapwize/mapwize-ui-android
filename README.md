@@ -57,6 +57,8 @@ Mapwize Fragment can be instantiated with the constructor :
 
 ```java
 public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions)
+public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings)
+public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions)
 ```
 
 ### Simple example
@@ -110,6 +112,54 @@ The following parameters are available to show or hide some components :
 `followUserButtonHidden` set to true to hide the follow user mode button
 `floorControllerHidden` set to true to hide the floor controller
 `compassHidden` set to true to hide the compass
+
+## Public methods
+
+```java
+
+/**
+* Setup the UI to display information about the selected place
+* Promote the place and add a marker on it
+* @param place the selected place
+* @param centerOn if true, center on the place
+*/
+public void selectPlace(Place place, boolean centerOn)
+
+/**
+* Setup the UI to display information about the selected venue
+* @param venue the venue to select
+*/
+public void selectVenue(Venue venue)
+
+/**
+* Setup the UI to display information about the selected placelist
+* Add markers on places contained in the placelist and promote them
+* @param placeList the selected placelist
+*/
+public void selectPlaceList(PlaceList placeList)
+
+/**
+* Hide the UI component, remove markers and unpromote place if needed
+* If we are in a venue, displayed the venue information
+*/
+public void unselectContent()
+
+/**
+* Display a direction object and show the direction UI already configured
+* @param direction to display
+* @param from the starting point
+* @param to the destination point
+* @param isAccessible determine if the direction should be accessible to low mobility people
+*/
+public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, boolean isAccessible)
+
+/**
+* Friendly method to add new access to the map and refresh the UI
+* @param accesskey that provide new access right
+* @param callback called when the access is done
+*/
+public void grantAccess(String accesskey, ApiCallback<Boolean> callback)
+```
 
 ## Information button
 
@@ -170,6 +220,7 @@ You can override them in your `strings.xml` file.
 <string name="search_venue">Search a venue…</string>
 <string name="loading_venue_placeholder">Loading %1$s…</string>
 <string name="current_location">Current location</string>
+<string name="no_result">No result found</string>
 <string name="choose_language">Choose your language</string>
 <string name="choose_universe">Choose your universe</string>
 <string name="direction">Direction</string>

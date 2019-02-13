@@ -29,6 +29,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
     private RecyclerView resultRecyclerView;
     private SearchResultAdapter searchResultAdapter;
     private CardView currentLocationCardView;
+    private CardView noResultCardView;
 
     public SearchResultList(@NonNull Context context) {
         super(context);
@@ -57,6 +58,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
                 listener.onSearchResultNull();
             }
         });
+        noResultCardView = findViewById(R.id.mapwize_no_result_card);
     }
 
     /**
@@ -90,12 +92,22 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
         currentLocationCardView.setVisibility(View.GONE);
     }
 
+    public void showNoResultCard() { noResultCardView.setVisibility(View.VISIBLE); }
+
+    public void hideNoResultCard() { noResultCardView.setVisibility(View.GONE); }
+
     /**
      * Show data in the result list
      * @param objects list of mapwize object to display
      */
     public void showData(List<? extends MapwizeObject> objects) {
         searchResultAdapter.swapData(objects);
+        if (objects.size() == 0) {
+            showNoResultCard();
+        }
+        else {
+            hideNoResultCard();
+        }
     }
 
     /**
@@ -106,6 +118,12 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
      */
     public void showData(List objects, List<Universe> universes, Universe currentUniverse) {
         searchResultAdapter.swapData(objects, universes, currentUniverse);
+        if (objects.size() == 0) {
+            showNoResultCard();
+        }
+        else {
+            hideNoResultCard();
+        }
     }
 
     /**

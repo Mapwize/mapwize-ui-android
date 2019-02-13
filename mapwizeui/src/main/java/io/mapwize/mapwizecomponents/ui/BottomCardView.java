@@ -125,6 +125,8 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         }
         titleImageView.setVisibility(View.VISIBLE);
 
+        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
+
         if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(place)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
@@ -163,6 +165,8 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         else {
             informationsButton.setVisibility(View.GONE);
         }
+
+        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_menu_black_24dp));
     }
 
     @Override

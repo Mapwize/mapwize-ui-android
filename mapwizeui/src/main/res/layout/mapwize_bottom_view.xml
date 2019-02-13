@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:src="@drawable/ic_language_black_24dp"
+                android:src="@drawable/ic_location_on_black_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomSubtitleTextView"
@@ -130,7 +130,7 @@
                     android:paddingRight="12dp"
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
-                    android:src="@drawable/ic_directions_walk_black_24dp" />
+                    android:src="@drawable/ic_walk_info" />
 
                 <TextView
                     android:id="@+id/direction_info_bottom_distance_text"

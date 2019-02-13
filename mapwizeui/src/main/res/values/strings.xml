@@ -5,6 +5,7 @@
     <string name="search_venue">Search a venue…</string>
     <string name="loading_venue_placeholder">Loading %1$s…</string>
     <string name="current_location">Current location</string>
+    <string name="no_result">No result found</string>
     <string name="choose_language">Choose your language</string>
     <string name="choose_universe">Choose your universe</string>
     <string name="direction">Direction</string>
