@@ -108,6 +108,9 @@ public class UniversesButton extends AppCompatImageButton {
         if (universes.size() > 1) {
             setVisibility(View.VISIBLE);
         }
+        else {
+            setVisibility(View.GONE);
+        }
     }
 
     /**

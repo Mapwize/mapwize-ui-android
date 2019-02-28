@@ -124,6 +124,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             Venue venue = (Venue) suggestionItem;
             Translation translation = venue.getTranslation(language);
             holder.titleView.setText(translation.getTitle());
+            holder.subtitleView.setVisibility(View.GONE);
             holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_domain_black_24dp));
             holder.floorView.setVisibility(View.GONE);
             holder.leftIcon.setVisibility(View.VISIBLE);
@@ -145,6 +146,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             else {
                 holder.floorView.setVisibility(View.GONE);
             }
+            if (place.getTranslation(language).getSubtitle() != null && place.getTranslation(language).getSubtitle().length() > 0) {
+                holder.subtitleView.setText(place.getTranslation(language).getSubtitle());
+                holder.subtitleView.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.subtitleView.setVisibility(View.GONE);
+            }
             holder.itemView.setClickable(true);
         }
 
@@ -155,6 +163,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_menu_black_24dp));
             holder.floorView.setVisibility(View.GONE);
             holder.leftIcon.setVisibility(View.VISIBLE);
+            if (placeList.getTranslation(language).getSubtitle() != null && placeList.getTranslation(language).getSubtitle().length() > 0) {
+                holder.subtitleView.setText(placeList.getTranslation(language).getSubtitle());
+                holder.subtitleView.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.subtitleView.setVisibility(View.GONE);
+            }
             holder.itemView.setClickable(true);
         }
 
@@ -177,12 +192,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         ImageView leftIcon;
         TextView titleView;
+        TextView subtitleView;
         TextView floorView;
 
         SearchItemViewHolder(View itemView) {
             super(itemView);
             leftIcon = itemView.findViewById(R.id.suggestions_item_icon);
             titleView = itemView.findViewById(R.id.suggestions_item_title);
+            subtitleView = itemView.findViewById(R.id.suggestions_item_subtitle);
             floorView = itemView.findViewById(R.id.suggestions_item_floor);
 
             itemView.setOnClickListener(view -> {

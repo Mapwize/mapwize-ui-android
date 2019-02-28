@@ -217,14 +217,18 @@ public class SearchDirectionView extends ConstraintLayout implements
     public void setAccessibility(boolean accessible) {
         if (accessible) {
             accessibilityOnButton.getDrawable().setColorFilter(getResources().getColor(R.color.mapwize_main_color), PorterDuff.Mode.SRC_ATOP);
+            accessibilityOnButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_pink_selected_view));
             accessibilityOffButton.getDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+            accessibilityOffButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_selected_view));
         }
         else {
             accessibilityOffButton.getDrawable().setColorFilter(getResources().getColor(R.color.mapwize_main_color), PorterDuff.Mode.SRC_ATOP);
+            accessibilityOffButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_pink_selected_view));
             accessibilityOnButton.getDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+            accessibilityOnButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_selected_view));
         }
         isAccessible = accessible;
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible);
+        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
     }
 
     /**
@@ -254,7 +258,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         }
 
 
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible);
+        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
     }
 
     /**
@@ -281,7 +285,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             Place place = (Place)directionPoint;
             mapwizePlugin.addPromotedPlace(place);
         }
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible);
+        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
     }
 
     /**
@@ -290,15 +294,19 @@ public class SearchDirectionView extends ConstraintLayout implements
      * @param to destination
      * @param isAccessible determine if the direction should be accessible to low mobility people
      */
-    private void tryToStartDirection(DirectionPoint from, DirectionPoint to, boolean isAccessible) {
+    private void tryToStartDirection(DirectionPoint from, DirectionPoint to, boolean isAccessible, boolean centerOnStart) {
         if (from == null ||to == null) {
             return;
         }
+        resultProgressBar.setVisibility(View.VISIBLE);
         Api.getDirection(from, to, isAccessible, new ApiCallback<Direction>() {
             @Override
             public void onSuccess(final Direction object) {
                 Handler uiHandler = new Handler(Looper.getMainLooper());
-                Runnable runnable = () -> startDirection(from, to, object, true);
+                Runnable runnable = () -> {
+                    resultProgressBar.setVisibility(View.INVISIBLE);
+                    startDirection(from, to, object, centerOnStart);
+                };
                 uiHandler.post(runnable);
 
             }
@@ -306,8 +314,12 @@ public class SearchDirectionView extends ConstraintLayout implements
             @Override
             public void onFailure(Throwable t) {
                 Handler uiHandler = new Handler(Looper.getMainLooper());
-                Runnable runnable = () -> Toast.makeText(getContext(), "No direction found",
-                        Toast.LENGTH_LONG).show();
+                resultProgressBar.setVisibility(View.INVISIBLE);
+                Runnable runnable = () -> {
+                    resultProgressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getContext(), "No direction found",
+                            Toast.LENGTH_LONG).show();
+                };
                 uiHandler.post(runnable);
             }
         });
@@ -330,10 +342,10 @@ public class SearchDirectionView extends ConstraintLayout implements
 
         mapwizePlugin.stopNavigation();
 
-        if (mapwizePlugin.getUserPosition() != null && mapwizePlugin.getUserPosition().getFloor() != null) {
+        if (fromPoint instanceof MapwizeIndoorLocation && mapwizePlugin.getUserPosition() != null && mapwizePlugin.getUserPosition().getFloor() != null) {
             mapwizePlugin.startNavigation(direction, optsBuilder.build(), navigationInfo -> {
-                if (navigationInfo.getLocationDelta() > 20 && mapwizePlugin.getUserPosition() != null && mapwizePlugin.getUserPosition().getFloor() != null) {
-                    tryToStartDirection(new MapwizeIndoorLocation(mapwizePlugin.getUserPosition()), toPoint, isAccessible);
+                if (navigationInfo.getLocationDelta() > 10 && mapwizePlugin.getUserPosition() != null && mapwizePlugin.getUserPosition().getFloor() != null) {
+                    tryToStartDirection(new MapwizeIndoorLocation(mapwizePlugin.getUserPosition()), toPoint, isAccessible, false);
                 }
                 else {
                     directionInfoView.setContent(navigationInfo);
@@ -425,7 +437,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             public void onSearchResultNull() {
                 fromEditText.clearFocus();
                 setupDefault();
-                setFromDirectionPoint(null);
+                setFromDirectionPoint(new MapwizeIndoorLocation(mapwizePlugin.getUserPosition()));
             }
 
             @Override

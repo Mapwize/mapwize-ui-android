@@ -10,10 +10,12 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -119,6 +121,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * Create a instance of MapwizeFragment
      * @param mapOptions used to setup the SDK
      * @param uiSettings used to display/hide UI elements
+     * @param mapboxMapOptions used to pass Mapbox options at start
      * @return a new instance of MapwizeFragment
      */
     public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
@@ -189,6 +192,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapView);
 
+        mapView.addOnDidFinishRenderingMapListener(fully -> layout.setVisibility(View.VISIBLE));
 
         loadViews(view);
         if (initializeUiSettings.isFloorControllerHidden()) {
@@ -202,8 +206,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         }
 
         // Use the custom Mapwize style instead of Mapbox style
-        mapView.setStyleUrl("https://outdoor.mapwize.io/styles/mapwize/style.json?key=" +
-                AccountManager.getInstance().getApiKey());
         mapView.onCreate(savedInstanceState);
 
         // Hide all default sdk components as we are create them in the fragment
@@ -225,7 +227,8 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         // Call when mapbox is loaded
         mapView.getMapAsync(mMap -> {
             mapboxMap = mMap;
-
+            mapboxMap.setStyle("https://outdoor.mapwize.io/styles/mapwize/style.json?key=" +
+                    AccountManager.getInstance().getApiKey());
             // Initialize UI Components
             initCompass(compassView, initializeUiSettings);
             initFollowUserModeButton(followUserButton, initializeUiSettings);
@@ -432,7 +435,19 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      */
     private void onMapClick(LatLngFloor coordinate) {
         if (!isInDirection) {
-            unselectContent();
+            if (selectedContent != null) {
+                unselectContent();
+            }
+        }
+        else if (mapwizePlugin.getDirection() != null) {
+            if (searchDirectionView.getVisibility() == View.VISIBLE) {
+                searchDirectionView.setVisibility(View.GONE);
+                bottomCardView.setVisibility(View.GONE);
+            }
+            else {
+                searchDirectionView.setVisibility(View.VISIBLE);
+                bottomCardView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -495,7 +510,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * Hide the UI component, remove markers and unpromote place if needed
      * If we are in a venue, displayed the venue information
      */
-    public void unselectContent() {
+    private void unselectContent() {
         bottomCardView.removeContent();
         mapwizePlugin.removeMarkers();
         if (selectedContent instanceof Place) {
@@ -530,11 +545,11 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     /**
-     * Display a direction object and show the direction UI already configured
+     * Set a direction on Mapwize UI will display the direction and the user interface
      * @param direction to display
      * @param from the starting point
      * @param to the destination point
-     * @param isAccessible determine if the direction should be accessible to low mobility people
+     * @param isAccessible true if the direction is in accessible mode
      */
     public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, boolean isAccessible) {
         isInDirection = true;
@@ -561,9 +576,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     /**
-     * Friendly method to add new access to the map and refresh the UI
-     * @param accesskey that provide new access right
-     * @param callback called when the access is done
+     * Helper method to get access and refresh the UI
+     * @param accesskey
+     * @param callback called when the method is ended
      */
     public void grantAccess(String accesskey, ApiCallback<Boolean> callback) {
         mapwizePlugin.grantAccess(accesskey, new ApiCallback<Boolean>() {

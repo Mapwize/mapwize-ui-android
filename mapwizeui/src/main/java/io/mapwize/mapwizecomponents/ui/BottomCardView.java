@@ -1,14 +1,26 @@
 package io.mapwize.mapwizecomponents.ui;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import io.mapwize.mapwizecomponents.R;
@@ -22,7 +34,7 @@ import io.mapwize.mapwizeformapbox.map.NavigationInfo;
 /**
  * Display information about place, placelist or direction
  */
-public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView{
+public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView {
 
     private BottomCardListener listener;
     private UIBehaviour uiBehaviour;
@@ -36,6 +48,9 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
     private ConstraintLayout informationsButton;
     private TextView directionTimeTextView;
     private TextView directionDistanceTextView;
+    private WebView detailsWebView;
+    private ImageView closeDetailsButton;
+    private boolean hasDetails;
 
     public BottomCardView(@NonNull Context context) {
         super(context);
@@ -73,6 +88,31 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
                 listener.onInformationClick();
             }
         });
+        detailsWebView = findViewById(R.id.mapwize_details_webview);
+
+        objectInfoFrameLayout.setOnClickListener(v -> {
+            if (hasDetails) {
+                showDetails();
+            }
+        });
+        closeDetailsButton = findViewById(R.id.mapwizeCloseDetails);
+        closeDetailsButton.setOnClickListener(v -> {
+            hideDetails();
+        });
+    }
+
+    private void showDetails() {
+        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) this.getLayoutParams();
+        lp.height = LayoutParams.MATCH_PARENT;
+        this.setLayoutParams(lp);
+        closeDetailsButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideDetails() {
+        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) this.getLayoutParams();
+        lp.height = LayoutParams.WRAP_CONTENT;
+        this.setLayoutParams(lp);
+        closeDetailsButton.setVisibility(View.GONE);
     }
 
     /**
@@ -133,6 +173,16 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         else {
             informationsButton.setVisibility(View.GONE);
         }
+
+        if (translation.getDetails() != null && translation.getDetails().length() > 0) {
+            hasDetails = true;
+            detailsWebView.loadData("<div>"+ translation.getDetails() +"</div>", null, null);
+            detailsWebView.setVisibility(View.VISIBLE);
+        }
+        else {
+            hasDetails = false;
+            detailsWebView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -167,6 +217,16 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         }
 
         titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_menu_black_24dp));
+
+        if (translation.getDetails() != null && translation.getDetails().length() > 0) {
+            hasDetails = true;
+            detailsWebView.loadData("<div>"+ translation.getDetails() +"</div>", null, null);
+            detailsWebView.setVisibility(View.VISIBLE);
+        }
+        else {
+            hasDetails = false;
+            detailsWebView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -234,4 +294,5 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         void onInformationClick();
 
     }
+
 }

@@ -88,6 +88,9 @@ public class LanguagesButton extends AppCompatImageButton {
                 if (languages.size() > 1) {
                     setVisibility(View.VISIBLE);
                 }
+                else {
+                    setVisibility(View.GONE);
+                }
             }
 
             @Override
