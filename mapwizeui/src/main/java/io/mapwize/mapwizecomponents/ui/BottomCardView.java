@@ -138,6 +138,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
     public void removeContent() {
         objectInfoFrameLayout.setVisibility(View.GONE);
         directionFrameLayout.setVisibility(View.GONE);
+        setVisibility(View.GONE);
     }
 
     /**
@@ -183,6 +184,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             hasDetails = false;
             detailsWebView.setVisibility(View.GONE);
         }
+        setVisibility(View.VISIBLE);
     }
 
     /**
@@ -227,6 +229,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             hasDetails = false;
             detailsWebView.setVisibility(View.GONE);
         }
+        setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -246,6 +249,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         String timPlaceHolder = getResources().getString(R.string.time_placeholder);
         directionTimeTextView.setText(String.format(timPlaceHolder,time));
         directionDistanceTextView.setText(UnitLocale.distanceAsString(direction.getDistance()));
+        setVisibility(View.VISIBLE);
     }
 
     /**
@@ -260,6 +264,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         String timPlaceHolder = getResources().getString(R.string.time_placeholder);
         directionTimeTextView.setText(String.format(timPlaceHolder,time));
         directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
+        setVisibility(View.VISIBLE);
     }
 
     /**

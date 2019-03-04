@@ -1,74 +1,59 @@
 package io.mapwize.mapwizecomponents.ui;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.util.Log;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import io.mapwize.mapwizecomponents.R;
+import io.mapwize.mapwizeformapbox.api.Venue;
 import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
 
 /**
  * Floor controller
  */
-public class FloorControllerView extends ScrollView implements MapwizePlugin.OnFloorChangeListener,
-        MapwizePlugin.OnFloorsChangeListener {
+public class FloorControllerView extends RecyclerView implements MapwizePlugin.OnFloorChangeListener,
+        MapwizePlugin.OnFloorsChangeListener, MapwizePlugin.OnVenueEnterListener {
 
-    private List<Double> directionFloors = new ArrayList<>();
-    private LinearLayout linearLayout;
-    private int viewSize = 0;
     private MapwizePlugin mapwizePlugin;
-    private UIBehaviour uiBehaviour;
+    private FloorControllerAdapter adapter;
+    private Venue venue;
+    private List<Floor> floors;
 
     public FloorControllerView(@NonNull Context context) {
         super(context);
-        initLayout();
+        initComponent(context);
     }
 
     public FloorControllerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initLayout();
+        initComponent(context);
     }
 
     public FloorControllerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initLayout();
+        initComponent(context);
     }
 
-    public UIBehaviour getUiBehaviour() {
-        return uiBehaviour;
-    }
-
-    public void setUiBehaviour(UIBehaviour uiBehaviour) {
-        this.uiBehaviour = uiBehaviour;
-    }
-
-    private void initLayout() {
+    private void initComponent(Context context) {
         this.setVerticalScrollBarEnabled(false);
-        viewSize = (int)getContext().getResources().getDimension(R.dimen.mapwize_floor_button_size);
-        linearLayout = new LinearLayout(this.getContext());
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                viewSize,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setBackgroundColor(Color.TRANSPARENT);
-        linearLayout.setVerticalGravity(Gravity.BOTTOM);
-        linearLayout.setLayoutTransition(new LayoutTransition());
-        setLayoutTransition(new LayoutTransition());
-        getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        linearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        this.addView(linearLayout);
+        this.setHorizontalScrollBarEnabled(false);
+        this.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        this.adapter = new FloorControllerAdapter();
+        this.adapter.setListener(floor -> mapwizePlugin.setFloor(floor.getRawValue()));
+        this.setAdapter(adapter);
+
     }
 
     /**
@@ -79,6 +64,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
         this.mapwizePlugin = mapwizePlugin;
         this.mapwizePlugin.addOnFloorsChangeListener(this);
         this.mapwizePlugin.addOnFloorChangeListener(this);
+        this.mapwizePlugin.addOnVenueEnterListener(this);
     }
 
     /**
@@ -87,7 +73,16 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
      */
     @Override
     public void onFloorChange(@Nullable Double floor) {
-        for (int i = 0; i< linearLayout.getChildCount(); i++) {
+        for (Floor f : floors) {
+            if (f.getRawValue().equals(floor)) {
+                f.setSelected(true);
+            }
+            else {
+                f.setSelected(false);
+            }
+        }
+        adapter.swapData(floors);
+        /*for (int i = 0; i< linearLayout.getChildCount(); i++) {
             TextView tv  = (TextView) linearLayout.getChildAt(i);
             Double tvValue = Double.parseDouble(tv.getText().toString());
             if (floor != null && floor.equals(tvValue)) {
@@ -96,13 +91,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
             else {
                 tv.setBackgroundResource(R.drawable.rounded_button);
             }
-            if (directionFloors.indexOf(tvValue) != -1) {
-                tv.setTextColor(ContextCompat.getColor(this.getContext(), R.color.mapwize_main_color));
-            }
-            else {
-                tv.setTextColor(Color.BLACK);
-            }
-        }
+        }*/
     }
 
     /**
@@ -111,10 +100,32 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
      */
     @Override
     public void onFloorsChange(@NonNull List<Double> floors) {
-        linearLayout.removeAllViews();
-        if (!uiBehaviour.shouldDisplayFloorController(floors)) {
-            return;
+        this.floors = new ArrayList<>();
+
+        JSONObject floorRef = null;
+        if (venue != null && venue.getData() != null && venue.getData().optJSONObject("floorDisplayMobile") != null) {
+            floorRef = venue.getData().optJSONObject("floorDisplayMobile");
         }
+
+        for (Double floor : floors) {
+            String k = "";
+            if (floor%1>0) {
+                k = String.valueOf(floor);
+            }
+            else {
+                k = String.valueOf(Math.round(floor));
+            }
+            if (floorRef != null) {
+                this.floors.add(new Floor(floor, floorRef.optString(k, k)));
+            }
+            else {
+                this.floors.add(new Floor(floor,k));
+            }
+        }
+        adapter.swapData(this.floors);
+        this.onFloorChange(mapwizePlugin.getFloor());
+
+        /*linearLayout.removeAllViews();
         for (Double value : floors) {
             TextView b = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -139,7 +150,15 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
             linearLayout.addView(b);
         }
 
-        this.onFloorChange(mapwizePlugin.getFloor());
+        */
     }
 
+    @Override
+    public void onVenueEnter(@NonNull Venue venue) {
+    }
+
+    @Override
+    public void willEnterInVenue(@NonNull Venue venue) {
+        this.venue = venue;
+    }
 }
