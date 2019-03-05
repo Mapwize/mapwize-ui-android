@@ -37,7 +37,7 @@ dependencies {
     implementation "com.android.support:design:$app_compat_version"
 
     implementation "com.github.IndoorLocation:indoor-location-android:$indoor_location_version"
-    implementation "io.mapwize.indoormaps:MapwizeForMapbox:2.0.0"
+    implementation 'io.mapwize.indoormaps:MapwizeForMapbox:1.7.1'
     /*implementation project(path: ':MapwizeForMapbox')
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:7.1.2'
     implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {

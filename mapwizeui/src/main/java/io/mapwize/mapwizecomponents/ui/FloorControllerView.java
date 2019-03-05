@@ -73,6 +73,9 @@ public class FloorControllerView extends RecyclerView implements MapwizePlugin.O
      */
     @Override
     public void onFloorChange(@Nullable Double floor) {
+        if (floors == null) {
+            return;
+        }
         for (Floor f : floors) {
             if (f.getRawValue().equals(floor)) {
                 f.setSelected(true);

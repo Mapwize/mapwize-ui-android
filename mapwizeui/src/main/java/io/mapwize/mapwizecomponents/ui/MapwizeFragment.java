@@ -182,11 +182,11 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         mapboxMapOptions.logoEnabled(false);
         mapboxMapOptions.attributionEnabled(false);
         mapboxMapOptions.compassEnabled(false);
+        mapboxMapOptions.styleUrl("https://outdoor.mapwize.io/styles/mapwize/style.json?key=" +
+                AccountManager.getInstance().getApiKey());
         mapView = new MapView(view.getContext(), mapboxMapOptions);
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapView);
-
-        mapView.addOnDidFinishRenderingMapListener(fully -> layout.setVisibility(View.VISIBLE));
 
         loadViews(view);
         if (initializeUiSettings.isFloorControllerHidden()) {
@@ -221,8 +221,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         // Call when mapbox is loaded
         mapView.getMapAsync(mMap -> {
             mapboxMap = mMap;
-            mapboxMap.setStyle("https://outdoor.mapwize.io/styles/mapwize/style.json?key=" +
-                    AccountManager.getInstance().getApiKey());
             // Initialize UI Components
             initCompass(compassView, initializeUiSettings);
 
@@ -230,6 +228,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             initSearchBar(searchBarView, initializeUiSettings);
             initDirectionBar(searchDirectionView);
             initBottomCardView(bottomCardView, uiBehaviour);
+            layout.setVisibility(View.VISIBLE);
 
         });
         mainLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
