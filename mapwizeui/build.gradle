@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.4"
+        versionName "1.0.3"
     }
 
     buildTypes {
@@ -37,7 +37,12 @@ dependencies {
     implementation "com.android.support:design:$app_compat_version"
 
     implementation "com.github.IndoorLocation:indoor-location-android:$indoor_location_version"
-    implementation 'io.mapwize.indoormaps:MapwizeForMapbox:1.7+'
+    implementation "io.mapwize.indoormaps:MapwizeForMapbox:2.0.0"
+    /*implementation project(path: ':MapwizeForMapbox')
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:7.1.2'
+    implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
+        transitive = true
+    }*/
 }
 repositories {
     mavenCentral()

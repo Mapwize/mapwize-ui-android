@@ -355,6 +355,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     public void onVenueExit(@NonNull Venue venue) {
         searchEditText.setHint(getResources().getString(R.string.search_venue));
         rightImageView.setVisibility(View.GONE);
+        resultProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override

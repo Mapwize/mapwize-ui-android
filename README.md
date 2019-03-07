@@ -61,6 +61,10 @@ public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNu
 public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions)
 ```
 
+### Access to Mapbox map and Mapwize plugin
+
+The `void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin);` contains both Mapbox map and Mapwize plugin. Once this method is called you can store and use them.
+
 ### Simple example
 
 ```java
