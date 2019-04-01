@@ -18,6 +18,7 @@ public class FollowUserButton extends AppCompatImageButton
     implements MapwizePlugin.OnFollowUserModeChange {
 
     private MapwizePlugin mapwizePlugin;
+    private FollowUserButtonListener listener;
     private int followImageResource = R.drawable.ic_my_location_black_24dp;
     private int followHeadingImageResource = R.drawable.ic_explore_black_24dp;
     private int defaultColor = Color.BLACK;
@@ -46,6 +47,12 @@ public class FollowUserButton extends AppCompatImageButton
             if (mapwizePlugin == null) {
                 return;
             }
+
+            if (mapwizePlugin.getUserPosition() == null) {
+                listener.onFollowUserClickWithoutLocation();
+                return;
+            }
+
             switch (mapwizePlugin.getFollowUserMode()) {
                 case FollowUserMode.NONE:
                     mapwizePlugin.setFollowUserMode(FollowUserMode.FOLLOW_USER);
@@ -69,6 +76,10 @@ public class FollowUserButton extends AppCompatImageButton
         this.mapwizePlugin.addOnFollowUserModeChangeListener(this);
     }
 
+    public void setListener(FollowUserButtonListener listener) {
+        this.listener = listener;
+    }
+
     /**
      * Called by mapwize when the follow user mode has changed
      * @param followUserMode the new followUserMode
@@ -89,5 +100,9 @@ public class FollowUserButton extends AppCompatImageButton
                 this.getDrawable().setColorFilter(getResources().getColor(activeColor), PorterDuff.Mode.SRC_ATOP);
                 break;
         }
+    }
+
+    interface FollowUserButtonListener {
+        void onFollowUserClickWithoutLocation();
     }
 }

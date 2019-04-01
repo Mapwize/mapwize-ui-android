@@ -37,7 +37,7 @@ import io.mapwize.mapwizeformapbox.map.NavigationInfo;
 public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView {
 
     private BottomCardListener listener;
-    private UIBehaviour uiBehaviour;
+    private MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener;
 
     private FrameLayout objectInfoFrameLayout;
     private FrameLayout directionFrameLayout;
@@ -120,16 +120,16 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * displayed or not
      * @return the DisplayComponentsFunctions
      */
-    public UIBehaviour getUIBehaviour() {
-        return uiBehaviour;
+    public MapwizeFragment.OnFragmentInteractionListener getFragmentInteractionListener() {
+        return fragmentInteractionListener;
     }
 
     /**
      * Set the display components functions object that determine if an UI Component should be
      * displayed or not
      */
-    public void setUIBehaviour(UIBehaviour uiBehaviour) {
-        this.uiBehaviour = uiBehaviour;
+    public void setUIBehaviour(MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener) {
+        this.fragmentInteractionListener = fragmentInteractionListener;
     }
 
     /**
@@ -167,7 +167,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
 
         titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
 
-        if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(place)) {
+        if (fragmentInteractionListener != null && fragmentInteractionListener.shouldDisplayInformationButton(place)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -209,7 +209,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             subtitleTextView.setVisibility(View.GONE);
         }
         titleImageView.setVisibility(View.VISIBLE);
-        if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(placeList)) {
+        if (fragmentInteractionListener != null && fragmentInteractionListener.shouldDisplayInformationButton(placeList)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {

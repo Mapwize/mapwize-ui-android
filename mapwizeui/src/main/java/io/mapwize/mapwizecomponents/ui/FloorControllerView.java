@@ -28,7 +28,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
     private LinearLayout linearLayout;
     private int viewSize = 0;
     private MapwizePlugin mapwizePlugin;
-    private UIBehaviour uiBehaviour;
+    private MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener;
 
     public FloorControllerView(@NonNull Context context) {
         super(context);
@@ -45,12 +45,12 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
         initLayout();
     }
 
-    public UIBehaviour getUiBehaviour() {
-        return uiBehaviour;
+    public MapwizeFragment.OnFragmentInteractionListener getFragmentInteractionListener() {
+        return fragmentInteractionListener;
     }
 
-    public void setUiBehaviour(UIBehaviour uiBehaviour) {
-        this.uiBehaviour = uiBehaviour;
+    public void setUiBehaviour(MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener) {
+        this.fragmentInteractionListener = fragmentInteractionListener;
     }
 
     private void initLayout() {
@@ -112,7 +112,7 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
     @Override
     public void onFloorsChange(@NonNull List<Double> floors) {
         linearLayout.removeAllViews();
-        if (!uiBehaviour.shouldDisplayFloorController(floors)) {
+        if (!fragmentInteractionListener.shouldDisplayFloorController(floors)) {
             return;
         }
         for (Double value : floors) {
