@@ -22,6 +22,8 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
+import java.util.List;
+
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.AccountManager;
 import io.mapwize.mapwizeformapbox.api.Api;
