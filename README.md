@@ -48,9 +48,22 @@ implementation 'com.github.Mapwize:mapwize-ui-android:${lib-version}'
 The activity that embeds the Fragment must implement `OnFragmentInteractionListener` with the followings methods :
 
 ```java
-void onMenuButtonClick() // The user clicked on the menu button (left button on the search bar)
-void onInformationButtonClick(MapwizeObject mapwizeObject); // See Information Button section below
-void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin); // The fragment is ready to use
+// The user clicked on the menu button (left button on the search bar).
+void onMenuButtonClick()
+// See Information Button section below.
+void onInformationButtonClick(MapwizeObject mapwizeObject)
+// The fragment is ready to use.
+void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin)
+// The user clicked on the follow user button but no location has been found.
+void onFollowUserButtonClickWithoutLocation();
+// Method called when a place or a place list is selected. Return true if you want to show the information button in the bottom view.
+default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
+    return true;
+}
+// Method called when the available floors list changed. Return true if you want to display the floor controller.
+default boolean shouldDisplayFloorController(List<Double> floors) {
+    return true;
+}
 ```
 
 Mapwize Fragment can be instantiated with the constructor :
@@ -171,7 +184,7 @@ When users select a Place or a PlaceList, either by clicking on the map or using
 
 The proposed solution is to display an "information" button on the bottom view in the Fragment.
 
-Using the UIBehaviour interface, you can use the method `shouldDisplayInformationButton` to say if the button should be displayed or not. Return true to display the button for the given Mapwize object.
+Using the OnFragmentListener interface, you can use the method `shouldDisplayInformationButton` to say if the button should be displayed or not. Return true to display the button for the given Mapwize object.
 
 ```java
 boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject);

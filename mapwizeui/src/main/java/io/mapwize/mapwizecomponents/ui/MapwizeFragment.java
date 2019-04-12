@@ -22,6 +22,8 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
+import java.util.List;
+
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.AccountManager;
 import io.mapwize.mapwizeformapbox.api.Api;
@@ -48,7 +50,7 @@ import io.mapwize.mapwizeformapbox.map.UISettings;
 public class MapwizeFragment extends Fragment implements CompassView.OnCompassClickListener,
         SearchBarView.SearchBarListener, SearchDirectionView.SearchDirectionListener,
         MapwizePlugin.OnVenueEnterListener, MapwizePlugin.OnVenueExitListener,
-        BottomCardView.BottomCardListener, UIBehaviour {
+        BottomCardView.BottomCardListener, FollowUserButton.FollowUserButtonListener {
 
     private static String ARG_OPTIONS = "param_options";
     private static String ARG_UI_SETTINGS = "param_ui_settings";
@@ -56,9 +58,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     // Component listener
     private OnFragmentInteractionListener listener;
-
-    // UI Behaviour
-    private UIBehaviour uiBehaviour;
 
     // Component initialization params
     private MapOptions initializeOptions = null;
@@ -134,29 +133,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         return mf;
     }
 
-    /**
-     * Get the ui behaviour object that determine if an UI Component should be
-     * displayed or not
-     * @return the DisplayComponentsFunctions
-     */
-    public UIBehaviour getUIBehaviour() {
-        return uiBehaviour;
-    }
-
-    /**
-     * Set the ui behaviour functions object that determine if an UI Component should be
-     * displayed or not
-     */
-    public void setUIBehaviour(UIBehaviour uiBehaviour) {
-        this.uiBehaviour = uiBehaviour;
-        if (this.bottomCardView != null) {
-            this.bottomCardView.setUIBehaviour(uiBehaviour);
-        }
-        if (this.floorControllerView != null) {
-            this.floorControllerView.setUiBehaviour(uiBehaviour);
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,9 +141,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             initializeOptions = bundle.getParcelable(ARG_OPTIONS);
             initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
             initializeMapboxOptions = bundle.getParcelable(ARG_MAPBOX_OPTIONS);
-            if (uiBehaviour == null) {
-                uiBehaviour = this;
-            }
         }
     }
 
@@ -232,12 +205,12 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             // Initialize UI Components
             initCompass(compassView, initializeUiSettings);
             initFollowUserModeButton(followUserButton, initializeUiSettings);
-            initFloorController(floorControllerView, initializeUiSettings, uiBehaviour);
+            initFloorController(floorControllerView, initializeUiSettings, listener);
             initSearchBar(searchBarView, initializeUiSettings);
             initDirectionBar(searchDirectionView);
             initUniversesButton(universesButton);
             initLanguagesButton(languagesButton);
-            initBottomCardView(bottomCardView, uiBehaviour);
+            initBottomCardView(bottomCardView, listener);
 
         });
         mainLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
@@ -275,6 +248,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        if (mapwizePlugin != null) {
+            mapwizePlugin.onResume();
+        }
     }
 
     @Override
@@ -296,6 +272,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onPause() {
         mapView.onPause();
+        if (mapwizePlugin != null) {
+            mapwizePlugin.onPause();
+        }
         super.onPause();
     }
 
@@ -324,18 +303,18 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         searchResultList = view.findViewById(R.id.mapwizeSearchResultList);
     }
 
-    private void initBottomCardView(BottomCardView bottomCardView, UIBehaviour uiBehaviour) {
+    private void initBottomCardView(BottomCardView bottomCardView, OnFragmentInteractionListener listener) {
         bottomCardView.setListener(this);
-        bottomCardView.setUIBehaviour(uiBehaviour);
+        bottomCardView.setInteractionListener(listener);
     }
 
-    private void initFloorController(FloorControllerView floorControllerView, MapwizeFragmentUISettings uiSettings, UIBehaviour uiBehaviour) {
+    private void initFloorController(FloorControllerView floorControllerView, MapwizeFragmentUISettings uiSettings, OnFragmentInteractionListener listener) {
         if (uiSettings.isFloorControllerHidden()) {
             floorControllerView.setVisibility(View.GONE);
         }
         else {
             floorControllerView.setMapwizePlugin(mapwizePlugin);
-            floorControllerView.setUiBehaviour(uiBehaviour);
+            floorControllerView.setUiBehaviour(listener);
         }
     }
 
@@ -345,6 +324,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         }
         else {
             followUserButton.setMapwizePlugin(mapwizePlugin);
+            followUserButton.setListener(this);
         }
     }
 
@@ -510,7 +490,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * Hide the UI component, remove markers and unpromote place if needed
      * If we are in a venue, displayed the venue information
      */
-    private void unselectContent() {
+    public void unselectContent() {
         bottomCardView.removeContent();
         mapwizePlugin.removeMarkers();
         if (selectedContent instanceof Place) {
@@ -607,7 +587,17 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     @Override
     public void onInformationClick() {
-        listener.onInformationButtonClick((Place) selectedContent);
+        listener.onInformationButtonClick(selectedContent);
+    }
+
+    @Override
+    public void onDetailsOpen() {
+        searchBarView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDetailsClose() {
+        searchBarView.setVisibility(View.VISIBLE);
     }
 
     // Compass listener
@@ -673,12 +663,24 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     }
 
+    @Override
+    public void onFollowUserClickWithoutLocation() {
+        listener.onFollowUserButtonClickWithoutLocation();
+    }
+
     /**
      * The activity that embed this fragment must implement this interface
      */
     public interface OnFragmentInteractionListener {
         void onMenuButtonClick();
-        void onInformationButtonClick(Place place);
+        void onInformationButtonClick(MapwizeObject mapwizeObject);
         void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin);
+        void onFollowUserButtonClickWithoutLocation();
+        default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
+            return true;
+        }
+        default boolean shouldDisplayFloorController(List<Double> floors) {
+            return true;
+        }
     }
 }

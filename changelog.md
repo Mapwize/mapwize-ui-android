@@ -1,5 +1,15 @@
 # UI Components Changelog
 
+## 1.2.0
+
+- Updating Mapwize version to 2.1.5
+- Moving methods from UIBehaviour interface to OnFragmentInteractionListener (iOS & Android parity)
+- Adding method when click on followuser button without location
+- Changing onInformationButtonClick argument from Place to MapwizeObject to handle PlaceList and Place
+- Adding call to MapwizePlugin#onPause and MapwizePlugin#onResume in the fragment lifecycle
+- Improving search results list with multiple universe
+- Fixing inconsistant behaviour with differents UI components
+
 ## 1.1.0
 
 - Adding support for MapwizeForMapbox 2.0.0

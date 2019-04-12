@@ -89,8 +89,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         for (Universe u : universes) {
             List objectForCurrentUniverse = mapObjectByUniverse.get(u);
             if (objectForCurrentUniverse.size() > 0) {
-                displayResult.add(u.getName());
-                displayResult.addAll(objectForCurrentUniverse);
+                if (currentUniverse.getId().equals(u.getId())) {
+                    displayResult.addAll(0, objectForCurrentUniverse);
+                    displayResult.add(0, u.getName());
+                }
+                else {
+                    displayResult.add(u.getName());
+                    displayResult.addAll(objectForCurrentUniverse);
+                }
             }
             indexForUniverses.add(displayResult.size());
         }
@@ -176,6 +182,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (suggestionItem instanceof String) {
             String universeName = (String) suggestionItem;
             holder.floorView.setVisibility(View.GONE);
+            holder.subtitleView.setVisibility(View.GONE);
             holder.leftIcon.setVisibility(View.GONE);
             holder.titleView.setText(universeName);
             holder.itemView.setClickable(false);

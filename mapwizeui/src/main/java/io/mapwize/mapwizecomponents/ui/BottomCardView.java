@@ -1,26 +1,15 @@
 package io.mapwize.mapwizecomponents.ui;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import io.mapwize.mapwizecomponents.R;
@@ -37,7 +26,7 @@ import io.mapwize.mapwizeformapbox.map.NavigationInfo;
 public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView {
 
     private BottomCardListener listener;
-    private UIBehaviour uiBehaviour;
+    private MapwizeFragment.OnFragmentInteractionListener interactionListener;
 
     private FrameLayout objectInfoFrameLayout;
     private FrameLayout directionFrameLayout;
@@ -106,6 +95,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         lp.height = LayoutParams.MATCH_PARENT;
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.VISIBLE);
+        listener.onDetailsOpen();
     }
 
     private void hideDetails() {
@@ -113,6 +103,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         lp.height = LayoutParams.WRAP_CONTENT;
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.GONE);
+        listener.onDetailsClose();
     }
 
     /**
@@ -120,16 +111,16 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * displayed or not
      * @return the DisplayComponentsFunctions
      */
-    public UIBehaviour getUIBehaviour() {
-        return uiBehaviour;
+    public MapwizeFragment.OnFragmentInteractionListener getInteractionListener() {
+        return interactionListener;
     }
 
     /**
      * Set the display components functions object that determine if an UI Component should be
      * displayed or not
      */
-    public void setUIBehaviour(UIBehaviour uiBehaviour) {
-        this.uiBehaviour = uiBehaviour;
+    public void setInteractionListener(MapwizeFragment.OnFragmentInteractionListener listener) {
+        this.interactionListener = listener;
     }
 
     /**
@@ -147,7 +138,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      */
     public void setContent(Place place, String language) {
         directionFrameLayout.setVisibility(View.GONE);
-        objectInfoFrameLayout.setVisibility(View.VISIBLE);
+        objectInfoFrameLayout.setVisibility(View.GONE);
         Translation translation = place.getTranslation(language);
         if (translation.getTitle().length() > 0) {
             titleTextView.setText(translation.getTitle());
@@ -167,7 +158,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
 
         titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
 
-        if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(place)) {
+        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(place)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -183,6 +174,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             hasDetails = false;
             detailsWebView.setVisibility(View.GONE);
         }
+        objectInfoFrameLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -209,7 +201,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             subtitleTextView.setVisibility(View.GONE);
         }
         titleImageView.setVisibility(View.VISIBLE);
-        if (uiBehaviour != null && uiBehaviour.shouldDisplayInformationButton(placeList)) {
+        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(placeList)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -292,6 +284,10 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
          * User click on information button
          */
         void onInformationClick();
+
+        void onDetailsOpen();
+
+        void onDetailsClose();
 
     }
 
