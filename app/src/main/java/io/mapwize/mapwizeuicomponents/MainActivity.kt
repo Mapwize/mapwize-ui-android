@@ -2,6 +2,7 @@ package io.mapwize.mapwizeuicomponents
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
@@ -72,15 +73,11 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
     }
 
     override fun onFollowUserButtonClickWithoutLocation() {
-
+        Log.i("Debug", "onFollowUserButtonClickWithoutLocation")
     }
 
-    /**
-     * UIBehaviour
-     * MapwizeFragment have a default UIBehaviour. You don't have to implement it if you do not need a custom behaviour.
-     * This implementation is here for demo purpose.
-     */
     override fun shouldDisplayInformationButton(mapwizeObject: MapwizeObject?): Boolean {
+        Log.i("Debug", "shouldDisplayInformationButton")
         when (mapwizeObject) {
             is Place -> return true
         }
@@ -88,6 +85,7 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
     }
 
     override fun shouldDisplayFloorController(floors: MutableList<Double>?): Boolean {
+        Log.i("Debug", "shouldDisplayFloorController")
         if (floors == null || floors.size <= 1) {
             return false
         }
