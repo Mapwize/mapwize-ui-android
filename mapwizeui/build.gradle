@@ -30,19 +30,12 @@ def indoor_location_version = '1.0.5'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation "com.android.support:appcompat-v7:$app_compat_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation "com.android.support:support-v4:$app_compat_version"
     implementation "com.android.support:design:$app_compat_version"
-
     implementation "com.github.IndoorLocation:indoor-location-android:$indoor_location_version"
-    implementation "io.mapwize.indoormaps:MapwizeForMapbox:2.1.3"
-    /*implementation project(path: ':MapwizeForMapbox')
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:7.1.2'
-    implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
-        transitive = true
-    }*/
+    implementation "io.mapwize.indoormaps:MapwizeForMapbox:2.1.5"
 }
 repositories {
     mavenCentral()

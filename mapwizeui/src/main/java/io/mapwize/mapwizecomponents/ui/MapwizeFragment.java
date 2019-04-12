@@ -248,6 +248,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        if (mapwizePlugin != null) {
+            mapwizePlugin.onResume();
+        }
     }
 
     @Override
@@ -269,6 +272,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onPause() {
         mapView.onPause();
+        if (mapwizePlugin != null) {
+            mapwizePlugin.onPause();
+        }
         super.onPause();
     }
 
@@ -299,7 +305,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     private void initBottomCardView(BottomCardView bottomCardView, OnFragmentInteractionListener listener) {
         bottomCardView.setListener(this);
-        bottomCardView.setUIBehaviour(listener);
+        bottomCardView.setInteractionListener(listener);
     }
 
     private void initFloorController(FloorControllerView floorControllerView, MapwizeFragmentUISettings uiSettings, OnFragmentInteractionListener listener) {
@@ -582,6 +588,16 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onInformationClick() {
         listener.onInformationButtonClick(selectedContent);
+    }
+
+    @Override
+    public void onDetailsOpen() {
+        searchBarView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDetailsClose() {
+        searchBarView.setVisibility(View.VISIBLE);
     }
 
     // Compass listener

@@ -257,9 +257,12 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
         backImageView.setVisibility(View.VISIBLE);
         rightImageView.setVisibility(View.GONE);
         mainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
+        this.setBackgroundColor(Color.argb(255, 238, 238, 238));
         resultList.hideCurrentLocationCard();
         resultList.show();
         performSearch("");
+
+        this.setTranslationZ(2);
     }
 
     /**
@@ -279,7 +282,9 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
         searchEditText.setText("");
         searchEditText.clearFocus();
         mainLayout.setBackgroundColor(Color.TRANSPARENT);
+        this.setBackgroundColor(Color.TRANSPARENT);
         resultList.hide();
+        this.setTranslationZ(0);
     }
 
     /**

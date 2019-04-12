@@ -338,6 +338,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         if (!centerOnStart) {
             optsBuilder.centerOnStart(false);
             optsBuilder.setToStartingFloor(false);
+            optsBuilder.displayEndMarker(true);
         }
 
         mapwizePlugin.stopNavigation();

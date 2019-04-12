@@ -7,15 +7,13 @@ import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
 import io.mapwize.mapwizecomponents.ui.MapwizeFragment
 import io.mapwize.mapwizecomponents.ui.MapwizeFragmentUISettings
-import io.mapwize.mapwizecomponents.ui.UIBehaviour
 import io.mapwize.mapwizeformapbox.api.MapwizeObject
 import io.mapwize.mapwizeformapbox.api.Place
 import io.mapwize.mapwizeformapbox.map.MapOptions
 import io.mapwize.mapwizeformapbox.map.MapwizePlugin
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener, UIBehaviour {
-
+class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
 
     private var mapwizeFragment: MapwizeFragment? = null
     private var mapboxMap: MapboxMap? = null
@@ -42,7 +40,6 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
                 //.compassHidden(true)
                 .build()
         mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
-        this.mapwizeFragment?.uiBehaviour = this
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
         ft.add(fragmentContainer.id, mapwizeFragment!!)
@@ -67,11 +64,15 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
     }
 
     override fun onMenuButtonClick() {
-        // TODO Do something with menu click
+
     }
 
-    override fun onInformationButtonClick(place: Place?) {
-        // TODO Do something with information button
+    override fun onInformationButtonClick(mapwizeObject: MapwizeObject?) {
+
+    }
+
+    override fun onFollowUserButtonClickWithoutLocation() {
+
     }
 
     /**
