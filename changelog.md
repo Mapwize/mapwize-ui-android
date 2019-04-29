@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 1.2.1
+
+- Fixing crash when a direction is not found
+
 ## 1.2.0
 
 - Updating Mapwize version to 2.1.5
