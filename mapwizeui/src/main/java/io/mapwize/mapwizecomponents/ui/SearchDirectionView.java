@@ -314,7 +314,6 @@ public class SearchDirectionView extends ConstraintLayout implements
             @Override
             public void onFailure(Throwable t) {
                 Handler uiHandler = new Handler(Looper.getMainLooper());
-                resultProgressBar.setVisibility(View.INVISIBLE);
                 Runnable runnable = () -> {
                     resultProgressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(getContext(), "No direction found",
