@@ -273,7 +273,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
     /**
      * Interface used to listen bottom view event
      */
-    interface BottomCardListener {
+    public interface BottomCardListener {
 
         /**
          * User click on direction button
