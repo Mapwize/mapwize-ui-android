@@ -241,13 +241,17 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onStart() {
         super.onStart();
-        mapView.onStart();
+        if (mapView != null) {
+            mapView.onStart();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        if (mapView != null) {
+            mapView.onResume();
+        }
         if (mapwizePlugin != null) {
             mapwizePlugin.onResume();
         }
@@ -256,7 +260,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (!mapView.isDestroyed()) {
+        if (mapView != null && !mapView.isDestroyed()) {
             mapView.onSaveInstanceState(outState);
         }
     }
@@ -264,14 +268,16 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if (!mapView.isDestroyed()) {
+        if (mapView != null && !mapView.isDestroyed()) {
             mapView.onLowMemory();
         }
     }
 
     @Override
     public void onPause() {
-        mapView.onPause();
+        if (mapView != null) {
+            mapView.onPause();
+        }
         if (mapwizePlugin != null) {
             mapwizePlugin.onPause();
         }
@@ -280,14 +286,18 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     @Override
     public void onStop() {
-        mapView.onStop();
+        if (mapView != null) {
+            mapView.onStop();
+        }
         super.onStop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mapView.onDestroy();
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
     }
 
     private void loadViews(View view) {
