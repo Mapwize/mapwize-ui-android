@@ -42,6 +42,7 @@ import io.mapwize.mapwizeformapbox.map.MapOptions;
 import io.mapwize.mapwizeformapbox.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
 import io.mapwize.mapwizeformapbox.map.MapwizePluginFactory;
+import io.mapwize.mapwizeformapbox.map.Marker;
 import io.mapwize.mapwizeformapbox.map.UISettings;
 
 /**
@@ -470,7 +471,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         selectedContent = place;
         bottomCardView.setContent(place, mapwizePlugin.getLanguage());
         mapwizePlugin.removeMarkers();
-        mapwizePlugin.addMarker(place);
+        mapwizePlugin.addMarker(place, marker -> {
+
+        });
         mapwizePlugin.addPromotedPlace(place);
         if (centerOn) {
             mapwizePlugin.centerOnPlace(place);
@@ -493,7 +496,9 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void selectPlaceList(PlaceList placeList) {
         selectedContent = placeList;
         bottomCardView.setContent(placeList, mapwizePlugin.getLanguage());
-        mapwizePlugin.addMarkers(placeList);
+        mapwizePlugin.addMarkers(placeList, markers -> {
+
+        });
     }
 
     /**
