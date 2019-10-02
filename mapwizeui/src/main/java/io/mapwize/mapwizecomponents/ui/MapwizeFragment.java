@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
 import java.util.List;
@@ -33,16 +31,21 @@ import io.mapwize.mapwizeformapbox.api.Place;
 import io.mapwize.mapwizeformapbox.api.Placelist;
 import io.mapwize.mapwizeformapbox.api.Universe;
 import io.mapwize.mapwizeformapbox.api.Venue;
+import io.mapwize.mapwizeformapbox.core.MapwizeConfiguration;
 import io.mapwize.mapwizeformapbox.map.ClickEvent;
 import io.mapwize.mapwizeformapbox.map.FollowUserMode;
 import io.mapwize.mapwizeformapbox.map.MapOptions;
 import io.mapwize.mapwizeformapbox.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizeformapbox.map.MapwizeMap;
+import io.mapwize.mapwizeformapbox.map.MapwizeView;
 import io.mapwize.mapwizeformapbox.map.PlacePreview;
+import io.mapwize.mapwizeformapbox.map.PreviewCallback;
+import io.mapwize.mapwizeformapbox.map.VenuePreview;
 
 /**
  * Mapwize Fragment allow you to integrate Mapwize in a simplest way.
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class MapwizeFragment extends Fragment implements CompassView.OnCompassClickListener,
         SearchBarView.SearchBarListener, SearchDirectionView.SearchDirectionListener,
         MapwizeMap.OnVenueEnterListener, MapwizeMap.OnVenueExitListener,
@@ -50,7 +53,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     private static String ARG_OPTIONS = "param_options";
     private static String ARG_UI_SETTINGS = "param_ui_settings";
-    private static String ARG_MAPBOX_OPTIONS = "param_mapbox_options";
 
     // Component listener
     private OnFragmentInteractionListener listener;
@@ -58,16 +60,15 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     // Component initialization params
     private MapOptions initializeOptions = null;
     private MapwizeFragmentUISettings initializeUiSettings = null;
-    private MapboxMapOptions initializeMapboxOptions = null;
     private Place initializePlace = null;
 
     // Component map & mapwize
-    private MapboxMap mapboxMap;
     private MapwizeMap mapwizeMap;
+    private MapwizeView mapwizeView;
+    private MapwizeConfiguration mapwizeConfiguration;
 
     // Component views
     private ConstraintLayout mainLayout;
-    private MapView mapView;
     private CompassView compassView;
     private FollowUserButton followUserButton;
     private FloorControllerView floorControllerView;
@@ -124,7 +125,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        bundle.putParcelable(ARG_MAPBOX_OPTIONS, mapboxMapOptions);
         mf.setArguments(bundle);
         return mf;
     }
@@ -136,7 +136,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         if (bundle != null) {
             initializeOptions = bundle.getParcelable(ARG_OPTIONS);
             initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
-            initializeMapboxOptions = bundle.getParcelable(ARG_MAPBOX_OPTIONS);
         }
     }
 
@@ -150,19 +149,15 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MapboxMapOptions mapboxMapOptions = new MapboxMapOptions();
-        if (initializeMapboxOptions != null) {
-            mapboxMapOptions = initializeMapboxOptions;
+        if (initializeOptions == null) {
+            initializeOptions = new MapOptions.Builder().build();
         }
-        mapboxMapOptions.logoEnabled(false);
-        mapboxMapOptions.attributionEnabled(false);
-        mapboxMapOptions.compassEnabled(false);
-        mapView = new MapView(view.getContext(), mapboxMapOptions);
+        mapwizeConfiguration = MapwizeConfiguration.getInstance();
+        mapwizeView = new MapwizeView(getContext(), mapwizeConfiguration, initializeOptions);
+
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
-        layout.addView(mapView);
-
-        mapView.addOnDidFinishRenderingMapListener(fully -> layout.setVisibility(View.VISIBLE));
-
+        layout.addView(mapwizeView);
+        mapwizeView.onCreate(savedInstanceState);
         loadViews(view);
         if (initializeUiSettings.isFloorControllerHidden()) {
             floorControllerView.setVisibility(View.GONE);
@@ -174,24 +169,10 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             compassView.setVisibility(View.GONE);
         }
 
-        // Use the custom Mapwize style instead of Mapbox style
-        mapView.onCreate(savedInstanceState);
-
-        // Set default options if needed
-        if (initializeOptions == null) {
-            initializeOptions = new MapOptions.Builder().build();
-        }
-
         // Instantiate Mapwize sdk
-        mapwizeMap = MapwizePluginFactory.create(mapView, initializeOptions, settings);
-        initMapwizeListeners(mapwizeMap);
-
-        // Call when mapbox is loaded
-        mapView.getMapAsync(mMap -> {
-            mapboxMap = mMap;
-            mapboxMap.setStyle("https://outdoor.mapwize.io/styles/mapwize/style.json?key=" +
-                    AccountManager.getInstance().getApiKey());
-            // Initialize UI Components
+        mapwizeView.getMapAsync(mMap -> {
+            mapwizeMap = mMap;
+            initMapwizeListeners(mapwizeMap);
             initCompass(compassView, initializeUiSettings);
             initFollowUserModeButton(followUserButton, initializeUiSettings);
             initFloorController(floorControllerView, initializeUiSettings, listener);
@@ -200,8 +181,8 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             initUniversesButton(universesButton);
             initLanguagesButton(languagesButton);
             initBottomCardView(bottomCardView, listener);
-
         });
+
         mainLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
     }
 
@@ -211,7 +192,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
@@ -230,53 +211,47 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onStart() {
         super.onStart();
-        if (mapView != null) {
-            mapView.onStart();
+        if (mapwizeView != null) {
+            mapwizeView.onStart();
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mapView != null) {
-            mapView.onResume();
-        }
-        if (mapwizeMap != null) {
-            mapwizeMap.onResume();
+        if (mapwizeView != null) {
+            mapwizeView.onResume();
         }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mapView != null && !mapView.isDestroyed()) {
-            mapView.onSaveInstanceState(outState);
+        if (mapwizeView != null) {
+            mapwizeView.onSaveInstanceState(outState);
         }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if (mapView != null && !mapView.isDestroyed()) {
-            mapView.onLowMemory();
+        if (mapwizeView != null) {
+            mapwizeView.onLowMemory();
         }
     }
 
     @Override
     public void onPause() {
-        if (mapView != null) {
-            mapView.onPause();
-        }
-        if (mapwizeMap != null) {
-            mapwizeMap.onPause();
+        if (mapwizeView != null) {
+            mapwizeView.onPause();
         }
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        if (mapView != null) {
-            mapView.onStop();
+        if (mapwizeView != null) {
+            mapwizeView.onStop();
         }
         super.onStop();
     }
@@ -284,8 +259,8 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mapView != null) {
-            mapView.onDestroy();
+        if (mapwizeView != null) {
+            mapwizeView.onDestroy();
         }
     }
 
@@ -329,7 +304,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     private void initCompass(CompassView compassView, MapwizeFragmentUISettings uiSettings) {
         if (!uiSettings.isCompassHidden()) {
-            compassView.setMapboxMap(mapboxMap);
+            compassView.setMapboxMap(mapwizeMap.getMapboxMap());
             compassView.fadeCompassViewFacingNorth(true);
             compassView.setOnCompassClickListener(this);
         }
@@ -357,56 +332,21 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     private void initMapwizeListeners(MapwizeMap mapwizeMap) {
-        // Configure click event
         mapwizeMap.addOnClickListener(event -> {
             switch (event.getEventType()) {
                 case ClickEvent.MAP_CLICK:
                     onMapClick(event.getLatLngFloor());
                     break;
-            }
-            switch (event.getEventType()) {
                 case ClickEvent.PLACE_CLICK:
                     onPlaceClick(event.getPlacePreview());
                     break;
-            }
-            switch (event.getEventType()) {
                 case ClickEvent.VENUE_CLICK:
                     onVenueClick(event.getVenuePreview());
                     break;
             }
         });
-
-        // Configure enter and exit venue event
         mapwizeMap.addOnVenueEnterListener(this);
         mapwizeMap.addOnVenueExitListener(this);
-
-        // Configure did load event
-        // TODO
-        /*mapwizeMap.setOnDidLoadListener(mapwizePlugin1 -> {
-
-            // If a place has been pass as parameter, set the universe to ensure that the selected
-            // place belong to the displayed universe
-            if (initializeOptions.getCenterOnPlaceId() != null) {
-                Api.getPlace(initializeOptions.getCenterOnPlaceId(), new ApiCallback<Place>() {
-                    @Override
-                    public void onSuccess(@Nullable Place place) {
-                        initializePlace = place;
-                        Universe toUniverse = initializePlace.getUniverses().get(0);
-                        if (toUniverse != null) {
-                            mapwizePlugin.setUniverse(toUniverse);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@Nullable Throwable throwable) {
-
-                    }
-                });
-            }
-            if (this.listener != null) {
-                this.listener.onFragmentReady(mapboxMap, mapwizePlugin);
-            }
-        });*/
     }
 
     /**
@@ -437,18 +377,44 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      */
     private void onPlaceClick(PlacePreview placePreview) {
         if (!isInDirection) {
-            selectPlace(placePreview, false);
+            selectPlacePreview(placePreview, false);
         }
     }
 
     /**
      * Method called when the user click on a venue
-     * @param venue the clicked venue
+     * @param venuePreview the clicked venue
      */
-    private void onVenueClick(Venue venue) {
+    private void onVenueClick(VenuePreview venuePreview) {
         if (!isInDirection) {
-            selectVenue(venue);
+            selectVenuePreview(venuePreview);
         }
+    }
+
+    /**
+     * Setup the UI to display information about the selected place
+     * @param placePreview the selected place
+     * @param centerOn if true, center on the place
+     */
+    public void selectPlacePreview(PlacePreview placePreview, boolean centerOn) {
+        mapwizeMap.removeMarkers();
+        mapwizeMap.addMarker(placePreview);
+        if (centerOn) {
+            mapwizeMap.centerOnPlace(placePreview, 300);
+        }
+        placePreview.getFullObjectAsync(new PreviewCallback<Place>() {
+            @Override
+            public void getObjectAsync(Place place) {
+                selectedContent = place;
+                bottomCardView.setContent(place, mapwizeMap.getLanguage());
+                mapwizeMap.addPromotedPlace(place);
+            }
+
+            @Override
+            public void error(Throwable throwable) {
+                // TODO Handle error
+            }
+        });
     }
 
     /**
@@ -457,14 +423,22 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * @param centerOn if true, center on the place
      */
     public void selectPlace(Place place, boolean centerOn) {
-        selectedContent = place;
-        bottomCardView.setContent(place, mapwizeMap.getLanguage());
         mapwizeMap.removeMarkers();
         mapwizeMap.addMarker(place);
-        mapwizeMap.addPromotedPlace(place);
         if (centerOn) {
             mapwizeMap.centerOnPlace(place, 300);
         }
+        selectedContent = place;
+        bottomCardView.setContent(place, mapwizeMap.getLanguage());
+        mapwizeMap.addPromotedPlace(place);
+    }
+
+    /**
+     * Setup the UI to display information about the selected venue
+     * @param venuePreview the venue to select
+     */
+    public void selectVenuePreview(VenuePreview venuePreview) {
+        mapwizeMap.centerOnVenue(venuePreview, 300);
     }
 
     /**
@@ -472,7 +446,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * @param venue the venue to select
      */
     public void selectVenue(Venue venue) {
-        bottomCardView.setContent(venue, mapwizeMap.getLanguage());
         mapwizeMap.centerOnVenue(venue, 300);
     }
 

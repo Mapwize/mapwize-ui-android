@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.mapwize.mapwizecomponents.R;
@@ -93,7 +94,9 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
         if (!fragmentInteractionListener.shouldDisplayFloorController(floors)) {
             return;
         }
-        for (Floor floor : floors) {
+        List<Floor> reversedFloor = new ArrayList<>(floors);
+        Collections.reverse(reversedFloor);
+        for (Floor floor : reversedFloor) {
             TextView b = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     viewSize,viewSize
