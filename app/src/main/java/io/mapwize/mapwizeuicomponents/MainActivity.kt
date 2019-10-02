@@ -11,14 +11,14 @@ import io.mapwize.mapwizecomponents.ui.MapwizeFragmentUISettings
 import io.mapwize.mapwizeformapbox.api.MapwizeObject
 import io.mapwize.mapwizeformapbox.api.Place
 import io.mapwize.mapwizeformapbox.map.MapOptions
-import io.mapwize.mapwizeformapbox.map.MapwizePlugin
+import io.mapwize.mapwizeformapbox.map.MapwizeMap
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
 
     private var mapwizeFragment: MapwizeFragment? = null
     private var mapboxMap: MapboxMap? = null
-    private var mapwizePlugin: MapwizePlugin? = null
+    private var mapwizeMap: MapwizeMap? = null
     private var locationProvider: ManualIndoorLocationProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

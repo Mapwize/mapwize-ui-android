@@ -2,13 +2,14 @@ package io.mapwize.mapwizeuicomponents
 
 
 import android.app.Application
-import io.mapwize.mapwizeformapbox.AccountManager
+import io.mapwize.mapwizeformapbox.core.MapwizeConfiguration
 
 class MapwizeApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        AccountManager.start(this, "YOUR_API_KEY")
+        val config = MapwizeConfiguration.Builder(this, "ContexeoDevAppAPIKEY").build()
+        MapwizeConfiguration.start(config)
     }
 
 }

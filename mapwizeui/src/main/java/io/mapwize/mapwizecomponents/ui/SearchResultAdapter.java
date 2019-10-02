@@ -18,7 +18,7 @@ import java.util.Map;
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.MapwizeObject;
 import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.PlaceList;
+import io.mapwize.mapwizeformapbox.api.Placelist;
 import io.mapwize.mapwizeformapbox.api.Translation;
 import io.mapwize.mapwizeformapbox.api.Universe;
 import io.mapwize.mapwizeformapbox.api.Venue;
@@ -162,8 +162,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.itemView.setClickable(true);
         }
 
-        if (suggestionItem instanceof PlaceList) {
-            PlaceList placeList = (PlaceList) suggestionItem;
+        if (suggestionItem instanceof Placelist) {
+            Placelist placeList = (Placelist) suggestionItem;
             Translation translation = placeList.getTranslation(language);
             holder.titleView.setText(translation.getTitle());
             holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_menu_black_24dp));
@@ -229,8 +229,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                         }
                         mListener.onSearchResult((Place) object, universe);
                     }
-                    if (object instanceof PlaceList) {
-                        mListener.onSearchResult((PlaceList) object);
+                    if (object instanceof Placelist) {
+                        mListener.onSearchResult((Placelist) object);
                     }
                     if (object instanceof Venue) {
                         mListener.onSearchResult((Venue) object);
@@ -243,7 +243,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public interface OnItemClickListener {
         void onSearchResult(Place place, Universe universe);
 
-        void onSearchResult(PlaceList placeList);
+        void onSearchResult(Placelist placelist);
 
         void onSearchResult(Venue venue);
     }

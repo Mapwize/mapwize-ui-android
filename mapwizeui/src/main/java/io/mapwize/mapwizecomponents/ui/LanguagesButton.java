@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
+import io.mapwize.mapwizeformapbox.map.MapwizeMap;
 
 /**
  * Language button allows user to change the displayed language
@@ -26,7 +26,7 @@ import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
  */
 public class LanguagesButton extends AppCompatImageButton {
 
-    private MapwizePlugin mapwizePlugin;
+    private MapwizeMap mapwizeMap;
     private AlertDialog alertDialog = null;
     private List<String> languages = new ArrayList<>();
 
@@ -60,8 +60,8 @@ public class LanguagesButton extends AppCompatImageButton {
             languagesList.setAdapter(languagesAdapter);
             languagesAdapter.swapData(languages);
             languagesAdapter.setListener(item -> {
-                if (mapwizePlugin.getVenue() != null) {
-                    mapwizePlugin.setLanguageForVenue(item.getLanguage(), mapwizePlugin.getVenue());
+                if (mapwizeMap.getVenue() != null) {
+                    mapwizeMap.setLanguageForVenue(item.getLanguage(), mapwizeMap.getVenue());
                 }
                 alertDialog.dismiss();
             });
@@ -74,14 +74,14 @@ public class LanguagesButton extends AppCompatImageButton {
 
     /**
      * Set the mapwize plugin.
-     * @param mapwizePlugin used to listen enter and exit event
+     * @param mapwizeMap used to listen enter and exit event
      */
-    public void setMapwizePlugin(@Nullable MapwizePlugin mapwizePlugin) {
-        this.mapwizePlugin = mapwizePlugin;
-        if (this.mapwizePlugin == null) {
+    public void setMapwizeMap(@Nullable MapwizeMap mapwizeMap) {
+        this.mapwizeMap = mapwizeMap;
+        if (this.mapwizeMap == null) {
             return;
         }
-        this.mapwizePlugin.addOnVenueEnterListener(new MapwizePlugin.OnVenueEnterListener() {
+        this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
             @Override
             public void onVenueEnter(@NonNull Venue venue) {
                 languages = venue.getSupportedLanguages();
@@ -98,7 +98,7 @@ public class LanguagesButton extends AppCompatImageButton {
 
             }
         });
-        this.mapwizePlugin.addOnVenueExitListener(venue -> {
+        this.mapwizeMap.addOnVenueExitListener(venue -> {
             this.languages = new ArrayList<>();
             setVisibility(View.INVISIBLE);
         });

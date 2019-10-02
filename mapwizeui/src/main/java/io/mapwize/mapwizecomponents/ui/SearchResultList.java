@@ -16,7 +16,7 @@ import java.util.List;
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.MapwizeObject;
 import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.PlaceList;
+import io.mapwize.mapwizeformapbox.api.Placelist;
 import io.mapwize.mapwizeformapbox.api.Universe;
 import io.mapwize.mapwizeformapbox.api.Venue;
 
@@ -148,9 +148,9 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
         }
     }
 
-    public void onSearchResult(PlaceList placeList) {
+    public void onSearchResult(Placelist placelist) {
         if (listener != null) {
-            listener.onSearchResult(placeList);
+            listener.onSearchResult(placelist);
         }
     }
 
@@ -164,7 +164,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
     public interface SearchResultListListener {
         void onSearchResultNull();
         void onSearchResult(Place place, Universe universe);
-        void onSearchResult(PlaceList placeList);
+        void onSearchResult(Placelist placelist);
         void onSearchResult(Venue venue);
     }
 }

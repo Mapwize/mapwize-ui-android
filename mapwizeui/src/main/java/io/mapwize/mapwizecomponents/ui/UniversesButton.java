@@ -18,7 +18,7 @@ import java.util.List;
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.Universe;
 import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
+import io.mapwize.mapwizeformapbox.map.MapwizeMap;
 
 /**
  * Universe button allows user to change the displayed universe
@@ -28,7 +28,7 @@ import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
 public class UniversesButton extends AppCompatImageButton {
 
     private AlertDialog alertDialog = null;
-    private MapwizePlugin mapwizePlugin;
+    private MapwizeMap mapwizeMap;
     private List<Universe> universes = new ArrayList<>();
 
     public UniversesButton(Context context) {
@@ -62,8 +62,8 @@ public class UniversesButton extends AppCompatImageButton {
             universesList.setAdapter(universesAdapter);
             universesAdapter.swapData(universes);
             universesAdapter.setListener(item -> {
-                if (mapwizePlugin.getVenue() != null) {
-                    mapwizePlugin.setUniverseForVenue(item, mapwizePlugin.getVenue());
+                if (mapwizeMap.getVenue() != null) {
+                    mapwizeMap.setUniverseForVenue(item, mapwizeMap.getVenue());
                 }
                 alertDialog.dismiss();
             });
@@ -76,14 +76,14 @@ public class UniversesButton extends AppCompatImageButton {
 
     /**
      * Set the mapwize plugin.
-     * @param mapwizePlugin used to listen enter and exit event
+     * @param mapwizeMap used to listen enter and exit event
      */
-    public void setMapwizePlugin(@Nullable MapwizePlugin mapwizePlugin) {
-        this.mapwizePlugin = mapwizePlugin;
-        if (this.mapwizePlugin == null) {
+    public void setMapwizeMap(@Nullable MapwizeMap mapwizeMap) {
+        this.mapwizeMap = mapwizeMap;
+        if (this.mapwizeMap == null) {
             return;
         }
-        this.mapwizePlugin.addOnVenueEnterListener(new MapwizePlugin.OnVenueEnterListener() {
+        this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
             @Override
             public void onVenueEnter(@NonNull Venue venue) {
                 universes = venue.getUniverses();
@@ -95,7 +95,7 @@ public class UniversesButton extends AppCompatImageButton {
 
             }
         });
-        this.mapwizePlugin.addOnVenueExitListener(venue -> {
+        this.mapwizeMap.addOnVenueExitListener(venue -> {
             this.universes = new ArrayList<>();
             setVisibility(View.INVISIBLE);
         });

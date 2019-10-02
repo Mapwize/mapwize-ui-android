@@ -20,26 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.Api;
 import io.mapwize.mapwizeformapbox.api.ApiCallback;
 import io.mapwize.mapwizeformapbox.api.MapwizeObject;
 import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.PlaceList;
+import io.mapwize.mapwizeformapbox.api.Placelist;
 import io.mapwize.mapwizeformapbox.api.SearchParams;
 import io.mapwize.mapwizeformapbox.api.Universe;
 import io.mapwize.mapwizeformapbox.api.Venue;
 import io.mapwize.mapwizeformapbox.map.MapOptions;
-import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
+import io.mapwize.mapwizeformapbox.map.MapwizeMap;
 
 /**
  * Floating search bar.
  * Include a left button for menu, a direction button and search text field.
  */
-public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnVenueEnterListener,
-        SearchResultList.SearchResultListListener, MapwizePlugin.OnVenueExitListener {
+public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenueEnterListener,
+        SearchResultList.SearchResultListListener, MapwizeMap.OnVenueExitListener {
 
     private SearchBarListener listener;
-    private MapwizePlugin mapwizePlugin;
+    private MapwizeMap mapwizeMap;
     private ImageView leftImageView;
     private ImageView backImageView;
     private FrameLayout rightImageView;
@@ -102,24 +101,24 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     }
 
     private void initSearchDataManager() {
-        if (mapwizePlugin == null) {
+        if (mapwizeMap == null) {
             return;
         }
-        MapOptions options = mapwizePlugin.getMapOptions();
+        MapOptions options = mapwizeMap.getMapOptions();
         searchDataManager = new SearchDataManager();
         SearchParams params = new SearchParams.Builder()
                 .setObjectClass(new String[]{"venue"})
                 .setOrganizationId(options.getRestrictContentToOrganizationId())
-                .setVenueId(options.getRestrictContentToVenueId())
+                //TODO .setVenueId(options.getRestrictContentToVenueId())
                 .build();
-        Api.search(params, new ApiCallback<List<MapwizeObject>>() {
+        mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
             @Override
-            public void onSuccess(List<MapwizeObject> mapwizeObjects) {
+            public void onSuccess(@NonNull List<MapwizeObject> mapwizeObjects) {
                 searchDataManager.setVenuesList(mapwizeObjects);
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NonNull Throwable throwable) {
             }
         });
     }
@@ -131,7 +130,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     public void setResultList(SearchResultList resultList) {
         this.resultList = resultList;
         this.resultList.setListener(this);
-        this.resultList.setLanguage(mapwizePlugin.getLanguage());
+        this.resultList.setLanguage(mapwizeMap.getLanguage());
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -156,7 +155,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
      * @param query the search query
      */
     private void performSearch(String query) {
-        if (mapwizePlugin == null) {
+        if (mapwizeMap == null) {
             return;
         }
         if (!isSearching) {
@@ -173,25 +172,25 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
         builder.setQuery(query);
 
         // If we are in a venue, search for venue content
-        if (mapwizePlugin.getVenue() != null) {
+        if (mapwizeMap.getVenue() != null) {
             // Filter object by type
             builder.setObjectClass(new String[]{"place", "placeList"});
             // Filter object for the current venue
-            builder.setVenueId(mapwizePlugin.getVenue().getId());
+            builder.setVenueId(mapwizeMap.getVenue().getId());
             SearchParams params = builder.build();
             // Api Call
-            Api.search(params, new ApiCallback<List<MapwizeObject>>() {
+            mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
                 @Override
-                public void onSuccess(final List<MapwizeObject> mapwizeObjects) {
+                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        resultList.showData(mapwizeObjects, mapwizePlugin.getVenue().getUniverses(), mapwizePlugin.getUniverse());
+                        resultList.showData(mapwizeObjects, mapwizeMap.getVenue().getUniverses(), mapwizeMap.getUniverse());
                         resultProgressBar.setVisibility(View.INVISIBLE);
                     });
                 }
 
                 @Override
-                public void onFailure(Throwable throwable) {
+                public void onFailure(@NonNull Throwable throwable) {
                 }
             });
         }
@@ -200,14 +199,14 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
             // Filter by object type
             builder.setObjectClass(new String[]{"venue"});
             // Filter by organization if present in map options
-            builder.setOrganizationId(mapwizePlugin.getMapOptions().getRestrictContentToOrganizationId());
+            builder.setOrganizationId(mapwizeMap.getMapOptions().getRestrictContentToOrganizationId());
             // Filter by venue if present in map options
-            builder.setVenueId(mapwizePlugin.getMapOptions().getRestrictContentToVenueId());
+            //TODO builder.setVenueId(mapwizeMap.getMapOptions().getRestrictContentToVenueId());
             SearchParams params = builder.build();
             // Api call
-            Api.search(params, new ApiCallback<List<MapwizeObject>>() {
+            mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
                 @Override
-                public void onSuccess(final List<MapwizeObject> mapwizeObjects) {
+                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
                         resultList.showData(mapwizeObjects);
@@ -216,7 +215,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
                 }
 
                 @Override
-                public void onFailure(Throwable throwable) {
+                public void onFailure(@NonNull Throwable throwable) {
                 }
             });
         }
@@ -236,12 +235,12 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
      * Get data from searchDataManager
      */
     private void performEmptySearch() {
-        if (mapwizePlugin.getVenue() == null) {
+        if (mapwizeMap.getVenue() == null) {
             resultList.showData(searchDataManager.venuesList);
             resultProgressBar.setVisibility(View.INVISIBLE);
         }
         else {
-            resultList.showData(searchDataManager.mainSearch, mapwizePlugin.getVenue().getUniverses(), mapwizePlugin.getUniverse());
+            resultList.showData(searchDataManager.mainSearch, mapwizeMap.getVenue().getUniverses(), mapwizeMap.getUniverse());
             resultProgressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -276,7 +275,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
             leftImageView.setVisibility(View.VISIBLE);
         }
         backImageView.setVisibility(View.GONE);
-        if (mapwizePlugin.getVenue() != null) {
+        if (mapwizeMap.getVenue() != null) {
             rightImageView.setVisibility(View.VISIBLE);
         }
         searchEditText.setText("");
@@ -289,12 +288,12 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
 
     /**
      * Set mapwize plugin
-     * @param mapwizePlugin used to listen enter and exit venue events
+     * @param mapwizeMap used to listen enter and exit venue events
      */
-    public void setMapwizePlugin(MapwizePlugin mapwizePlugin) {
-        this.mapwizePlugin = mapwizePlugin;
-        this.mapwizePlugin.addOnVenueEnterListener(this);
-        this.mapwizePlugin.addOnVenueExitListener(this);
+    public void setMapwizeMap(MapwizeMap mapwizeMap) {
+        this.mapwizeMap = mapwizeMap;
+        this.mapwizeMap.addOnVenueEnterListener(this);
+        this.mapwizeMap.addOnVenueExitListener(this);
         initSearchDataManager();
     }
 
@@ -306,7 +305,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
-        searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(mapwizePlugin.getLanguage()).getTitle()));
+        searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
         searchEditText.setEnabled(true);
         resultProgressBar.setVisibility(View.INVISIBLE);
         rightImageView.setVisibility(View.VISIBLE);
@@ -321,31 +320,31 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     @Override
     public void willEnterInVenue(@NonNull Venue venue) {
         String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
-        searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(mapwizePlugin.getLanguage()).getTitle()));
+        searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
         searchEditText.setEnabled(false);
         resultProgressBar.setVisibility(View.VISIBLE);
 
         searchDataManager.setMainSearch(new ArrayList<>());
         searchDataManager.setMainFrom(new ArrayList<>());
-        Api.getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
+        mapwizeMap.getMapwizeApi().getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
             @Override
-            public void onSuccess(List<MapwizeObject> mapwizeObjects) {
+            public void onSuccess(@NonNull List<MapwizeObject> mapwizeObjects) {
                 searchDataManager.setMainSearch(mapwizeObjects);
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NonNull Throwable throwable) {
 
             }
         });
-        Api.getMainFromsForVenue(venue.getId(), new ApiCallback<List<Place>>() {
+        mapwizeMap.getMapwizeApi().getMainFromsForVenue(venue.getId(), new ApiCallback<List<Place>>() {
             @Override
-            public void onSuccess(List<Place> mapwizeObjects) {
+            public void onSuccess(@NonNull List<Place> mapwizeObjects) {
                 searchDataManager.setMainFrom(mapwizeObjects);
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NonNull Throwable throwable) {
 
             }
         });
@@ -375,9 +374,9 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
     }
 
     @Override
-    public void onSearchResult(PlaceList placeList) {
+    public void onSearchResult(Placelist placelist) {
         setupDefault();
-        listener.onSearchResult(placeList);
+        listener.onSearchResult(placelist);
     }
 
     @Override
@@ -388,7 +387,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizePlugin.OnV
 
     public interface SearchBarListener {
         void onSearchResult(Place place, Universe universe);
-        void onSearchResult(PlaceList placeList);
+        void onSearchResult(Placelist placelist);
         void onSearchResult(Venue venue);
         void onLeftButtonClick(View view);
         void onRightButtonClick(View view);

@@ -15,7 +15,7 @@ import android.widget.TextView;
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.Direction;
 import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.PlaceList;
+import io.mapwize.mapwizeformapbox.api.Placelist;
 import io.mapwize.mapwizeformapbox.api.Translation;
 import io.mapwize.mapwizeformapbox.api.Venue;
 import io.mapwize.mapwizeformapbox.map.NavigationInfo;
@@ -179,13 +179,13 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
 
     /**
      * Display information about a placeList
-     * @param placeList to show information
+     * @param placelist to show information
      * @param language use to display text
      */
-    public void setContent(PlaceList placeList, String language) {
+    public void setContent(Placelist placelist, String language) {
         directionFrameLayout.setVisibility(View.GONE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
-        Translation translation = placeList.getTranslation(language);
+        Translation translation = placelist.getTranslation(language);
         if (translation.getTitle().length() > 0) {
             titleTextView.setText(translation.getTitle());
             titleTextView.setVisibility(View.VISIBLE);
@@ -201,7 +201,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             subtitleTextView.setVisibility(View.GONE);
         }
         titleImageView.setVisibility(View.VISIBLE);
-        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(placeList)) {
+        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(placelist)) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {

@@ -53,7 +53,7 @@ void onMenuButtonClick()
 // See Information Button section below.
 void onInformationButtonClick(MapwizeObject mapwizeObject)
 // The fragment is ready to use.
-void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin)
+void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizeMap)
 // The user clicked on the follow user button but no location has been found.
 void onFollowUserButtonClickWithoutLocation();
 // Method called when a place or a place list is selected. Return true if you want to show the information button in the bottom view.
@@ -76,13 +76,13 @@ public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNu
 
 ### Access to Mapbox map and Mapwize plugin
 
-The `void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizePlugin);` contains both Mapbox map and Mapwize plugin. Once this method is called you can store and use them.
+The `void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizeMap);` contains both Mapbox map and Mapwize plugin. Once this method is called you can store and use them.
 
 ### Simple example
 
 ```java
 MapOptions opts = new MapOptions.Builder().build()
-MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
+MapwizePlugin mapwizeMap = MapwizeFragment.newInstance(opts);
 ```
 
 ### Center on venue
@@ -93,7 +93,7 @@ To have the map centered on a venue at start up:
 MapOptions opts = new MapOptions.Builder()
 .centerOnVenue("YOUR_VENUE_ID")
 .build();
-MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
+MapwizePlugin mapwizeMap = MapwizeFragment.newInstance(opts);
 ```
 
 ### Center on place
@@ -104,7 +104,7 @@ To have the map centered on a place with the place selected:
 MapOptions opts = new MapOptions.Builder()
 .centerOnPlace("YOUR_PLACE_ID")
 .build();
-MapwizePlugin mapwizePlugin = MapwizeFragment.newInstance(opts);
+MapwizePlugin mapwizeMap = MapwizeFragment.newInstance(opts);
 ```
 
 ### Map options

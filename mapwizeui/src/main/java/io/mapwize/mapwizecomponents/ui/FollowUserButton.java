@@ -9,15 +9,15 @@ import androidx.appcompat.widget.AppCompatImageButton;
 
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.map.FollowUserMode;
-import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
+import io.mapwize.mapwizeformapbox.map.MapwizeMap;
 
 /**
  * Follow user button allows user to change the follow user mode
  */
 public class FollowUserButton extends AppCompatImageButton
-    implements MapwizePlugin.OnFollowUserModeChange {
+    implements MapwizeMap.OnFollowUserModeChangeListener {
 
-    private MapwizePlugin mapwizePlugin;
+    private MapwizeMap mapwizeMap;
     private FollowUserButtonListener listener;
     private int followImageResource = R.drawable.ic_my_location_black_24dp;
     private int followHeadingImageResource = R.drawable.ic_explore_black_24dp;
@@ -44,24 +44,22 @@ public class FollowUserButton extends AppCompatImageButton
         setImageResource(followImageResource);
         setColorFilter(Color.BLACK);
         setOnClickListener(view -> {
-            if (mapwizePlugin == null) {
+            if (mapwizeMap == null) {
                 return;
             }
 
-            if (mapwizePlugin.getUserPosition() == null) {
+            if (mapwizeMap.getUserLocation() == null) {
                 listener.onFollowUserClickWithoutLocation();
                 return;
             }
 
-            switch (mapwizePlugin.getFollowUserMode()) {
-                case FollowUserMode.NONE:
-                    mapwizePlugin.setFollowUserMode(FollowUserMode.FOLLOW_USER);
+            switch (mapwizeMap.getFollowUserMode()) {
+                case NONE:
+                case FOLLOW_USER_AND_HEADING:
+                    mapwizeMap.setFollowUserMode(FollowUserMode.FOLLOW_USER);
                     break;
-                case FollowUserMode.FOLLOW_USER:
-                    mapwizePlugin.setFollowUserMode(FollowUserMode.FOLLOW_USER_AND_HEADING);
-                    break;
-                case FollowUserMode.FOLLOW_USER_AND_HEADING:
-                    mapwizePlugin.setFollowUserMode(FollowUserMode.FOLLOW_USER);
+                case FOLLOW_USER:
+                    mapwizeMap.setFollowUserMode(FollowUserMode.FOLLOW_USER_AND_HEADING);
                     break;
             }
         });
@@ -69,11 +67,11 @@ public class FollowUserButton extends AppCompatImageButton
 
     /**
      * Set the mapwize plugin
-     * @param mapwizePlugin is used to access mapwize method from this button
+     * @param mapwizeMap is used to access mapwize method from this button
      */
-    public void setMapwizePlugin(@NonNull MapwizePlugin mapwizePlugin) {
-        this.mapwizePlugin = mapwizePlugin;
-        this.mapwizePlugin.addOnFollowUserModeChangeListener(this);
+    public void setMapwizePlugin(@NonNull MapwizeMap mapwizeMap) {
+        this.mapwizeMap = mapwizeMap;
+        this.mapwizeMap.addOnFollowUserModeChangeListener(this);
     }
 
     public void setListener(FollowUserButtonListener listener) {
@@ -85,17 +83,17 @@ public class FollowUserButton extends AppCompatImageButton
      * @param followUserMode the new followUserMode
      */
     @Override
-    public void followUserModeChange(int followUserMode) {
+    public void onFollowUserModeChange(@NonNull FollowUserMode followUserMode) {
         switch (followUserMode) {
-            case FollowUserMode.NONE:
+            case NONE:
                 setImageResource(followImageResource);
                 this.getDrawable().setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
                 break;
-            case FollowUserMode.FOLLOW_USER:
+            case FOLLOW_USER:
                 setImageResource(followImageResource);
                 this.getDrawable().setColorFilter(getResources().getColor(activeColor), PorterDuff.Mode.SRC_ATOP);
                 break;
-            case FollowUserMode.FOLLOW_USER_AND_HEADING:
+            case FOLLOW_USER_AND_HEADING:
                 setImageResource(followHeadingImageResource);
                 this.getDrawable().setColorFilter(getResources().getColor(activeColor), PorterDuff.Mode.SRC_ATOP);
                 break;
