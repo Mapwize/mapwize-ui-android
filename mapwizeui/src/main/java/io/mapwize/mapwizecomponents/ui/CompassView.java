@@ -3,6 +3,7 @@ package io.mapwize.mapwizecomponents.ui;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.view.ViewPropertyAnimatorCompat;
 import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+
+import io.mapwize.mapwizecomponents.R;
 
 /**
  * Rewritten mapbox compass to make integration easier to the user interface.
@@ -43,6 +46,7 @@ public final class CompassView extends AppCompatImageView implements
     }
 
     private void initialize(Context context) {
+        setBackgroundResource(R.drawable.mapwize_circle_view);
         float screenDensity = context.getResources().getDisplayMetrics().density;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) (48 * screenDensity), (int) (48 * screenDensity));
         setLayoutParams(lp);

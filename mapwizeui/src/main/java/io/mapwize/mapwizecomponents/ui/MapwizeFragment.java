@@ -53,6 +53,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     private static String ARG_OPTIONS = "param_options";
     private static String ARG_UI_SETTINGS = "param_ui_settings";
+    private static String ARG_MAPWIZE_CONFIGURATION = "param_mapwize_configuration";
 
     // Component listener
     private OnFragmentInteractionListener listener;
@@ -85,7 +86,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     /**
      * Create a instance of MapwizeFragment
-     * @param mapOptions used to setup the SDK
+     * @param mapOptions used to setup the map
      * @return a new instance of MapwizeFragment
      */
     public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions) {
@@ -94,13 +95,32 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        MapwizeConfiguration mapwizeConfiguration = MapwizeConfiguration.getInstance();
+        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
         mf.setArguments(bundle);
         return mf;
     }
 
     /**
      * Create a instance of MapwizeFragment
-     * @param mapOptions used to setup the SDK
+     * @param mapwizeConfiguration use to setup de sdk configuration
+     * @param mapOptions used to setup the map
+     * @return a new instance of MapwizeFragment
+     */
+    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions) {
+        MapwizeFragment mf = new MapwizeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_OPTIONS, mapOptions);
+        MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
+        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
+        mf.setArguments(bundle);
+        return mf;
+    }
+
+    /**
+     * Create a instance of MapwizeFragment
+     * @param mapOptions used to setup the map
      * @param uiSettings used to display/hide UI elements
      * @return a new instance of MapwizeFragment
      */
@@ -109,13 +129,32 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        MapwizeConfiguration mapwizeConfiguration = MapwizeConfiguration.getInstance();
+        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
         mf.setArguments(bundle);
         return mf;
     }
 
     /**
      * Create a instance of MapwizeFragment
-     * @param mapOptions used to setup the SDK
+     * @param mapwizeConfiguration use to setup de sdk configuration
+     * @param mapOptions used to setup the map
+     * @param uiSettings used to display/hide UI elements
+     * @return a new instance of MapwizeFragment
+     */
+    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
+        MapwizeFragment mf = new MapwizeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_OPTIONS, mapOptions);
+        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
+        mf.setArguments(bundle);
+        return mf;
+    }
+
+    /**
+     * Create a instance of MapwizeFragment
+     * @param mapOptions used to setup the map
      * @param uiSettings used to display/hide UI elements
      * @param mapboxMapOptions used to pass Mapbox options at start
      * @return a new instance of MapwizeFragment
@@ -125,6 +164,26 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        MapwizeConfiguration mapwizeConfiguration = MapwizeConfiguration.getInstance();
+        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
+        mf.setArguments(bundle);
+        return mf;
+    }
+
+    /**
+     * Create a instance of MapwizeFragment
+     * @param mapwizeConfiguration use to setup de sdk configuration
+     * @param mapOptions used to setup the map
+     * @param uiSettings used to display/hide UI elements
+     * @param mapboxMapOptions used to pass Mapbox options at start
+     * @return a new instance of MapwizeFragment
+     */
+    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
+        MapwizeFragment mf = new MapwizeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_OPTIONS, mapOptions);
+        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
+        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
         mf.setArguments(bundle);
         return mf;
     }
@@ -136,6 +195,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         if (bundle != null) {
             initializeOptions = bundle.getParcelable(ARG_OPTIONS);
             initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
+            mapwizeConfiguration = bundle.getParcelable(ARG_MAPWIZE_CONFIGURATION);
         }
     }
 
@@ -152,7 +212,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         if (initializeOptions == null) {
             initializeOptions = new MapOptions.Builder().build();
         }
-        mapwizeConfiguration = MapwizeConfiguration.getInstance();
         mapwizeView = new MapwizeView(getContext(), mapwizeConfiguration, initializeOptions);
 
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
@@ -172,6 +231,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         // Instantiate Mapwize sdk
         mapwizeView.getMapAsync(mMap -> {
             mapwizeMap = mMap;
+            mapwizeMap.getMapboxMap().getUiSettings().setCompassEnabled(false);
             initMapwizeListeners(mapwizeMap);
             initCompass(compassView, initializeUiSettings);
             initFollowUserModeButton(followUserButton, initializeUiSettings);
@@ -181,6 +241,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             initUniversesButton(universesButton);
             initLanguagesButton(languagesButton);
             initBottomCardView(bottomCardView, listener);
+            listener.onFragmentReady(mapwizeMap);
         });
 
         mainLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
@@ -641,6 +702,45 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onFollowUserClickWithoutLocation() {
         listener.onFollowUserButtonClickWithoutLocation();
+    }
+
+    /**
+     * Getter for UI Component
+     */
+    public CompassView getCompassView() {
+        return compassView;
+    }
+
+    public FollowUserButton getFollowUserButton() {
+        return followUserButton;
+    }
+
+    public FloorControllerView getFloorControllerView() {
+        return floorControllerView;
+    }
+
+    public SearchBarView getSearchBarView() {
+        return searchBarView;
+    }
+
+    public SearchDirectionView getSearchDirectionView() {
+        return searchDirectionView;
+    }
+
+    public LanguagesButton getLanguagesButton() {
+        return languagesButton;
+    }
+
+    public UniversesButton getUniversesButton() {
+        return universesButton;
+    }
+
+    public BottomCardView getBottomCardView() {
+        return bottomCardView;
+    }
+
+    public SearchResultList getSearchResultList() {
+        return searchResultList;
     }
 
     /**

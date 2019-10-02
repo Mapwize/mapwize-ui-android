@@ -34,6 +34,9 @@ import io.mapwize.mapwizeformapbox.map.DirectionOptions;
 import io.mapwize.mapwizeformapbox.map.FollowUserMode;
 import io.mapwize.mapwizeformapbox.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizeformapbox.map.MapwizeMap;
+import io.mapwize.mapwizeformapbox.map.NavigationException;
+import io.mapwize.mapwizeformapbox.map.NavigationInfo;
+import io.mapwize.mapwizeformapbox.map.OnNavigationUpdateListener;
 
 /**
  * Search direction module
@@ -342,16 +345,32 @@ public class SearchDirectionView extends ConstraintLayout implements
         mapwizeMap.stopNavigation();
 
         if (fromPoint instanceof MapwizeIndoorLocation && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-            //TODO
-            /*mapwizeMap.startNavigation(direction, optsBuilder.build(), navigationInfo -> {
-                if (navigationInfo.getLocationDelta() > 10 && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-                    tryToStartDirection(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()), toPoint, isAccessible, false);
+            try {
+                mapwizeMap.startNavigation(toPoint, optsBuilder.build(), new OnNavigationUpdateListener() {
+                    @Override
+                    public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
+                        directionInfoView.setContent(navigationInfo);
+                        return navigationInfo.getLocationDelta() > 10 && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null;
+                    }
+
+                    @Override
+                    public void navigationWillStart() {
+
+                    }
+
+                    @Override
+                    public void navigationDidStart() {
+
+                    }
+                });
+            } catch (NavigationException e) {
+                mapwizeMap.setFollowUserMode(FollowUserMode.NONE);
+                if (mapwizeMap.getDirection() != direction) {
+                    mapwizeMap.removeMarkers();
+                    mapwizeMap.setDirection(direction);
                 }
-                else {
-                    directionInfoView.setContent(navigationInfo);
-                }
-            });
-            directionInfoView.setContent(direction);*/
+                directionInfoView.setContent(direction);
+            }
         }
         else {
             mapwizeMap.setFollowUserMode(FollowUserMode.NONE);

@@ -47,7 +47,7 @@ public class UniversesButton extends AppCompatImageButton {
     }
 
     private void initialize() {
-        setVisibility(View.GONE);
+        setVisibility(View.INVISIBLE);
         // On click, an alert is shown that allow user to select a universe
         this.setOnClickListener(view -> {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
@@ -83,10 +83,26 @@ public class UniversesButton extends AppCompatImageButton {
         if (this.mapwizeMap == null) {
             return;
         }
+        this.mapwizeMap.addOnUniverseChangeListener(new MapwizeMap.OnUniverseChangeListener() {
+            @Override
+            public void onAccessibleUniversesChange(@NonNull List<Universe> list) {
+                universes = list;
+                showIfNeeded();
+            }
+
+            @Override
+            public void onUniverseWillChange(@NonNull Universe universe) {
+
+            }
+
+            @Override
+            public void onUniverseChange(@Nullable Universe universe) {
+
+            }
+        });
         this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
             @Override
             public void onVenueEnter(@NonNull Venue venue) {
-                universes = venue.getUniverses();
                 showIfNeeded();
             }
 
@@ -97,7 +113,9 @@ public class UniversesButton extends AppCompatImageButton {
         });
         this.mapwizeMap.addOnVenueExitListener(venue -> {
             this.universes = new ArrayList<>();
-            setVisibility(View.INVISIBLE);
+            if (getVisibility() == View.VISIBLE) {
+                setVisibility(View.INVISIBLE);
+            }
         });
     }
 

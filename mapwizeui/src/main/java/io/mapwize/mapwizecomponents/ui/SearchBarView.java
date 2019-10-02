@@ -106,12 +106,13 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         }
         MapOptions options = mapwizeMap.getMapOptions();
         searchDataManager = new SearchDataManager();
-        SearchParams params = new SearchParams.Builder()
+        SearchParams.Builder paramsBuilder = new SearchParams.Builder()
                 .setObjectClass(new String[]{"venue"})
-                .setOrganizationId(options.getRestrictContentToOrganizationId())
-                //TODO .setVenueId(options.getRestrictContentToVenueId())
-                .build();
-        mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
+                .setOrganizationId(options.getRestrictContentToOrganizationId());
+        if (options.getRestrictContentToVenueIds() != null) {
+            paramsBuilder.setVenueIds(options.getRestrictContentToVenueIds());
+        }
+        mapwizeMap.getMapwizeApi().search(paramsBuilder.build(), new ApiCallback<List<MapwizeObject>>() {
             @Override
             public void onSuccess(@NonNull List<MapwizeObject> mapwizeObjects) {
                 searchDataManager.setVenuesList(mapwizeObjects);
@@ -201,7 +202,9 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
             // Filter by organization if present in map options
             builder.setOrganizationId(mapwizeMap.getMapOptions().getRestrictContentToOrganizationId());
             // Filter by venue if present in map options
-            //TODO builder.setVenueId(mapwizeMap.getMapOptions().getRestrictContentToVenueId());
+            if (mapwizeMap.getMapOptions().getRestrictContentToVenueIds() != null) {
+                builder.setVenueIds(mapwizeMap.getMapOptions().getRestrictContentToVenueIds());
+            }
             SearchParams params = builder.build();
             // Api call
             mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
@@ -219,8 +222,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
                 }
             });
         }
-
-
     }
 
     public void setMenuHidden(boolean isDisplayed) {
