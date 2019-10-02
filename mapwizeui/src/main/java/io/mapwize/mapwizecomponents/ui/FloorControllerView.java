@@ -16,18 +16,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.map.MapwizePlugin;
+import io.mapwize.mapwizeformapbox.api.Floor;
+import io.mapwize.mapwizeformapbox.map.MapwizeMap;
 
 /**
  * Floor controller
  */
-public class FloorControllerView extends ScrollView implements MapwizePlugin.OnFloorChangeListener,
-        MapwizePlugin.OnFloorsChangeListener {
+public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloorChangeListener,
+        MapwizeMap.OnFloorsChangeListener {
 
     private List<Double> directionFloors = new ArrayList<>();
     private LinearLayout linearLayout;
     private int viewSize = 0;
-    private MapwizePlugin mapwizePlugin;
+    private MapwizeMap mapwizeMap;
     private MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener;
 
     public FloorControllerView(@NonNull Context context) {
@@ -73,24 +74,63 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
 
     /**
      * Set mapwize plugin
-     * @param mapwizePlugin used to listener floor and floors changed event
+     * @param mapwizeMap used to listener floor and floors changed event
      */
-    public void setMapwizePlugin(@NonNull MapwizePlugin mapwizePlugin) {
-        this.mapwizePlugin = mapwizePlugin;
-        this.mapwizePlugin.addOnFloorsChangeListener(this);
-        this.mapwizePlugin.addOnFloorChangeListener(this);
+    public void setMapwizeMap(@NonNull MapwizeMap mapwizeMap) {
+        this.mapwizeMap = mapwizeMap;
+        this.mapwizeMap.addOnFloorsChangeListener(this);
+        this.mapwizeMap.addOnFloorChangeListener(this);
     }
 
+
     /**
-     * Called by mapwize when the current floor has changed
-     * @param floor the new current floor
+     * Called by mapwize when the list of available floors changed
+     * @param floors the new available floors
      */
     @Override
-    public void onFloorChange(@Nullable Double floor) {
+    public void onFloorsChange(@NonNull List<Floor> floors) {
+        linearLayout.removeAllViews();
+        if (!fragmentInteractionListener.shouldDisplayFloorController(floors)) {
+            return;
+        }
+        for (Floor floor : floors) {
+            TextView b = new TextView(getContext());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    viewSize,viewSize
+            );
+            params.setMargins(0,5,0,5);
+            b.setElevation(4);
+            b.setLayoutParams(params);
+            if (floor.getNumber()%1>0) {
+                b.setText(String.valueOf(floor.getNumber()));
+            }
+            else {
+                b.setText(String.valueOf(Math.round(floor.getNumber())));
+            }
+            b.setGravity(Gravity.CENTER);
+            b.setBackgroundResource(R.drawable.rounded_button);
+            b.setOnClickListener(v -> {
+                TextView tv = (TextView)v;
+                Double selectedFloor = Double.parseDouble(tv.getText().toString());
+                mapwizeMap.setFloor(selectedFloor);
+            });
+            linearLayout.addView(b);
+        }
+
+        this.onFloorChange(mapwizeMap.getFloor());
+    }
+
+    @Override
+    public void onFloorWillChange(@Nullable Floor floor) {
+
+    }
+
+    @Override
+    public void onFloorChange(@Nullable Floor floor) {
         for (int i = 0; i< linearLayout.getChildCount(); i++) {
             TextView tv  = (TextView) linearLayout.getChildAt(i);
             Double tvValue = Double.parseDouble(tv.getText().toString());
-            if (floor != null && floor.equals(tvValue)) {
+            if (floor != null && floor.getNumber().equals(tvValue)) {
                 tv.setBackgroundResource(R.drawable.mapwize_floor_controller_selected_floor);
             }
             else {
@@ -104,42 +144,4 @@ public class FloorControllerView extends ScrollView implements MapwizePlugin.OnF
             }
         }
     }
-
-    /**
-     * Called by mapwize when the list of available floors changed
-     * @param floors the new available floors
-     */
-    @Override
-    public void onFloorsChange(@NonNull List<Double> floors) {
-        linearLayout.removeAllViews();
-        if (!fragmentInteractionListener.shouldDisplayFloorController(floors)) {
-            return;
-        }
-        for (Double value : floors) {
-            TextView b = new TextView(getContext());
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    viewSize,viewSize
-            );
-            params.setMargins(0,5,0,5);
-            b.setElevation(4);
-            b.setLayoutParams(params);
-            if (value%1>0) {
-                b.setText(String.valueOf(value));
-            }
-            else {
-                b.setText(String.valueOf(Math.round(value)));
-            }
-            b.setGravity(Gravity.CENTER);
-            b.setBackgroundResource(R.drawable.rounded_button);
-            b.setOnClickListener(v -> {
-                TextView tv = (TextView)v;
-                Double floor = Double.parseDouble(tv.getText().toString());
-                mapwizePlugin.setFloor(floor);
-            });
-            linearLayout.addView(b);
-        }
-
-        this.onFloorChange(mapwizePlugin.getFloor());
-    }
-
 }
