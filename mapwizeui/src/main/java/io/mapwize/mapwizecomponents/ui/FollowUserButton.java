@@ -3,9 +3,9 @@ package io.mapwize.mapwizecomponents.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
-import android.support.v7.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.map.FollowUserMode;
