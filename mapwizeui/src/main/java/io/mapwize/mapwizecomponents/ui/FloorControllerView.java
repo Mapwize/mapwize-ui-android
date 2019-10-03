@@ -97,27 +97,23 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
         List<Floor> reversedFloor = new ArrayList<>(floors);
         Collections.reverse(reversedFloor);
         for (Floor floor : reversedFloor) {
-            TextView b = new TextView(getContext());
+            FloorView floorView = new FloorView(getContext(), floor);
+            //TextView b = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     viewSize,viewSize
             );
             params.setMargins(0,5,0,5);
-            b.setElevation(4);
-            b.setLayoutParams(params);
-            if (floor.getNumber()%1>0) {
-                b.setText(String.valueOf(floor.getNumber()));
-            }
-            else {
-                b.setText(String.valueOf(Math.round(floor.getNumber())));
-            }
-            b.setGravity(Gravity.CENTER);
-            b.setBackgroundResource(R.drawable.rounded_button);
-            b.setOnClickListener(v -> {
-                TextView tv = (TextView)v;
-                Double selectedFloor = Double.parseDouble(tv.getText().toString());
+            floorView.setElevation(4);
+            floorView.setLayoutParams(params);
+            //b.setText(floor.getName());
+            //b.setGravity(Gravity.CENTER);
+            floorView.setBackgroundResource(R.drawable.rounded_button);
+            floorView.setOnClickListener(v -> {
+                FloorView tv = (FloorView) v;
+                Double selectedFloor = tv.getFloor().getNumber();
                 mapwizeMap.setFloor(selectedFloor);
             });
-            linearLayout.addView(b);
+            linearLayout.addView(floorView);
         }
 
         this.onFloorChange(mapwizeMap.getFloor());
@@ -125,25 +121,28 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
 
     @Override
     public void onFloorWillChange(@Nullable Floor floor) {
-
+        for (int i = 0; i< linearLayout.getChildCount(); i++) {
+            FloorView tv  = (FloorView) linearLayout.getChildAt(i);
+            Double tvValue = tv.getFloor().getNumber();
+            if (floor != null && floor.getNumber().equals(tvValue)) {
+                tv.setLoading();
+            }
+            else {
+                tv.setSelected(false);
+            }
+        }
     }
 
     @Override
     public void onFloorChange(@Nullable Floor floor) {
         for (int i = 0; i< linearLayout.getChildCount(); i++) {
-            TextView tv  = (TextView) linearLayout.getChildAt(i);
-            Double tvValue = Double.parseDouble(tv.getText().toString());
+            FloorView tv  = (FloorView) linearLayout.getChildAt(i);
+            Double tvValue = tv.getFloor().getNumber();
             if (floor != null && floor.getNumber().equals(tvValue)) {
-                tv.setBackgroundResource(R.drawable.mapwize_floor_controller_selected_floor);
+                tv.setSelected(true);
             }
             else {
-                tv.setBackgroundResource(R.drawable.rounded_button);
-            }
-            if (directionFloors.indexOf(tvValue) != -1) {
-                tv.setTextColor(ContextCompat.getColor(this.getContext(), R.color.mapwize_main_color));
-            }
-            else {
-                tv.setTextColor(Color.BLACK);
+                tv.setSelected(false);
             }
         }
     }
