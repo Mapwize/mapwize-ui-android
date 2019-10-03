@@ -6,7 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.mapwize.mapwizecomponents.ui.MapwizeFragment"
     android:animateLayoutChanges="true"
-    android:id="@+id/mapwizeFragmentLayout">
+    android:id="@+id/mapwizeFragmentLayout"
+    android:paddingBottom="@dimen/mapwize_ui_padding_bottom"
+    android:paddingStart="@dimen/mapwize_ui_padding_start"
+    android:paddingEnd="@dimen/mapwize_ui_padding_end">
 
     <FrameLayout
         android:id="@+id/mapViewContainer"
@@ -17,6 +20,7 @@
         android:id="@+id/headerFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/mapwize_ui_padding_top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

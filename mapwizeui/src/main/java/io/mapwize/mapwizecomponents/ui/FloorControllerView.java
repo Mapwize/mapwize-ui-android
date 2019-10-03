@@ -5,12 +5,11 @@ import android.content.Context;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +56,7 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
 
     private void initLayout() {
         this.setVerticalScrollBarEnabled(false);
-        viewSize = (int)getContext().getResources().getDimension(R.dimen.mapwize_floor_button_size);
+        viewSize = (int)getContext().getResources().getDimension(R.dimen.mapwize_ui_floor_button_size);
         linearLayout = new LinearLayout(this.getContext());
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 viewSize,

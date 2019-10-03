@@ -358,7 +358,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             followUserButton.setVisibility(View.GONE);
         }
         else {
-            followUserButton.setMapwizePlugin(mapwizeMap);
+            followUserButton.setMapwizeMap(mapwizeMap);
             followUserButton.setListener(this);
         }
     }
@@ -707,6 +707,10 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     /**
      * Getter for UI Component
      */
+    public ConstraintLayout getMainLayout() {
+        return mainLayout;
+    }
+
     public CompassView getCompassView() {
         return compassView;
     }

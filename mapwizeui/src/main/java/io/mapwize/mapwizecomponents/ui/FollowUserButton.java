@@ -69,7 +69,7 @@ public class FollowUserButton extends AppCompatImageButton
      * Set the mapwize plugin
      * @param mapwizeMap is used to access mapwize method from this button
      */
-    public void setMapwizePlugin(@NonNull MapwizeMap mapwizeMap) {
+    public void setMapwizeMap(@NonNull MapwizeMap mapwizeMap) {
         this.mapwizeMap = mapwizeMap;
         this.mapwizeMap.addOnFollowUserModeChangeListener(this);
     }

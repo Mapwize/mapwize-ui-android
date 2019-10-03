@@ -136,7 +136,6 @@ public class UniversesButton extends AppCompatImageButton {
      * Useful after a access request
      */
     public void refreshVenue(Venue venue) {
-        this.universes = venue.getUniverses();
         showIfNeeded();
     }
 
