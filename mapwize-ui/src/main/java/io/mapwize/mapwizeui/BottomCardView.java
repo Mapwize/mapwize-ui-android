@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -16,13 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.Direction;
-import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.Placelist;
-import io.mapwize.mapwizeformapbox.api.Translation;
-import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.map.NavigationInfo;
+import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
+import io.mapwize.mapwizesdk.api.Translation;
+import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.map.NavigationInfo;
 
 /**
  * Display information about place, placelist or direction

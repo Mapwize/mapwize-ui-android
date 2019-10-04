@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -16,7 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import io.mapwize.mapwizeformapbox.api.Floor;
+import io.mapwize.mapwizesdk.api.Floor;
 
 public class FloorView extends FrameLayout {
 

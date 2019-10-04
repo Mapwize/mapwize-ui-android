@@ -1,9 +1,8 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.view.ViewPropertyAnimatorCompat;
 import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
@@ -12,8 +11,6 @@ import android.view.ViewGroup;
 
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-
-import io.mapwize.mapwizecomponents.R;
 
 /**
  * Rewritten mapbox compass to make integration easier to the user interface.

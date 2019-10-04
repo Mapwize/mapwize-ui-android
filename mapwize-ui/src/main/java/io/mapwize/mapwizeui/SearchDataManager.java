@@ -1,10 +1,10 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mapwize.mapwizeformapbox.api.MapwizeObject;
-import io.mapwize.mapwizeformapbox.api.Place;
+import io.mapwize.mapwizesdk.api.MapwizeObject;
+import io.mapwize.mapwizesdk.api.Place;
 
 /**
  * Helper to preload data and improving search result reactivity

@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,13 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.MapwizeObject;
-import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.Placelist;
-import io.mapwize.mapwizeformapbox.api.Translation;
-import io.mapwize.mapwizeformapbox.api.Universe;
-import io.mapwize.mapwizeformapbox.api.Venue;
+import io.mapwize.mapwizesdk.api.MapwizeObject;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
+import io.mapwize.mapwizesdk.api.Translation;
+import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.Venue;
 
 /**
  * Adapter used to fulfill result list on search.

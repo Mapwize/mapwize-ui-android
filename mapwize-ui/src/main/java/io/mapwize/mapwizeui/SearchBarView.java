@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,16 +19,15 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.ApiCallback;
-import io.mapwize.mapwizeformapbox.api.MapwizeObject;
-import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.Placelist;
-import io.mapwize.mapwizeformapbox.api.SearchParams;
-import io.mapwize.mapwizeformapbox.api.Universe;
-import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.map.MapOptions;
-import io.mapwize.mapwizeformapbox.map.MapwizeMap;
+import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.MapwizeObject;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
+import io.mapwize.mapwizesdk.api.SearchParams;
+import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.map.MapOptions;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Floating search bar.

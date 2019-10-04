@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.map.MapwizeMap;
+import io.mapwize.mapwizeui.R;
+import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Language button allows user to change the displayed language

@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -20,23 +20,22 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.ApiCallback;
-import io.mapwize.mapwizeformapbox.api.Direction;
-import io.mapwize.mapwizeformapbox.api.DirectionPoint;
-import io.mapwize.mapwizeformapbox.api.MapwizeObject;
-import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.Placelist;
-import io.mapwize.mapwizeformapbox.api.SearchParams;
-import io.mapwize.mapwizeformapbox.api.Universe;
-import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.map.DirectionOptions;
-import io.mapwize.mapwizeformapbox.map.FollowUserMode;
-import io.mapwize.mapwizeformapbox.map.MapwizeIndoorLocation;
-import io.mapwize.mapwizeformapbox.map.MapwizeMap;
-import io.mapwize.mapwizeformapbox.map.NavigationException;
-import io.mapwize.mapwizeformapbox.map.NavigationInfo;
-import io.mapwize.mapwizeformapbox.map.OnNavigationUpdateListener;
+import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.DirectionPoint;
+import io.mapwize.mapwizesdk.api.MapwizeObject;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
+import io.mapwize.mapwizesdk.api.SearchParams;
+import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.map.DirectionOptions;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
+import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
+import io.mapwize.mapwizesdk.map.NavigationException;
+import io.mapwize.mapwizesdk.map.NavigationInfo;
+import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
 
 /**
  * Search direction module

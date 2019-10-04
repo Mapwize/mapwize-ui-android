@@ -2,7 +2,7 @@ package io.mapwize.mapwizeuicomponents
 
 
 import android.app.Application
-import io.mapwize.mapwizeformapbox.core.MapwizeConfiguration
+import io.mapwize.mapwizesdk.core.MapwizeConfiguration
 
 class MapwizeApplication: Application() {
 

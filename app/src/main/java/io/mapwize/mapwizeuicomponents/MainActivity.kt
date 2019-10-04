@@ -3,15 +3,14 @@ package io.mapwize.mapwizeuicomponents
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
-import io.mapwize.mapwizecomponents.ui.MapwizeFragment
-import io.mapwize.mapwizecomponents.ui.MapwizeFragmentUISettings
-import io.mapwize.mapwizeformapbox.api.Floor
-import io.mapwize.mapwizeformapbox.api.MapwizeObject
-import io.mapwize.mapwizeformapbox.api.Place
-import io.mapwize.mapwizeformapbox.map.MapOptions
-import io.mapwize.mapwizeformapbox.map.MapwizeMap
+import io.mapwize.mapwizeui.MapwizeFragment
+import io.mapwize.mapwizeui.MapwizeFragmentUISettings
+import io.mapwize.mapwizesdk.api.Floor
+import io.mapwize.mapwizesdk.api.MapwizeObject
+import io.mapwize.mapwizesdk.api.Place
+import io.mapwize.mapwizesdk.map.MapOptions
+import io.mapwize.mapwizesdk.map.MapwizeMap
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
@@ -52,14 +51,6 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
      */
     override fun onFragmentReady(mapwizeMap: MapwizeMap) {
         this.mapwizeMap = mapwizeMap
-
-        this.locationProvider = ManualIndoorLocationProvider()
-        this.mapwizeMap?.setIndoorLocationProvider(this.locationProvider!!)
-
-        this.mapwizeMap?.addOnLongClickListener {
-            val indoorLocation = IndoorLocation("manual_provider", it.latLngFloor.latitude, it.latLngFloor.longitude, it.latLngFloor.floor, System.currentTimeMillis())
-            this.locationProvider?.setIndoorLocation(indoorLocation)
-        }
     }
 
     override fun onMenuButtonClick() {

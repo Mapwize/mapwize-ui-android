@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatImageButton;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.map.FollowUserMode;
-import io.mapwize.mapwizeformapbox.map.MapwizeMap;
+import io.mapwize.mapwizeui.R;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Follow user button allows user to change the follow user mode

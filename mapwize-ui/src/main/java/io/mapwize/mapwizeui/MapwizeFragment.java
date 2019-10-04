@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
@@ -20,27 +20,26 @@ import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
 import java.util.List;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.ApiCallback;
-import io.mapwize.mapwizeformapbox.api.Direction;
-import io.mapwize.mapwizeformapbox.api.DirectionPoint;
-import io.mapwize.mapwizeformapbox.api.Floor;
-import io.mapwize.mapwizeformapbox.api.LatLngFloor;
-import io.mapwize.mapwizeformapbox.api.MapwizeObject;
-import io.mapwize.mapwizeformapbox.api.Place;
-import io.mapwize.mapwizeformapbox.api.Placelist;
-import io.mapwize.mapwizeformapbox.api.Universe;
-import io.mapwize.mapwizeformapbox.api.Venue;
-import io.mapwize.mapwizeformapbox.core.MapwizeConfiguration;
-import io.mapwize.mapwizeformapbox.map.ClickEvent;
-import io.mapwize.mapwizeformapbox.map.FollowUserMode;
-import io.mapwize.mapwizeformapbox.map.MapOptions;
-import io.mapwize.mapwizeformapbox.map.MapwizeIndoorLocation;
-import io.mapwize.mapwizeformapbox.map.MapwizeMap;
-import io.mapwize.mapwizeformapbox.map.MapwizeView;
-import io.mapwize.mapwizeformapbox.map.PlacePreview;
-import io.mapwize.mapwizeformapbox.map.PreviewCallback;
-import io.mapwize.mapwizeformapbox.map.VenuePreview;
+import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.DirectionPoint;
+import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.LatLngFloor;
+import io.mapwize.mapwizesdk.api.MapwizeObject;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
+import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
+import io.mapwize.mapwizesdk.map.ClickEvent;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
+import io.mapwize.mapwizesdk.map.MapOptions;
+import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
+import io.mapwize.mapwizesdk.map.MapwizeView;
+import io.mapwize.mapwizesdk.map.PlacePreview;
+import io.mapwize.mapwizesdk.map.PreviewCallback;
+import io.mapwize.mapwizesdk.map.VenuePreview;
 
 /**
  * Mapwize Fragment allow you to integrate Mapwize in a simplest way.

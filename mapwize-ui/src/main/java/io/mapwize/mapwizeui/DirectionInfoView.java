@@ -1,7 +1,7 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
-import io.mapwize.mapwizeformapbox.api.Direction;
-import io.mapwize.mapwizeformapbox.map.NavigationInfo;
+import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.map.NavigationInfo;
 
 public interface DirectionInfoView {
 

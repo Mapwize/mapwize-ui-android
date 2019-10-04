@@ -1,4 +1,4 @@
-package io.mapwize.mapwizecomponents.ui;
+package io.mapwize.mapwizeui;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
@@ -15,9 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.mapwize.mapwizecomponents.R;
-import io.mapwize.mapwizeformapbox.api.Floor;
-import io.mapwize.mapwizeformapbox.map.MapwizeMap;
+import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Floor controller
