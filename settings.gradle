@@ -1,2 +1,1 @@
-include ':app', ':mapwizeui'//, ':MapwizeForMapbox'
-//project(":MapwizeForMapbox").projectDir = new File("../../AndroidRepositories/mapwizeandroid/MapwizeForMapbox")
+include ':app', ':mapwize-ui'

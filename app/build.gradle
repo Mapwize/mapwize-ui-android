@@ -36,7 +36,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation "io.mapwize.indoormaps:MapwizeForMapbox:3.0.0-beta0"
     implementation 'com.github.indoorlocation:manual-indoor-location-provider-android:1.0.0'
-    implementation project(path: ':mapwizeui')
+    implementation project(path: ':mapwize-ui')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
