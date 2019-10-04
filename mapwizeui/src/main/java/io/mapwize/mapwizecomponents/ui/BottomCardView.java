@@ -5,12 +5,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.cardview.widget.CardView;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import io.mapwize.mapwizecomponents.R;
 import io.mapwize.mapwizeformapbox.api.Direction;
@@ -246,12 +250,14 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      */
     @Override
     public void setContent(NavigationInfo navigationInfo) {
-        directionFrameLayout.setVisibility(View.VISIBLE);
-        objectInfoFrameLayout.setVisibility(View.GONE);
-        long time = Math.round(navigationInfo.getDuration() / 60);
-        String timPlaceHolder = getResources().getString(R.string.time_placeholder);
-        directionTimeTextView.setText(String.format(timPlaceHolder,time));
-        directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
+        new Handler(Looper.getMainLooper()).post(() -> {
+            directionFrameLayout.setVisibility(View.VISIBLE);
+            objectInfoFrameLayout.setVisibility(View.GONE);
+            long time = Math.round(navigationInfo.getDuration() / 60);
+            String timPlaceHolder = getResources().getString(R.string.time_placeholder);
+            directionTimeTextView.setText(String.format(timPlaceHolder,time));
+            directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
+        });
     }
 
     /**
