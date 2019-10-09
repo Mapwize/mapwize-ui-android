@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -100,9 +101,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 setupFromSearch();
             }
             else {
-                if (fromDirectionPoint == null) {
-                    fromEditText.setText("");
-                }
+                setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!toEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -121,7 +120,9 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                performFromSearch(s.toString());
+                if (fromEditText.hasFocus()) {
+                    performFromSearch(s.toString());
+                }
             }
 
             @Override
@@ -136,9 +137,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 setupToSearch();
             }
             else {
-                if (toDirectionPoint == null) {
-                    toEditText.setText("");
-                }
+                setTextViewValue(toEditText, toDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!fromEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -157,7 +156,9 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                performToSearch(s.toString());
+                if (toEditText.hasFocus()) {
+                    performToSearch(s.toString());
+                }
             }
 
             @Override
@@ -242,16 +243,15 @@ public class SearchDirectionView extends ConstraintLayout implements
         }
         if (directionPoint == null) {
             fromDirectionPoint = null;
-            fromEditText.setText(null);
         }
         else if (directionPoint instanceof MapwizeIndoorLocation){
             fromDirectionPoint = (MapwizeIndoorLocation)directionPoint;
-            fromEditText.setText(getResources().getString(R.string.current_location));
         }
         else {
             fromDirectionPoint = (DirectionPoint) directionPoint;
-            fromEditText.setText(((MapwizeObject) directionPoint).getTranslation(mapwizeMap.getLanguage()).getTitle());
         }
+
+        setTextViewValue(fromEditText, fromDirectionPoint);
 
         if (directionPoint instanceof Place) {
             Place place = (Place)directionPoint;
@@ -272,16 +272,16 @@ public class SearchDirectionView extends ConstraintLayout implements
         }
         if (directionPoint == null) {
             toDirectionPoint = null;
-            toEditText.setText(null);
         }
         else if (directionPoint instanceof MapwizeIndoorLocation){
             toDirectionPoint = (MapwizeIndoorLocation)directionPoint;
-            toEditText.setText(getResources().getString(R.string.current_location));
         }
         else {
             toDirectionPoint = (DirectionPoint) directionPoint;
-            toEditText.setText(((MapwizeObject) directionPoint).getTranslation(mapwizeMap.getLanguage()).getTitle());
         }
+
+        setTextViewValue(toEditText, toDirectionPoint);
+
         if (directionPoint instanceof Place) {
             Place place = (Place)directionPoint;
             mapwizeMap.addPromotedPlace(place);
@@ -412,12 +412,12 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     private void backClick() {
         if (fromEditText.hasFocus()) {
-            fromEditText.setText("");
             fromEditText.clearFocus();
+            setTextViewValue(fromEditText, fromDirectionPoint);
         }
         if (toEditText.hasFocus()) {
-            toEditText.setText("");
             toEditText.clearFocus();
+            setTextViewValue(toEditText, toDirectionPoint);
         }
         if (!isSearching && listener != null) {
             mapwizeMap.stopNavigation();
@@ -447,7 +447,6 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     private void setupFromSearch() {
         fromEditText.setText("");
-        fromDirectionPoint = null;
         setupInSearch();
 
         resultList.setListener(new SearchResultList.SearchResultListListener() {
@@ -477,8 +476,6 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             }
         });
-
-
 
         performFromSearch(fromEditText.getText().toString());
     }
@@ -552,7 +549,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     private void setupToSearch() {
         setupInSearch();
         toEditText.setText("");
-        toDirectionPoint = null;
         resultList.setListener(new SearchResultList.SearchResultListListener() {
             @Override
             public void onSearchResultNull() {
@@ -684,6 +680,18 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     }
 
+    private void setTextViewValue(TextView textView, DirectionPoint directionPoint) {
+        if (directionPoint == null) {
+            textView.setText("");
+        }
+        else if (directionPoint instanceof Place || directionPoint instanceof Placelist) {
+            MapwizeObject mapwizeObject = (MapwizeObject) directionPoint;
+            textView.setText(mapwizeObject.getTranslation(mapwizeMap.getLanguage()).getTitle());
+        }
+        else if (directionPoint instanceof MapwizeIndoorLocation) {
+            textView.setText(getResources().getString(R.string.current_location));
+        }
+    }
 
     public interface SearchDirectionListener {
         void onBackClick();
