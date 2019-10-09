@@ -94,7 +94,7 @@ public class LanguagesButton extends AppCompatImageButton {
             }
 
             @Override
-            public void willEnterInVenue(@NonNull Venue venue) {
+            public void onVenueWillEnter(@NonNull Venue venue) {
 
             }
         });

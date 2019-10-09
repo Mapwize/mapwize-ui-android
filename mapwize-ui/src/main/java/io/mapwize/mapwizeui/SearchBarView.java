@@ -318,7 +318,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
      * @param venue
      */
     @Override
-    public void willEnterInVenue(@NonNull Venue venue) {
+    public void onVenueWillEnter(@NonNull Venue venue) {
         String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
         searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
         searchEditText.setEnabled(false);

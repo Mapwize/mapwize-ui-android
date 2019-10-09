@@ -694,7 +694,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     @Override
-    public void willEnterInVenue(@NonNull Venue venue) {
+    public void onVenueWillEnter(@NonNull Venue venue) {
 
     }
 

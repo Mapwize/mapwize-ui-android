@@ -648,7 +648,7 @@ public class SearchDirectionView extends ConstraintLayout implements
      * @param venue
      */
     @Override
-    public void willEnterInVenue(@NonNull Venue venue) {
+    public void onVenueWillEnter(@NonNull Venue venue) {
         searchDataManager.setMainSearch(new ArrayList<>());
         searchDataManager.setMainFrom(new ArrayList<>());
         mapwizeMap.getMapwizeApi().getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {

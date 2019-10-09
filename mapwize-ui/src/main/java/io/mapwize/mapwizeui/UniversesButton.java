@@ -85,7 +85,7 @@ public class UniversesButton extends AppCompatImageButton {
         }
         this.mapwizeMap.addOnUniverseChangeListener(new MapwizeMap.OnUniverseChangeListener() {
             @Override
-            public void onAccessibleUniversesChange(@NonNull List<Universe> list) {
+            public void onUniversesChange(@NonNull List<Universe> list) {
                 universes = list;
                 showIfNeeded();
             }
@@ -107,7 +107,7 @@ public class UniversesButton extends AppCompatImageButton {
             }
 
             @Override
-            public void willEnterInVenue(@NonNull Venue venue) {
+            public void onVenueWillEnter(@NonNull Venue venue) {
 
             }
         });
