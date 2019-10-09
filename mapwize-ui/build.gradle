@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.3.2"
+        versionCode 200000
+        versionName "2.0.0"
     }
 
     buildTypes {
@@ -25,23 +25,16 @@ android {
 
 }
 
-def indoor_location_version = '1.0.5'
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation "com.github.IndoorLocation:indoor-location-android:$indoor_location_version"
 
-    //implementation "io.mapwize.indoormaps:MapwizeForMapbox:3.0.0-beta03"
-    implementation project(path: ':mapwize-sdk')
+    implementation 'com.github.IndoorLocation:indoor-location-android:1.0.5'
 
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.1.0'
-    implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
-        transitive = true
-    }
+    implementation 'io.mapwize.sdk:mapwize-sdk:3.0.0'
 }
 repositories {
     mavenCentral()

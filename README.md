@@ -21,7 +21,7 @@ The Mapwize UI fragment comes with the following components:
 
 ## Installation
 
-MapwizeUI is compatible with MapwizeForMapbox 1.7.0 and above. The library won't work with lower version.
+MapwizeUI is compatible with MapwizeSDK 3.0.0 and above. The library won't work with lower version.
 
 ### Gradle
 
@@ -53,7 +53,7 @@ void onMenuButtonClick()
 // See Information Button section below.
 void onInformationButtonClick(MapwizeObject mapwizeObject)
 // The fragment is ready to use.
-void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizeMap)
+void onFragmentReady(MapwizeMap mapwizeMap)
 // The user clicked on the follow user button but no location has been found.
 void onFollowUserButtonClickWithoutLocation();
 // Method called when a place or a place list is selected. Return true if you want to show the information button in the bottom view.
@@ -61,7 +61,7 @@ default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
     return true;
 }
 // Method called when the available floors list changed. Return true if you want to display the floor controller.
-default boolean shouldDisplayFloorController(List<Double> floors) {
+default boolean shouldDisplayFloorController(List<Floor> floors) {
     return true;
 }
 ```
@@ -70,19 +70,24 @@ Mapwize Fragment can be instantiated with the constructor :
 
 ```java
 public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions)
+public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions)
 public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings)
+public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings)
 public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions)
+public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions)
 ```
 
-### Access to Mapbox map and Mapwize plugin
+### Access to MapwizeMap
 
-The `void onFragmentReady(MapboxMap mapboxMap, MapwizePlugin mapwizeMap);` contains both Mapbox map and Mapwize plugin. Once this method is called you can store and use them.
+The `void onFragmentReady(MapwizeMap mapwizeMap);` contains both Mapbox map and Mapwize plugin. Once this method is called you can store and use them.
 
 ### Simple example
 
 ```java
-MapOptions opts = new MapOptions.Builder().build()
-MapwizePlugin mapwizeMap = MapwizeFragment.newInstance(opts);
+MapOptions opts = new MapOptions.Builder()
+        .language(Locale.getDefault().getLanguage())
+        .build();
+MapwizeFragment mapwizeFragment = MapwizeFragment.newInstance(opts);
 ```
 
 ### Center on venue
@@ -91,9 +96,9 @@ To have the map centered on a venue at start up:
 
 ```java
 MapOptions opts = new MapOptions.Builder()
-.centerOnVenue("YOUR_VENUE_ID")
-.build();
-MapwizePlugin mapwizeMap = MapwizeFragment.newInstance(opts);
+    .centerOnVenue("YOUR_VENUE_ID")
+    .build();
+MapwizeFragment mapwizeFragment = MapwizeFragment.newInstance(opts);
 ```
 
 ### Center on place
@@ -102,22 +107,23 @@ To have the map centered on a place with the place selected:
 
 ```java
 MapOptions opts = new MapOptions.Builder()
-.centerOnPlace("YOUR_PLACE_ID")
-.build();
-MapwizePlugin mapwizeMap = MapwizeFragment.newInstance(opts);
+    .centerOnPlace("YOUR_PLACE_ID")
+    .build();
+MapwizeFragment mapwizeFragment = MapwizeFragment.newInstance(opts);
 ```
 
 ### Map options
 
 The following parameters are available for map initialization:
 
-- `centerOnVenue` to center on a venue at start. Builder takes either a venueId or a venue object.
-- `centerOnPlace` to center on a place at start. Builder takes either a placeId or a place object.
-- `floor` to set the default floor when entering a venue. Floors are Double and can be decimal values. This is ignored when using centerOnPlace.
+- `floor` to set the default floor when entering a venue. Floors are Double and can be decimal values.
 - `language` to set the default language for venues. It is a string with the 2 letter code for the language. Example: "fr" or "en".
-- `universe` to set the default universe for the displayed venue. If using centerOnPlace, this needs to be an universe the place is in. Builder takes either an universeId or an universe object.
-- `restrictContentToVenue` to show only the related venue on the map. Builder takes either a venueId or a venue object.
-- `restrictContentToOrganization` to show only the venues of that organization on the map. Builder takes an organization id.
+- `universeId` to set the default universe for the displayed venue.
+- `restrictContentToVenueId` to show only the related venue on the map.
+- `restrictContentToVenueIds` to show only the related venues on the map.
+- `restrictContentToOrganizationId` to show only the venues of that organization on the map.
+- `centerOnPlace` to center on a place at start.
+- `centerOnVenue` to center on a venue at start.
 
 ### UI Settings
 

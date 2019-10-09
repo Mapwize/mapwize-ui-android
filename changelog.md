@@ -1,5 +1,23 @@
 # UI Components Changelog
 
+## 2.0.0
+
+- Changing dependency from MapwizeForMapbox to mapwize-sdk
+- Improving direction search module
+- Migrating to AndroidX
+
+## 1.3.2
+
+- Updating MapwizeForMapbox to 2.3
+
+## 1.3.1
+
+- Fixing crash on quick create and destroy
+
+## 1.3.0
+
+- Updating MapwizeForMapbox to 2.2
+
 ## 1.2.1
 
 - Fixing crash when a direction is not found
