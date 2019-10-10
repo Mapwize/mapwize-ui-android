@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.0.1
+
+- Updating mapwize-sdk to 3.0.1
+
 ## 2.0.0
 
 - Changing dependency from MapwizeForMapbox to mapwize-sdk
