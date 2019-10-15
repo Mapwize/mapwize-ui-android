@@ -25,6 +25,7 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.LatLngFloor;
+import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
@@ -241,6 +242,21 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             initLanguagesButton(languagesButton);
             initBottomCardView(bottomCardView, listener);
             listener.onFragmentReady(mapwizeMap);
+            if (mapwizeMap.getMapOptions().getCenterOnPlaceId() != null) {
+                MapwizeApiFactory.getApi().getPlace(mapwizeMap.getMapOptions().getCenterOnPlaceId(), new ApiCallback<Place>() {
+                    @Override
+                    public void onSuccess(@NonNull Place place) {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            selectPlace(place, false);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Throwable throwable) {
+
+                    }
+                });
+            }
         });
 
         mainLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
