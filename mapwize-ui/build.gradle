@@ -34,7 +34,7 @@ dependencies {
 
     implementation 'com.github.IndoorLocation:indoor-location-android:1.0.5'
 
-    implementation 'io.mapwize.sdk:mapwize-sdk:3.0.1'
+    implementation 'io.mapwize.sdk:mapwize-sdk:3.0.2'
 }
 repositories {
     mavenCentral()

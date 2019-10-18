@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.0.3
+
+- Including MapwizeSDK 3.0.2
+
 ## 2.0.2
 
 - Fixing place selection with options.centerOnPlaceId
