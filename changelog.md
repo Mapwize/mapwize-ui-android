@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.0.4
+
+- Including MapwizeSDK 3.1.1
+
 ## 2.0.3
 
 - Including MapwizeSDK 3.0.2
