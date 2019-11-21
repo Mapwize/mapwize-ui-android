@@ -1,5 +1,10 @@
 # UI Components Changelog
 
+## 2.0.5
+
+- Including MapwizeSDK 3.1.5
+- Fixing navigation does not use accessibility option
+
 ## 2.0.4
 
 - Including MapwizeSDK 3.1.1

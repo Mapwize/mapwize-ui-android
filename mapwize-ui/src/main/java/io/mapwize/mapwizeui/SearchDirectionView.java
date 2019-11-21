@@ -345,7 +345,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
         if (fromPoint instanceof MapwizeIndoorLocation && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
             try {
-                mapwizeMap.startNavigation(toPoint, optsBuilder.build(), new OnNavigationUpdateListener() {
+                mapwizeMap.startNavigation(toPoint, isAccessible, optsBuilder.build(), new OnNavigationUpdateListener() {
                     @Override
                     public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
                         directionInfoView.setContent(navigationInfo);

@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 200040
-        versionName "2.0.4"
+        versionCode 200050
+        versionName "2.0.5"
     }
 
     buildTypes {
@@ -31,8 +31,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.github.IndoorLocation:indoor-location-android:1.0.5'
-    implementation 'io.mapwize.sdk:mapwize-sdk:3.1.1'
+    implementation 'io.mapwize.sdk:mapwize-sdk:3.1.5'
 }
 repositories {
     mavenCentral()
