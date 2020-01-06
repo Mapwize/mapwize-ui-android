@@ -3,6 +3,7 @@ package io.mapwize.mapwizeuicomponents
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
 import io.mapwize.mapwizeui.MapwizeFragment
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings
@@ -12,6 +13,7 @@ import io.mapwize.mapwizesdk.api.Place
 import io.mapwize.mapwizesdk.map.MapOptions
 import io.mapwize.mapwizesdk.map.MapwizeMap
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
 
@@ -32,7 +34,7 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
                 .build()
 
         // Uncomment and change value to test different settings configuration
-        var uiSettings = MapwizeFragmentUISettings.Builder()
+        val uiSettings = MapwizeFragmentUISettings.Builder()
                 //.menuButtonHidden(true)
                 //.followUserButtonHidden(false)
                 //.floorControllerHidden(false)
@@ -51,6 +53,16 @@ class MainActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionL
      */
     override fun onFragmentReady(mapwizeMap: MapwizeMap) {
         this.mapwizeMap = mapwizeMap
+        this.locationProvider = ManualIndoorLocationProvider()
+        mapwizeMap.setIndoorLocationProvider(this.locationProvider!!)
+
+        mapwizeMap.addOnClickListener {
+            val il = IndoorLocation("manual", it.latLngFloor.latitude,
+                    it.latLngFloor.longitude,
+                    it.latLngFloor.floor,
+                    System.currentTimeMillis())
+            this.locationProvider?.setIndoorLocation(il)
+        }
     }
 
     override fun onMenuButtonClick() {

@@ -5,9 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clipToPadding="false"
     android:focusable="true"
-    android:focusableInTouchMode="true"
     android:clickable="true"
     android:animateLayoutChanges="true"
+    android:paddingTop="@dimen/mapwize_ui_padding_top"
     android:id="@+id/mapwizeDirectionMainLayout">
 
     <androidx.cardview.widget.CardView

@@ -184,7 +184,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
                 public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        resultList.showData(mapwizeObjects, mapwizeMap.getVenue().getUniverses(), mapwizeMap.getUniverse());
+                        resultList.showData(mapwizeObjects, mapwizeMap.getUniverses(), mapwizeMap.getUniverse());
                         resultProgressBar.setVisibility(View.INVISIBLE);
                     });
                 }

@@ -7,7 +7,9 @@
     android:clipToPadding="false"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:clickable="true"
+    android:focusable="true">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/mapwizeCurrentLocationCard"

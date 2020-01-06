@@ -1,5 +1,10 @@
 # UI Components Changelog
 
+## 2.1.0
+
+- Improving direction flow
+- Fixing issue with multi universes search
+
 ## 2.0.5
 
 - Including MapwizeSDK 3.1.5
