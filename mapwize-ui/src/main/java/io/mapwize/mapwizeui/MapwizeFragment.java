@@ -13,6 +13,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.mapbox.mapboxsdk.Mapbox;
@@ -435,16 +437,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
                 unselectContent();
             }
         }
-        else if (mapwizeMap.getDirection() != null) {
-            if (searchDirectionView.getVisibility() == View.VISIBLE) {
-                searchDirectionView.setVisibility(View.GONE);
-                bottomCardView.setVisibility(View.GONE);
-            }
-            else {
-                searchDirectionView.setVisibility(View.VISIBLE);
-                bottomCardView.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     /**
@@ -544,9 +536,10 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void unselectContent() {
         bottomCardView.removeContent();
         mapwizeMap.removeMarkers();
-        if (selectedContent instanceof Place) {
+        mapwizeMap.removePromotedPlaces();
+        /*if (selectedContent instanceof Place) {
             mapwizeMap.removePromotedPlace((Place) selectedContent);
-        }
+        }*/
         selectedContent = null;
         if (mapwizeMap.getVenue() != null) {
             bottomCardView.setContent(mapwizeMap.getVenue(), mapwizeMap.getLanguage());
@@ -564,12 +557,30 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
         searchDirectionView.setResultList(searchResultList);
+        boolean showFrom = false;
+        boolean showTo = false;
         if (selectedContent != null) {
             searchDirectionView.setToDirectionPoint(selectedContent);
             unselectContent();
         }
+        else {
+            showTo = true;
+        }
         if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
             searchDirectionView.setFromDirectionPoint(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()));
+        }
+        else {
+            showFrom = true;
+        }
+        if (showFrom) {
+            searchDirectionView.fromEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        }
+        else if (showTo) {
+            searchDirectionView.toEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
         }
         bottomCardView.removeContent();
         universesButton.hide();
@@ -588,8 +599,8 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         searchDirectionView.setVisibility(View.VISIBLE);
         searchDirectionView.setResultList(searchResultList);
         searchDirectionView.setAccessibility(isAccessible);
-        searchDirectionView.setFromDirectionPoint(from);
         searchDirectionView.setToDirectionPoint(to);
+        searchDirectionView.setFromDirectionPoint(from);
     }
 
     /**

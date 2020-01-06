@@ -50,8 +50,8 @@ public class SearchDirectionView extends ConstraintLayout implements
     private DirectionInfoView directionInfoView;
     private ConstraintLayout mapwizeDirectionMainLayout;
     private SearchResultList resultList;
-    private EditText fromEditText;
-    private EditText toEditText;
+    EditText fromEditText;
+    EditText toEditText;
     private ProgressBar resultProgressBar;
     private ImageView backButton;
     private ImageView swapButton;
@@ -98,12 +98,14 @@ public class SearchDirectionView extends ConstraintLayout implements
         fromEditText.setOnFocusChangeListener((v, hasFocus) -> {
             // If from edit text has focus, setup from search ui
             if (hasFocus) {
+                v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field_selected));
                 setupFromSearch();
             }
             else {
+                v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (!toEditText.hasFocus()) {
+                if (toEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -134,12 +136,14 @@ public class SearchDirectionView extends ConstraintLayout implements
         toEditText.setOnFocusChangeListener((v, hasFocus) -> {
             // If to edit text has focus, setup from search ui
             if (hasFocus) {
+                v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field_selected));
                 setupToSearch();
             }
             else {
+                v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 setTextViewValue(toEditText, toDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (!fromEditText.hasFocus()) {
+                if (fromEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -258,7 +262,9 @@ public class SearchDirectionView extends ConstraintLayout implements
             mapwizeMap.addPromotedPlace(place);
         }
 
-
+        if (toDirectionPoint == null) {
+            toEditText.requestFocus();
+        }
         tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
     }
 
@@ -391,8 +397,8 @@ public class SearchDirectionView extends ConstraintLayout implements
         DirectionPoint oldTo = toDirectionPoint;
         fromDirectionPoint = null;
         toDirectionPoint = null;
-        setFromDirectionPoint(oldTo);
         setToDirectionPoint(oldFrom);
+        setFromDirectionPoint(oldTo);
     }
 
     /**
@@ -428,6 +434,9 @@ public class SearchDirectionView extends ConstraintLayout implements
             directionInfoView.removeContent();
             listener.onBackClick();
         }
+        if (fromDirectionPoint == null || toDirectionPoint == null) {
+            listener.onBackClick();
+        }
         setupDefault();
 
     }
@@ -445,7 +454,7 @@ public class SearchDirectionView extends ConstraintLayout implements
     /**
      * Configure module and ui to perform search query for the from field
      */
-    private void setupFromSearch() {
+    void setupFromSearch() {
         fromEditText.setText("");
         setupInSearch();
 
@@ -453,22 +462,28 @@ public class SearchDirectionView extends ConstraintLayout implements
             @Override
             public void onSearchResultNull() {
                 fromEditText.clearFocus();
-                setupDefault();
                 setFromDirectionPoint(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()));
+                if (toDirectionPoint != null) {
+                    setupDefault();
+                }
             }
 
             @Override
             public void onSearchResult(Place place, Universe universe) {
                 fromEditText.clearFocus();
-                setupDefault();
                 setFromDirectionPoint(place);
+                if (toDirectionPoint != null) {
+                    setupDefault();
+                }
             }
 
             @Override
             public void onSearchResult(Placelist placelist) {
                 fromEditText.clearFocus();
-                setupDefault();
                 setFromDirectionPoint(placelist);
+                if (toDirectionPoint != null) {
+                    setupDefault();
+                }
             }
 
             @Override
@@ -546,7 +561,7 @@ public class SearchDirectionView extends ConstraintLayout implements
     /**
      * Configure module and ui to perform search query for the to field
      */
-    private void setupToSearch() {
+    void setupToSearch() {
         setupInSearch();
         toEditText.setText("");
         resultList.setListener(new SearchResultList.SearchResultListListener() {

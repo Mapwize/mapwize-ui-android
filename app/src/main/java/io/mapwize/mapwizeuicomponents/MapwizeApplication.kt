@@ -8,7 +8,7 @@ class MapwizeApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val config = MapwizeConfiguration.Builder(this, "YOUR_API_KEY").build()
+        val config = MapwizeConfiguration.Builder(this, "MapwizeDevAPIKEY").build()
         MapwizeConfiguration.start(config)
     }
 

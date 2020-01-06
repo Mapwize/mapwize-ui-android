@@ -26,10 +26,10 @@ class UnitLocale {
 
         if (getDefault() == Imperial) {
             long distanceInFeet = Math.round(distance * 3.28084);
-            return "" + distanceInFeet + "ft";
+            return "" + distanceInFeet + " ft";
         }
         else {
-            return "" + Math.round(distance) + "m";
+            return "" + Math.round(distance) + " m";
         }
 
     }
