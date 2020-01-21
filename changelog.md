@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.1.1
+
+- Fixing crash when clicking search bar at the very beginning
+
 ## 2.1.0
 
 - Improving direction flow

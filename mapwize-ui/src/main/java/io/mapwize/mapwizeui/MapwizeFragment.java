@@ -393,6 +393,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         searchBarView.setMapwizeMap(mapwizeMap);
         searchBarView.setListener(this);
         searchBarView.setResultList(searchResultList);
+        searchBarView.setVisibility(View.VISIBLE);
     }
 
     private void initDirectionBar(SearchDirectionView searchDirectionView) {

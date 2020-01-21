@@ -87,6 +87,9 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         searchEditText = findViewById(R.id.mapwizeSearchBarEditText);
         backImageView.setOnClickListener(v -> setupDefault());
         searchEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (this.resultList == null || this.mapwizeMap == null) {
+                return;
+            }
             if (hasFocus) {
                 setupInSearch();
             }
