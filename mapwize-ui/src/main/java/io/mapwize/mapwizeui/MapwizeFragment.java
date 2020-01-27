@@ -528,6 +528,39 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         mapwizeMap.addMarkers(placelist, markers -> {
 
         });
+
+        mapwizeMap.addPromotedPlaces(placelist, places -> {
+            if (places.size() == 0) {
+                return;
+            }
+            mapwizeMap.getMapwizeApi().getVenue(places.get(0).getVenueId(), new ApiCallback<Venue>() {
+                @Override
+                public void onSuccess(@NonNull Venue object) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        mapwizeMap.centerOnVenue(object, 300);
+                        boolean shouldSetFloor = true;
+                        if (mapwizeMap.getFloor() != null) {
+                            for (Place p : places) {
+                                if (p.getFloor().equals(mapwizeMap.getFloorNumber())) {
+                                    shouldSetFloor = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (shouldSetFloor) {
+                            mapwizeMap.setFloor(places.get(0).getFloor());
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable t) {
+
+                }
+            });
+        });
+
+
     }
 
     /**

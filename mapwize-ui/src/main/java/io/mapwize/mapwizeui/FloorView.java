@@ -38,7 +38,7 @@ public class FloorView extends FrameLayout {
         animationView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         GradientDrawable drawable = new GradientDrawable();
         drawable.setShape(GradientDrawable.OVAL);
-        drawable.setColor(ContextCompat.getColor(context, io.mapwize.mapwizeformapbox.R.color.mapwize_main_color));
+        drawable.setColor(ContextCompat.getColor(context, io.mapwize.mapwizesdk.R.color.mapwize_main_color));
         animationView.setBackground(drawable);
         animationView.setVisibility(INVISIBLE);
         this.addView(animationView);

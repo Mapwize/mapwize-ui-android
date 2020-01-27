@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.1.2
+
+- SelectPlacelist now center on the placelist 
+
 ## 2.1.1
 
 - Fixing crash when clicking search bar at the very beginning
