@@ -37,6 +37,8 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.NavigationException;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
+import io.mapwize.mapwizeui.events.Channel;
+import io.mapwize.mapwizeui.events.EventManager;
 
 /**
  * Search direction module
@@ -105,7 +107,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (toEditText.hasFocus()) {
+                if (!toEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -143,7 +145,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 setTextViewValue(toEditText, toDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (fromEditText.hasFocus()) {
+                if (!fromEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -365,7 +367,13 @@ public class SearchDirectionView extends ConstraintLayout implements
 
                     @Override
                     public void navigationDidStart() {
-
+                        EventManager.getInstance().triggerOnDirectionStart(
+                                mapwizeMap.getVenue(),
+                                mapwizeMap.getUniverse(),
+                                fromPoint,
+                                toPoint,
+                                "TMP_MODE",
+                                true);
                     }
                 });
             } catch (NavigationException e) {
@@ -373,6 +381,13 @@ public class SearchDirectionView extends ConstraintLayout implements
                 if (mapwizeMap.getDirection() != direction) {
                     mapwizeMap.removeMarkers();
                     mapwizeMap.setDirection(direction);
+                    EventManager.getInstance().triggerOnDirectionStart(
+                            mapwizeMap.getVenue(),
+                            mapwizeMap.getUniverse(),
+                            fromPoint,
+                            toPoint,
+                            "TMP_MODE",
+                            false);
                 }
                 directionInfoView.setContent(direction);
             }
@@ -382,6 +397,13 @@ public class SearchDirectionView extends ConstraintLayout implements
             if (mapwizeMap.getDirection() != direction) {
                 mapwizeMap.removeMarkers();
                 mapwizeMap.setDirection(direction);
+                EventManager.getInstance().triggerOnDirectionStart(
+                        mapwizeMap.getVenue(),
+                        mapwizeMap.getUniverse(),
+                        fromPoint,
+                        toPoint,
+                        "TMP_MODE",
+                        false);
             }
 
             directionInfoView.setContent(direction);
@@ -574,6 +596,10 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onSearchResult(Place place, Universe universe) {
+                String query = toEditText.getText().toString().length() > 0 ? toEditText.getText().toString() : null;
+                Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
+                Universe sentUniverse = universe == null ? mapwizeMap.getUniverse() : universe;
+                EventManager.getInstance().triggerOnContentSelect(place, mapwizeMap.getUniverse(), sentUniverse, channel, query);
                 toEditText.clearFocus();
                 setupDefault();
                 setToDirectionPoint(place);
@@ -581,6 +607,9 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onSearchResult(Placelist placelist) {
+                String query = toEditText.getText().toString().length() > 0 ? toEditText.getText().toString() : null;
+                Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
+                EventManager.getInstance().triggerOnContentSelect(placelist, mapwizeMap.getUniverse(), mapwizeMap.getUniverse(), channel, query);
                 toEditText.clearFocus();
                 setupDefault();
                 setToDirectionPoint(placelist);

@@ -28,6 +28,8 @@ import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
+import io.mapwize.mapwizeui.events.Channel;
+import io.mapwize.mapwizeui.events.EventManager;
 
 /**
  * Floating search bar.
@@ -372,12 +374,19 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
 
     @Override
     public void onSearchResult(Place place, Universe universe) {
+        String query = searchEditText.getText().toString().length() > 0 ? searchEditText.getText().toString() : null;
+        Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
+        Universe sentUniverse = universe == null ? mapwizeMap.getUniverse() : universe;
+        EventManager.getInstance().triggerOnContentSelect(place, mapwizeMap.getUniverse(), sentUniverse, channel, query);
         setupDefault();
         listener.onSearchResult(place, universe);
     }
 
     @Override
     public void onSearchResult(Placelist placelist) {
+        String query = searchEditText.getText().toString().length() > 0 ? searchEditText.getText().toString() : null;
+        Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
+        EventManager.getInstance().triggerOnContentSelect(placelist, mapwizeMap.getUniverse(),mapwizeMap.getUniverse(),channel, query);
         setupDefault();
         listener.onSearchResult(placelist);
     }

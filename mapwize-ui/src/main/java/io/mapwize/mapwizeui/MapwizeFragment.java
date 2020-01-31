@@ -13,7 +13,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
@@ -43,6 +42,9 @@ import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 import io.mapwize.mapwizesdk.map.PreviewCallback;
 import io.mapwize.mapwizesdk.map.VenuePreview;
+import io.mapwize.mapwizeui.events.Channel;
+import io.mapwize.mapwizeui.events.EventManager;
+import io.mapwize.mapwizeui.events.OnEventListener;
 
 /**
  * Mapwize Fragment allow you to integrate Mapwize in a simplest way.
@@ -477,6 +479,11 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
                 selectedContent = place;
                 bottomCardView.setContent(place, mapwizeMap.getLanguage());
                 mapwizeMap.addPromotedPlace(place);
+                EventManager.getInstance().triggerOnContentSelect(
+                        place, mapwizeMap.getUniverse(),
+                        mapwizeMap.getUniverse(),
+                        Channel.MAP_CLICK,
+                        null);
             }
 
             @Override
