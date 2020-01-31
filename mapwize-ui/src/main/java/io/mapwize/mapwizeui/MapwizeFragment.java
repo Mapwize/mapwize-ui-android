@@ -819,7 +819,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             return true;
         }
         default boolean shouldDisplayFloorController(List<Floor> floors) {
-            return true;
+            return false;
         }
     }
 }

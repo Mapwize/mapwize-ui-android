@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.1.3
+
+- shouldDisplayFloorController returns false by default if not implemented
+
 ## 2.1.2
 
 - SelectPlacelist now center on the placelist 
