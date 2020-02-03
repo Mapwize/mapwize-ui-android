@@ -325,8 +325,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 Handler uiHandler = new Handler(Looper.getMainLooper());
                 Runnable runnable = () -> {
                     resultProgressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getContext(), "No direction found",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
                 };
                 uiHandler.post(runnable);
             }
@@ -374,6 +373,11 @@ public class SearchDirectionView extends ConstraintLayout implements
                                 toPoint,
                                 "TMP_MODE",
                                 true);
+                    }
+
+                    @Override
+                    public void navigationDidFail(Throwable throwable) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
                     }
                 });
             } catch (NavigationException e) {

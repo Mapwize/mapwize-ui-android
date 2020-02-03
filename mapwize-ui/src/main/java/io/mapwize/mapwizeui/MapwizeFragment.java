@@ -823,10 +823,10 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         void onFragmentReady(MapwizeMap mapwizeMap);
         void onFollowUserButtonClickWithoutLocation();
         default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
-            return true;
+            return false;
         }
         default boolean shouldDisplayFloorController(List<Floor> floors) {
-            return false;
+            return true;
         }
     }
 }
