@@ -1,5 +1,11 @@
 # UI Components Changelog
 
+## 2.1.4
+
+- Adding eventListener to help integrate analytics
+- Updating MapwizeSDK to 3.1.11
+- Adding error message when direction not found
+
 ## 2.1.3
 
 - shouldDisplayFloorController returns false by default if not implemented

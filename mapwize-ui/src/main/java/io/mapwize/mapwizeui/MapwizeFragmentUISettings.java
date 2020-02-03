@@ -69,6 +69,15 @@ public class MapwizeFragmentUISettings implements Parcelable {
         dest.writeByte((byte) (compassHidden ? 1 : 0));
     }
 
+    @Override
+    public String toString() {
+        return "MapwizeFragmentUISettings{" +
+                "menuButtonHidden=" + menuButtonHidden +
+                ", followUserButtonHidden=" + followUserButtonHidden +
+                ", floorControllerHidden=" + floorControllerHidden +
+                ", compassHidden=" + compassHidden +
+                '}';
+    }
 
     public static class Builder {
 

@@ -12,4 +12,5 @@
     <string name="information">Information</string>
     <string name="starting_point">Starting point</string>
     <string name="destination">Destination</string>
+    <string name="direction_not_found">No direction has been found</string>
 </resources>
