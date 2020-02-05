@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.1.5
+
+- Updating MapwizeSDK to 3.1.12
+
 ## 2.1.4
 
 - Adding eventListener to help integrate analytics
