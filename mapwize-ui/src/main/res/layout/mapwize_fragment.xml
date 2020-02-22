@@ -113,7 +113,7 @@
         app:layout_constraintHeight_max="0dp"
         app:layout_constrainedHeight="true"
 
-        android:layout_marginEnd="22dp"
+        android:layout_marginEnd="0dp"
         app:layout_goneMarginBottom="24dp"
 
         app:layout_constraintBottom_toTopOf="@+id/mapwizeFollowUserButton"

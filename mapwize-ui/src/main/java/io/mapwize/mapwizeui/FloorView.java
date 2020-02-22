@@ -22,10 +22,7 @@ public class FloorView extends FrameLayout {
 
     private Floor floor;
     private TextView textView;
-    private View animationView;
-    private ObjectAnimator scale;
     private ColorStateList oldTvColors;
-    private ObjectAnimator colorAnim;
 
     public FloorView(@NonNull Context context, @NonNull Floor floor) {
         super(context);
@@ -34,15 +31,6 @@ public class FloorView extends FrameLayout {
     }
 
     private void initialize(@NonNull Context context) {
-        animationView = new View(context);
-        animationView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        GradientDrawable drawable = new GradientDrawable();
-        drawable.setShape(GradientDrawable.OVAL);
-        drawable.setColor(ContextCompat.getColor(context, io.mapwize.mapwizesdk.R.color.mapwize_main_color));
-        animationView.setBackground(drawable);
-        animationView.setVisibility(INVISIBLE);
-        this.addView(animationView);
-
         textView = new TextView(context);
         oldTvColors = textView.getTextColors();
         textView.setText(floor.getName());
@@ -56,32 +44,13 @@ public class FloorView extends FrameLayout {
     }
 
     public void setSelected(boolean selected) {
-        if (colorAnim != null) {
-            colorAnim.end();
-        }
         if (selected) {
-            animationView.setVisibility(VISIBLE);
+            setBackground(getResources().getDrawable(R.drawable.mapwize_custom_floor_view_selected));
             textView.setTextColor(Color.WHITE);
         }
         else {
-            animationView.setVisibility(INVISIBLE);
+            setBackground(getResources().getDrawable(R.drawable.mapwize_custom_floor_view));
             textView.setTextColor(oldTvColors);
         }
-        scale = null;
-        colorAnim = null;
-    }
-
-    public void setLoading() {
-        scale = ObjectAnimator.ofPropertyValuesHolder(animationView,
-                PropertyValuesHolder.ofFloat("scaleX", 0f, 1f),
-                PropertyValuesHolder.ofFloat("scaleY", 0f, 1f));
-        scale.setDuration(500);
-        scale.start();
-        colorAnim = ObjectAnimator.ofInt(textView, "textColor",
-                oldTvColors.getDefaultColor(), Color.WHITE);
-        colorAnim.setEvaluator(new ArgbEvaluator());
-        colorAnim.setDuration(500);
-        colorAnim.start();
-        animationView.setVisibility(VISIBLE);
     }
 }

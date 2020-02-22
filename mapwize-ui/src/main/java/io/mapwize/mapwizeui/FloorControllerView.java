@@ -58,7 +58,7 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
         viewSize = (int)getContext().getResources().getDimension(R.dimen.mapwize_ui_floor_button_size);
         linearLayout = new LinearLayout(this.getContext());
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                viewSize,
+                (int)getContext().getResources().getDimension(R.dimen.mapwize_ui_floor_button_size_width),
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -98,14 +98,14 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
             FloorView floorView = new FloorView(getContext(), floor);
             //TextView b = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    viewSize,viewSize
+                    (int)getContext().getResources().getDimension(R.dimen.mapwize_ui_floor_button_size_width), viewSize
             );
             params.setMargins(0,5,0,5);
             floorView.setElevation(4);
             floorView.setLayoutParams(params);
             //b.setText(floor.getName());
             //b.setGravity(Gravity.CENTER);
-            floorView.setBackgroundResource(R.drawable.rounded_button);
+            floorView.setBackgroundResource(R.drawable.mapwize_rounded_view);
             floorView.setOnClickListener(v -> {
                 FloorView tv = (FloorView) v;
                 Double selectedFloor = tv.getFloor().getNumber();
@@ -123,10 +123,10 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
             FloorView tv  = (FloorView) linearLayout.getChildAt(i);
             Double tvValue = tv.getFloor().getNumber();
             if (floor != null && floor.getNumber().equals(tvValue)) {
-                tv.setLoading();
+                //tv.setLoading();
             }
             else {
-                tv.setSelected(false);
+                //tv.setSelected(false);
             }
         }
     }

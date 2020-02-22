@@ -83,6 +83,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     private UniversesButton universesButton;
     private BottomCardView bottomCardView;
     private SearchResultList searchResultList;
+    private FrameLayout headerLayout;
 
     // Component state
     private MapwizeObject selectedContent;
@@ -218,6 +219,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         }
         mapwizeView = new MapwizeView(getContext(), mapwizeConfiguration, initializeOptions);
 
+        headerLayout = view.findViewById(R.id.headerFrameLayout);
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapwizeView);
         mapwizeView.onCreate(savedInstanceState);
@@ -797,6 +799,8 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public SearchDirectionView getSearchDirectionView() {
         return searchDirectionView;
     }
+
+    public FrameLayout getHeaderLayout() { return headerLayout; }
 
     public LanguagesButton getLanguagesButton() {
         return languagesButton;
