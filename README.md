@@ -264,3 +264,23 @@ You can get your key by signing up for a free account at [mapwize.io](https://ww
 Once you have your API key, add it to the project in the MapwizeApplication.java file and run the app.
 
 To test the UI further, go to MainActivity.java and change some options or add some code in it.
+
+## Analytics
+
+Mapwize SDK and Mapwize UI do __not__ have analytics trackers built in. This means that Mapwize does not know how maps are used in your applications, which we believe is a good thing for privacy. This also means that Mapwize is not able to provide you with analytics metrics and that, if you want any, you will have to intrument your code with your own analytics tracker.
+
+Events and callbacks from Mapwize SDK and Mapwize UI can be used to detect changes in the interface and trigger tracking events.
+
+Events from the core SDK can be accessed using the listeners on the `MapwizeMap` class. We believe using the following events would make sense:
+
+- `MapwizeMap.OnFloorChangeListener`
+- `MapwizeMap.OnFloorsChangeListener`
+- `MapwizeMap.OnLanguageChangeListener`
+- `MapwizeMap.OnUniverseChangeListener`
+- `MapwizeMap.OnVenueEnterListener`
+- `MapwizeMap.OnVenueExitListener`
+
+Other events are available directly in MapwizeUI and are accessible using the `EventManager` singleton. We believe using the following events would make sense:
+
+- `onContentSelect` for both places and placelist
+- `onDirectionStart`
