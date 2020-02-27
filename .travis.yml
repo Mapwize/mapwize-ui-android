@@ -1,0 +1,28 @@
+language: android
+dist: trusty
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    - tools
+    - platform-tools
+
+    # The BuildTools version used by your project
+    - build-tools-28.0.3
+
+    # The SDK version used to compile your project
+    - android-29
+script:
+- sh gradlew mapwize-ui:javadoc || travis_terminate 1;
+- mv mapwize-ui/build/outputs/javadoc docs
+- zip -r javadoc.zip docs || travis_terminate 1;
+deploy:
+- provider: releases
+  api_key: "${GITHUB_TOKEN}"
+  file: "./javadoc.zip"
+  skip_cleanup: true
+  on:
+    tags: true
+env:
+  global:
+    secure: qzXbGDiOssFYh8DcCwfa3BgLNG35C2juQZglBB/J4IMQu34B40ZLMqIXgVuKWPSFHapmN+l89Df++BYNSXziY1DmRQI3b8lwKhsOhSmrP2ZAFbGbz4WHl+5lgUqHkMW9nHGa1a//jVs8pZXdrZ3v3W+V3m07tkFQ4hyXwQmVxzHAA3GgY/uyrplylYN8fTYxJOYWRnjynnkLtD2PN7KMBDc5f8dMUcOlnpiUR1Je8X6y7RnAjEmR23dneStquMWKqBtrR//G92bmhLPF/AKYG4V9BUgm5VDT+2VDyOGqbZZlYRPSQ6UrNEofxm/2JcUGYjj1bfpHXyL0s4n585xhZEOFXpXLOth7vFbkU3ExTjPZNkeFM6lvqAz5uM7fLntD/bLT0MvnBsZQBJURBezakYNFQhaoXR4YIo/0oIIZGAHCDeQB2l7ETqom86J33cBFUnp4/lmxZMed7A327oL7pQddrTdFLn0D1bgk/gQu209m/mEBRWifE5oD4WItuCu/XVYBEqqWWH8pQsiESHXrcALh6KFB2+CjQeOXV4wvI6HjfQNq7N5KczJCEt2lzkKZmzR54g+E89GFmf3f/XKluXFTlMeEphv+8T51PtYMEI/mPeFaDuEEu5cOzmyf+N1UsUWCervrE0ZnlU8j4gcPa+GoQp0M3grtHeoPfdkOqrA= # GITHUB_TOKEN

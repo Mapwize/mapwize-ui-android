@@ -39,6 +39,39 @@ dependencies {
     }*/
     implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
 }
+
 repositories {
     mavenCentral()
+}
+
+task javadoc(type: Javadoc) {
+    failOnError false
+
+    configurations.implementation.setCanBeResolved(true)
+
+    doFirst {
+        configurations.implementation.filter { it.name.endsWith('.aar') }
+        .each { aar ->
+            copy {
+                from zipTree(aar)
+                include "**/classes.jar"
+                into "$buildDir/tmp/aarsToJars/${aar.name.replace('.aar', '')}/"
+            }
+        }
+    }
+
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.implementation
+    classpath += fileTree(dir: "$buildDir/tmp/aarsToJars/")
+
+    destinationDir = file("${project.buildDir}/outputs/javadoc/")
+
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    // options.links("https://docs.oracle.com/javase/7/docs/api/")
+    // options.links("https://developer.android.com/reference/")
+    // options.links("https://developer.android.com/reference/androidx/")
+    options.links("https://docs.mapwize.io/developers/android/sdk/latest/javadoc/")
+
+    exclude '**/R.java', '**/BuildConfig.java', '**/**.java.ejs', '**/**.html'
 }
