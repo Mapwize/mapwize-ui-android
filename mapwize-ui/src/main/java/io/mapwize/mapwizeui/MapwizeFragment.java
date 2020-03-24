@@ -23,6 +23,7 @@ import java.util.List;
 
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.LatLngFloor;
@@ -44,7 +45,6 @@ import io.mapwize.mapwizesdk.map.PreviewCallback;
 import io.mapwize.mapwizesdk.map.VenuePreview;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
-import io.mapwize.mapwizeui.events.OnEventListener;
 
 /**
  * Mapwize Fragment allow you to integrate Mapwize in a simplest way.
@@ -636,12 +636,12 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * @param to the destination point
      * @param isAccessible true if the direction is in accessible mode
      */
-    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, boolean isAccessible) {
+    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode mode) {
         isInDirection = true;
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
         searchDirectionView.setResultList(searchResultList);
-        searchDirectionView.setAccessibility(isAccessible);
+        searchDirectionView.setDirectionMode(mode);
         searchDirectionView.setToDirectionPoint(to);
         searchDirectionView.setFromDirectionPoint(from);
     }

@@ -2,7 +2,6 @@ package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
@@ -41,6 +40,7 @@ import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
 import io.mapwize.mapwizeui.modeview.ModeView;
+import io.mapwize.mapwizeui.modeview.ModeViewAdapter;
 
 /**
  * Search direction module
@@ -48,7 +48,8 @@ import io.mapwize.mapwizeui.modeview.ModeView;
  */
 public class SearchDirectionView extends ConstraintLayout implements
         MapwizeMap.OnVenueEnterListener,
-        MapwizeMap.OnVenueExitListener {
+        MapwizeMap.OnVenueExitListener,
+        ModeViewAdapter.OnModeChangeListener {
 
     private SearchDirectionListener listener;
     private DirectionInfoView directionInfoView;
@@ -94,6 +95,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         swapButton.setOnClickListener(v -> swap());
         backButton.setOnClickListener(v -> backClick());
         modeView = findViewById(R.id.mapwizeModeView);
+        modeView.setListener(this);
         fromEditText.setOnFocusChangeListener((v, hasFocus) -> {
             // If from edit text has focus, setup from search ui
             if (hasFocus) {
@@ -217,15 +219,10 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     /**
      * Change the accessibility
-     * @param accessible determine if the direction should be accessible to low mobility people
+     * @param mode determine if the direction should be accessible to low mobility people
      */
-    public void setAccessibility(boolean accessible) {
-        if (accessible) {
-
-        }
-        else {
-
-        }
+    public void setDirectionMode(DirectionMode mode) {
+        this.mode = mode;
         tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
     }
 
@@ -679,6 +676,7 @@ public class SearchDirectionView extends ConstraintLayout implements
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
         modeView.setModes(mapwizeMap.getDirectionModes());
+        mode = mapwizeMap.getDirectionModes().get(0);
     }
 
     /**
@@ -729,6 +727,11 @@ public class SearchDirectionView extends ConstraintLayout implements
         else if (directionPoint instanceof MapwizeIndoorLocation) {
             textView.setText(getResources().getString(R.string.current_location));
         }
+    }
+
+    @Override
+    public void onModeChange(DirectionMode mode) {
+        setDirectionMode(mode);
     }
 
     public interface SearchDirectionListener {
