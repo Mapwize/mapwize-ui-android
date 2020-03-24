@@ -358,7 +358,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                                 mapwizeMap.getUniverse(),
                                 fromPoint,
                                 toPoint,
-                                "TMP_MODE",
+                                mode.getId(),
                                 true);
                     }
 
@@ -377,7 +377,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                             mapwizeMap.getUniverse(),
                             fromPoint,
                             toPoint,
-                            "TMP_MODE",
+                            mode.getId(),
                             false);
                 }
                 directionInfoView.setContent(direction);
@@ -393,7 +393,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                         mapwizeMap.getUniverse(),
                         fromPoint,
                         toPoint,
-                        "TMP_MODE",
+                        mode.getId(),
                         false);
             }
 
@@ -676,7 +676,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
         modeView.setModes(mapwizeMap.getDirectionModes());
-        mode = mapwizeMap.getDirectionModes().get(0);
     }
 
     /**
