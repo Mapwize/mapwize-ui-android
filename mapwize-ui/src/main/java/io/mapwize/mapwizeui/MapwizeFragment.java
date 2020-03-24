@@ -600,6 +600,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
         searchDirectionView.setResultList(searchResultList);
+        searchDirectionView.centerOnActiveMode();
         boolean showFrom = false;
         boolean showTo = false;
         if (selectedContent != null) {

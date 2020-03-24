@@ -43,6 +43,10 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
         notifyDataSetChanged();
     }
 
+    int getSelectedItemIndex() {
+        return modes.indexOf(selectedMode);
+    }
+
     @Override
     @NonNull
     public ModeItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

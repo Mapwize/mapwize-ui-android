@@ -48,6 +48,10 @@ public class ModeView extends FrameLayout implements ModeViewAdapter.OnModeChang
         recyclerView.setAdapter(modeViewAdapter);
     }
 
+    public void centerOnActiveMode() {
+        recyclerView.scrollToPosition(modeViewAdapter.getSelectedItemIndex());
+    }
+
     public void setListener(ModeViewAdapter.OnModeChangeListener listener) {
         this.listener = listener;
     }

@@ -319,6 +319,10 @@ public class SearchDirectionView extends ConstraintLayout implements
         });
     }
 
+    public void centerOnActiveMode() {
+        modeView.centerOnActiveMode();
+    }
+
     /**
      * Start a direction. Parameters are not used at this point but will be in a near future.
      * @param fromPoint the starting point
