@@ -223,6 +223,7 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     public void setDirectionMode(DirectionMode mode) {
         this.mode = mode;
+        this.modeView.setMode(mode);
         tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
     }
 

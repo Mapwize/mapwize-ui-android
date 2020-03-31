@@ -56,6 +56,10 @@ public class ModeView extends FrameLayout implements ModeViewAdapter.OnModeChang
         this.listener = listener;
     }
 
+    public void setMode(DirectionMode mode) {
+        modeViewAdapter.setSelectedMode(mode, false);
+    }
+
     public void setModes(List<DirectionMode> modes) {
         modeViewAdapter.swapData(modes);
     }

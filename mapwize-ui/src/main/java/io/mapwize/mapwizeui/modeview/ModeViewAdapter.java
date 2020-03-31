@@ -30,16 +30,18 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
     void swapData(List<DirectionMode> modes) {
         this.modes = modes;
         if (selectedMode == null || !modes.contains(selectedMode)) {
-            setSelectedMode(modes.get(0));
+            setSelectedMode(modes.get(0), true);
         }
         else {
             notifyDataSetChanged();
         }
     }
 
-    void setSelectedMode(DirectionMode mode) {
+    void setSelectedMode(DirectionMode mode, boolean dispatchEvent) {
         selectedMode = mode;
-        listener.onModeChange(selectedMode);
+        if (dispatchEvent) {
+            listener.onModeChange(selectedMode);
+        }
         notifyDataSetChanged();
     }
 
@@ -72,12 +74,15 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
         DirectionMode mode = modes.get(position);
         holder.imageView.setImageDrawable(holder.itemView.getResources().getDrawable(mode.getDrawableId()));
         holder.mode = mode;
-        holder.setSelected(mode == selectedMode);
+        holder.setSelected(mode.equals(selectedMode));
     }
 
     @Override
     public int getItemCount() {
-        return modes.size();
+        if (modes != null) {
+            return modes.size();
+        }
+        return 0;
     }
 
     public void setListener(OnModeChangeListener listener) {
@@ -94,7 +99,7 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
             super(itemView);
             imageView = itemView.findViewById(R.id.mode_image);
             layout = itemView.findViewById(R.id.mapwize_mode_layout);
-            layout.setOnClickListener(v->{ setSelectedMode(mode);});
+            layout.setOnClickListener(v->{ setSelectedMode(mode, true);});
         }
 
         void setSelected(boolean selected) {
