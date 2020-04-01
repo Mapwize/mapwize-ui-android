@@ -49,6 +49,7 @@ import io.mapwize.mapwizeui.modeview.ModeViewAdapter;
 public class SearchDirectionView extends ConstraintLayout implements
         MapwizeMap.OnVenueEnterListener,
         MapwizeMap.OnVenueExitListener,
+        MapwizeMap.OnDirectionModesChangeListener,
         ModeViewAdapter.OnModeChangeListener {
 
     private SearchDirectionListener listener;
@@ -197,6 +198,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         this.mapwizeMap = mapwizeMap;
         this.mapwizeMap.addOnVenueEnterListener(this);
         this.mapwizeMap.addOnVenueExitListener(this);
+        this.mapwizeMap.addOnDirectionModesChangeListener(this);
         initSearchDataManager();
     }
 
@@ -680,7 +682,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
-        modeView.setModes(mapwizeMap.getDirectionModes());
+
     }
 
     /**
@@ -736,6 +738,11 @@ public class SearchDirectionView extends ConstraintLayout implements
     @Override
     public void onModeChange(DirectionMode mode) {
         setDirectionMode(mode);
+    }
+
+    @Override
+    public void onDirectionModesChange(@NonNull List<DirectionMode> modes) {
+        modeView.setModes(modes);
     }
 
     public interface SearchDirectionListener {

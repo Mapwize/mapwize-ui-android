@@ -58,7 +58,6 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 int width  = parent.getMeasuredWidth();
                 ViewGroup.LayoutParams params = view.getLayoutParams();
                 int divider = modes.size() < 5 ? modes.size() : 4;
