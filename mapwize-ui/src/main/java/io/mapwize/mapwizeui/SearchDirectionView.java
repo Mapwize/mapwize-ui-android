@@ -107,7 +107,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (!toEditText.hasFocus()) {
+                if (!toEditText.hasFocus() && toDirectionPoint != null) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -315,6 +315,8 @@ public class SearchDirectionView extends ConstraintLayout implements
                 Handler uiHandler = new Handler(Looper.getMainLooper());
                 Runnable runnable = () -> {
                     resultProgressBar.setVisibility(View.INVISIBLE);
+                    mapwizeMap.removeDirection();
+                    directionInfoView.removeContent();
                     Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
                 };
                 uiHandler.post(runnable);
@@ -371,6 +373,8 @@ public class SearchDirectionView extends ConstraintLayout implements
 
                     @Override
                     public void navigationDidFail(Throwable throwable) {
+                        mapwizeMap.removeDirection();
+                        directionInfoView.removeContent();
                         Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
                     }
                 });
