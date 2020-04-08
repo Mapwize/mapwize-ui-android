@@ -182,6 +182,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
             builder.setObjectClass(new String[]{"place", "placeList"});
             // Filter object for the current venue
             builder.setVenueId(mapwizeMap.getVenue().getId());
+
             SearchParams params = builder.build();
             // Api Call
             mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
@@ -245,7 +246,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
             resultProgressBar.setVisibility(View.INVISIBLE);
         }
         else {
-            resultList.showData(searchDataManager.mainSearch, mapwizeMap.getVenue().getUniverses(), mapwizeMap.getUniverse());
+            resultList.showData(searchDataManager.mainSearch, mapwizeMap.getUniverses(), mapwizeMap.getUniverse());
             resultProgressBar.setVisibility(View.INVISIBLE);
         }
     }

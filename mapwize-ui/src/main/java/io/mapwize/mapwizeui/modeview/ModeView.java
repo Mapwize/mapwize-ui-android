@@ -10,12 +10,17 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
+import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizeui.R;
 
-public class ModeView extends FrameLayout {
+public class ModeView extends FrameLayout implements ModeViewAdapter.OnModeChangeListener {
 
     private RecyclerView recyclerView;
     private View selectionView;
+    private ModeViewAdapter modeViewAdapter;
+    ModeViewAdapter.OnModeChangeListener listener;
 
     public ModeView(@NonNull Context context) {
         super(context);
@@ -34,11 +39,33 @@ public class ModeView extends FrameLayout {
 
     private void initialize(@NonNull Context context) {
         inflate(context, R.layout.mapwize_mode_view, this);
-        //selectionView = findViewById(R.id.mapwize_mode_selection_view);
         recyclerView = findViewById(R.id.mapwize_mode_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-        recyclerView.setAdapter(new ModeViewAdapter());
+        LinearLayoutManager lm = new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false);
 
+        recyclerView.setLayoutManager(lm);
+        modeViewAdapter = new ModeViewAdapter();
+        modeViewAdapter.setListener(this);
+        recyclerView.setAdapter(modeViewAdapter);
     }
 
+    public void centerOnActiveMode() {
+        recyclerView.scrollToPosition(modeViewAdapter.getSelectedItemIndex());
+    }
+
+    public void setListener(ModeViewAdapter.OnModeChangeListener listener) {
+        this.listener = listener;
+    }
+
+    public void setMode(DirectionMode mode) {
+        modeViewAdapter.setSelectedMode(mode, false);
+    }
+
+    public void setModes(List<DirectionMode> modes) {
+        modeViewAdapter.swapData(modes);
+    }
+
+    @Override
+    public void onModeChange(DirectionMode mode) {
+        listener.onModeChange(mode);
+    }
 }

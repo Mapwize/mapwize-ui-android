@@ -85,19 +85,19 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
 
         List displayResult = new ArrayList();
+        displayResult.addAll(mapObjectByUniverse.get(currentUniverse));
+        indexForUniverses.add(displayResult.size());
+        universes.remove(universes.indexOf(currentUniverse));
+        universes.add(0, currentUniverse);
         for (Universe u : universes) {
             List objectForCurrentUniverse = mapObjectByUniverse.get(u);
             if (objectForCurrentUniverse.size() > 0) {
-                if (currentUniverse.getId().equals(u.getId())) {
-                    displayResult.addAll(0, objectForCurrentUniverse);
-                    displayResult.add(0, u.getName());
-                }
-                else {
+                if (!currentUniverse.getId().equals(u.getId())) {
                     displayResult.add(u.getName());
                     displayResult.addAll(objectForCurrentUniverse);
+                    indexForUniverses.add(displayResult.size());
                 }
             }
-            indexForUniverses.add(displayResult.size());
         }
 
         swapData(displayResult);
@@ -211,7 +211,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             itemView.setOnClickListener(view -> {
                 int adapterPosition = getAdapterPosition();
                 if (mListener != null && adapterPosition != RecyclerView.NO_POSITION) {
-
                     Object object = mSearchSuggestions.get(adapterPosition);
                     if (object instanceof Place) {
                         Universe universe = null;

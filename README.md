@@ -172,9 +172,9 @@ public void unselectContent()
 * @param direction to display
 * @param from the starting point
 * @param to the destination point
-* @param isAccessible determine if the direction should be accessible to low mobility people
+* @param directionMode determine the mode used by the direction
 */
-public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, boolean isAccessible)
+public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode)
 
 /**
 * Friendly method to add new access to the map and refresh the UI

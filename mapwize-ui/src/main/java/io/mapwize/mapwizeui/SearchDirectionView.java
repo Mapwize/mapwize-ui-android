@@ -2,7 +2,6 @@ package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
@@ -39,6 +39,8 @@ import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
+import io.mapwize.mapwizeui.modeview.ModeView;
+import io.mapwize.mapwizeui.modeview.ModeViewAdapter;
 
 /**
  * Search direction module
@@ -46,7 +48,9 @@ import io.mapwize.mapwizeui.events.EventManager;
  */
 public class SearchDirectionView extends ConstraintLayout implements
         MapwizeMap.OnVenueEnterListener,
-        MapwizeMap.OnVenueExitListener {
+        MapwizeMap.OnVenueExitListener,
+        MapwizeMap.OnDirectionModesChangeListener,
+        ModeViewAdapter.OnModeChangeListener {
 
     private SearchDirectionListener listener;
     private DirectionInfoView directionInfoView;
@@ -57,15 +61,14 @@ public class SearchDirectionView extends ConstraintLayout implements
     private ProgressBar resultProgressBar;
     private ImageView backButton;
     private ImageView swapButton;
-    private ImageView accessibilityOnButton;
-    private ImageView accessibilityOffButton;
     private MapwizeMap mapwizeMap;
     private boolean isSearching = false;
     private SearchDataManager searchDataManager;
+    private ModeView modeView;
 
     private DirectionPoint fromDirectionPoint;
     private DirectionPoint toDirectionPoint;
-    private boolean isAccessible = false;
+    private DirectionMode mode;
 
     public SearchDirectionView(Context context) {
         super(context);
@@ -89,14 +92,11 @@ public class SearchDirectionView extends ConstraintLayout implements
         toEditText = findViewById(R.id.mapwizeDirectionToEditText);
         resultProgressBar = findViewById(R.id.mapwizeDirectionProgressBar);
         backButton = findViewById(R.id.mapwizeDirectionBarBackButton);
-        accessibilityOffButton = findViewById(R.id.mapwizeDirectionAccessibilityOffButton);
-        accessibilityOffButton.setOnClickListener(v -> setAccessibility(false));
-        accessibilityOnButton = findViewById(R.id.mapwizeDirectionAccessibilityOnButton);
-        accessibilityOnButton.setOnClickListener(v -> setAccessibility(true));
         swapButton = findViewById(R.id.mapwizeDirectionBarSwapButton);
         swapButton.setOnClickListener(v -> swap());
         backButton.setOnClickListener(v -> backClick());
-
+        modeView = findViewById(R.id.mapwizeModeView);
+        modeView.setListener(this);
         fromEditText.setOnFocusChangeListener((v, hasFocus) -> {
             // If from edit text has focus, setup from search ui
             if (hasFocus) {
@@ -107,7 +107,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (!toEditText.hasFocus()) {
+                if (!toEditText.hasFocus() && toDirectionPoint != null) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -198,6 +198,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         this.mapwizeMap = mapwizeMap;
         this.mapwizeMap.addOnVenueEnterListener(this);
         this.mapwizeMap.addOnVenueExitListener(this);
+        this.mapwizeMap.addOnDirectionModesChangeListener(this);
         initSearchDataManager();
     }
 
@@ -220,23 +221,12 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     /**
      * Change the accessibility
-     * @param accessible determine if the direction should be accessible to low mobility people
+     * @param mode determine if the direction should be accessible to low mobility people
      */
-    public void setAccessibility(boolean accessible) {
-        if (accessible) {
-            accessibilityOnButton.getDrawable().setColorFilter(getResources().getColor(R.color.mapwize_main_color), PorterDuff.Mode.SRC_ATOP);
-            accessibilityOnButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_pink_selected_view));
-            accessibilityOffButton.getDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            accessibilityOffButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_selected_view));
-        }
-        else {
-            accessibilityOffButton.getDrawable().setColorFilter(getResources().getColor(R.color.mapwize_main_color), PorterDuff.Mode.SRC_ATOP);
-            accessibilityOffButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_pink_selected_view));
-            accessibilityOnButton.getDrawable().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            accessibilityOnButton.setBackground(getResources().getDrawable(R.drawable.mapwize_rounded_selected_view));
-        }
-        isAccessible = accessible;
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
+    public void setDirectionMode(DirectionMode mode) {
+        this.mode = mode;
+        this.modeView.setMode(mode);
+        tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
     }
 
     /**
@@ -267,7 +257,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         if (toDirectionPoint == null) {
             toEditText.requestFocus();
         }
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
+        tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
     }
 
     /**
@@ -294,21 +284,21 @@ public class SearchDirectionView extends ConstraintLayout implements
             Place place = (Place)directionPoint;
             mapwizeMap.addPromotedPlace(place);
         }
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, isAccessible, true);
+        tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
     }
 
     /**
      * Method called when something change in the direction module (from, to, swap, accessiblity)
      * @param from starting point
      * @param to destination
-     * @param isAccessible determine if the direction should be accessible to low mobility people
+     * @param mode determine if the direction should be accessible to low mobility people
      */
-    private void tryToStartDirection(DirectionPoint from, DirectionPoint to, boolean isAccessible, boolean centerOnStart) {
+    private void tryToStartDirection(DirectionPoint from, DirectionPoint to, DirectionMode mode, boolean centerOnStart) {
         if (from == null ||to == null) {
             return;
         }
         resultProgressBar.setVisibility(View.VISIBLE);
-        mapwizeMap.getMapwizeApi().getDirection(from, to, isAccessible, new ApiCallback<Direction>() {
+        mapwizeMap.getMapwizeApi().getDirection(from, to, mode, new ApiCallback<Direction>() {
             @Override
             public void onSuccess(@NonNull final Direction object) {
                 Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -325,11 +315,17 @@ public class SearchDirectionView extends ConstraintLayout implements
                 Handler uiHandler = new Handler(Looper.getMainLooper());
                 Runnable runnable = () -> {
                     resultProgressBar.setVisibility(View.INVISIBLE);
+                    mapwizeMap.removeDirection();
+                    directionInfoView.removeContent();
                     Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
                 };
                 uiHandler.post(runnable);
             }
         });
+    }
+
+    public void centerOnActiveMode() {
+        modeView.centerOnActiveMode();
     }
 
     /**
@@ -352,7 +348,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
         if (fromPoint instanceof MapwizeIndoorLocation && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
             try {
-                mapwizeMap.startNavigation(toPoint, isAccessible, optsBuilder.build(), new OnNavigationUpdateListener() {
+                mapwizeMap.startNavigation(toPoint, mode, optsBuilder.build(), new OnNavigationUpdateListener() {
                     @Override
                     public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
                         directionInfoView.setContent(navigationInfo);
@@ -371,12 +367,14 @@ public class SearchDirectionView extends ConstraintLayout implements
                                 mapwizeMap.getUniverse(),
                                 fromPoint,
                                 toPoint,
-                                "TMP_MODE",
+                                mode.getId(),
                                 true);
                     }
 
                     @Override
                     public void navigationDidFail(Throwable throwable) {
+                        mapwizeMap.removeDirection();
+                        directionInfoView.removeContent();
                         Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -390,7 +388,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                             mapwizeMap.getUniverse(),
                             fromPoint,
                             toPoint,
-                            "TMP_MODE",
+                            mode.getId(),
                             false);
                 }
                 directionInfoView.setContent(direction);
@@ -406,7 +404,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                         mapwizeMap.getUniverse(),
                         fromPoint,
                         toPoint,
-                        "TMP_MODE",
+                        mode.getId(),
                         false);
             }
 
@@ -688,7 +686,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
-        // Nothing to do here
+
     }
 
     /**
@@ -739,6 +737,16 @@ public class SearchDirectionView extends ConstraintLayout implements
         else if (directionPoint instanceof MapwizeIndoorLocation) {
             textView.setText(getResources().getString(R.string.current_location));
         }
+    }
+
+    @Override
+    public void onModeChange(DirectionMode mode) {
+        setDirectionMode(mode);
+    }
+
+    @Override
+    public void onDirectionModesChange(@NonNull List<DirectionMode> modes) {
+        modeView.setModes(modes);
     }
 
     public interface SearchDirectionListener {

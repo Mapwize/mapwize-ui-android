@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/mapwize_mode_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="0dp"
+    android:layout_height="36dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:gravity="center">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:id="@+id/mode_image"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:src="@drawable/ic_access_time_black_24dp"/>
+        android:src="@drawable/ic_access_time_black_24dp"
+        android:padding="8dp"/>
 
 </RelativeLayout>
