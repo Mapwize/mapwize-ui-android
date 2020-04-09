@@ -472,15 +472,16 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     public void selectPlacePreview(PlacePreview placePreview, boolean centerOn) {
         mapwizeMap.removeMarkers();
         mapwizeMap.addMarker(placePreview);
+        mapwizeMap.addPromotedPlace(placePreview);
         if (centerOn) {
             mapwizeMap.centerOnPlace(placePreview, 300);
         }
+        bottomCardView.setContent(placePreview);
         placePreview.getFullObjectAsync(new PreviewCallback<Place>() {
             @Override
             public void getObjectAsync(Place place) {
                 selectedContent = place;
-                bottomCardView.setContent(place, mapwizeMap.getLanguage());
-                mapwizeMap.addPromotedPlace(place);
+                bottomCardView.setContentFromPreview(place, mapwizeMap.getLanguage());
                 EventManager.getInstance().triggerOnContentSelect(
                         place, mapwizeMap.getUniverse(),
                         mapwizeMap.getUniverse(),
@@ -635,14 +636,14 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
      * @param direction to display
      * @param from the starting point
      * @param to the destination point
-     * @param isAccessible true if the direction is in accessible mode
+     * @param directionMode used to find the direction
      */
-    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode mode) {
+    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
         isInDirection = true;
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
         searchDirectionView.setResultList(searchResultList);
-        searchDirectionView.setDirectionMode(mode);
+        searchDirectionView.setDirectionMode(directionMode);
         searchDirectionView.setToDirectionPoint(to);
         searchDirectionView.setFromDirectionPoint(from);
     }

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true"
+    android:animateLayoutChanges="false"
     android:focusable="true"
     android:clickable="true">
 
@@ -76,6 +76,7 @@
                 app:layout_constraintHeight_min="48dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mapwizeBottomSubtitleTextView"
@@ -106,6 +107,15 @@
                 app:layout_constraintStart_toEndOf="@+id/mapwizeBottomDirectionButton"
                 app:layout_constraintTop_toBottomOf="@+id/mapwize_details_webview"
                 app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/mapwizeBottomLoader"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintStart_toStartOf="@+id/mapwize_details_webview"
+                app:layout_constraintEnd_toEndOf="@+id/mapwize_details_webview"
+                app:layout_constraintBottom_toBottomOf="@+id/mapwize_details_webview"
+                app:layout_constraintTop_toTopOf="@+id/mapwize_details_webview"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -22,6 +23,8 @@ import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Translation;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
+import io.mapwize.mapwizesdk.map.PlacePreview;
+import io.mapwize.mapwizesdk.map.PreviewCallback;
 
 /**
  * Display information about place, placelist or direction
@@ -42,6 +45,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
     private TextView directionDistanceTextView;
     private WebView detailsWebView;
     private ImageView closeDetailsButton;
+    private ProgressBar progressBar;
     private boolean hasDetails;
 
     public BottomCardView(@NonNull Context context) {
@@ -91,6 +95,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         closeDetailsButton.setOnClickListener(v -> {
             hideDetails();
         });
+        progressBar = findViewById(R.id.mapwizeBottomLoader);
     }
 
     private void showDetails() {
@@ -141,7 +146,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      */
     public void setContent(Place place, String language) {
         directionFrameLayout.setVisibility(View.GONE);
-        objectInfoFrameLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         Translation translation = place.getTranslation(language);
         if (translation.getTitle().length() > 0) {
             titleTextView.setText(translation.getTitle());
@@ -177,6 +182,59 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             hasDetails = false;
             detailsWebView.setVisibility(View.GONE);
         }
+        directionButton.setVisibility(View.VISIBLE);
+        objectInfoFrameLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void setContent(PlacePreview placePreview) {
+        directionFrameLayout.setVisibility(View.GONE);
+        if (placePreview.getTitle().length() > 0) {
+            titleTextView.setText(placePreview.getTitle());
+            titleTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            titleTextView.setVisibility(View.GONE);
+        }
+        if (placePreview.getSubtitle() != null && placePreview.getSubtitle().length() > 0) {
+            subtitleTextView.setText(placePreview.getSubtitle());
+            subtitleTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            subtitleTextView.setVisibility(View.GONE);
+        }
+        titleImageView.setVisibility(View.VISIBLE);
+        detailsWebView.loadData("", null, null);
+
+        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
+
+        informationsButton.setVisibility(View.INVISIBLE);
+        //detailsWebView.setVisibility(View.INVISIBLE);
+        directionButton.setVisibility(View.INVISIBLE);
+        hasDetails = false;
+        progressBar.setVisibility(View.VISIBLE);
+        objectInfoFrameLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void setContentFromPreview(Place place, String language) {
+        progressBar.setVisibility(View.GONE);
+        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(place)) {
+            informationsButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            informationsButton.setVisibility(View.GONE);
+        }
+
+        Translation translation = place.getTranslation(language);
+        if (translation.getDetails() != null && translation.getDetails().length() > 0) {
+            hasDetails = true;
+            detailsWebView.loadData("<div>"+ translation.getDetails() +"</div>", null, null);
+            detailsWebView.setVisibility(View.VISIBLE);
+        }
+        else {
+            hasDetails = false;
+            detailsWebView.setVisibility(View.GONE);
+        }
+        directionButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
     }
 
@@ -187,7 +245,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      */
     public void setContent(Placelist placelist, String language) {
         directionFrameLayout.setVisibility(View.GONE);
-        objectInfoFrameLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
         Translation translation = placelist.getTranslation(language);
         if (translation.getTitle().length() > 0) {
             titleTextView.setText(translation.getTitle());
@@ -222,6 +280,8 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             hasDetails = false;
             detailsWebView.setVisibility(View.GONE);
         }
+        directionButton.setVisibility(View.VISIBLE);
+        objectInfoFrameLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
