@@ -84,6 +84,11 @@ public class LanguagesButton extends AppCompatImageButton {
         this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
             @Override
             public void onVenueEnter(@NonNull Venue venue) {
+
+            }
+
+            @Override
+            public void onVenueWillEnter(@NonNull Venue venue) {
                 languages = venue.getSupportedLanguages();
                 if (languages.size() > 1) {
                     setVisibility(View.VISIBLE);
@@ -91,11 +96,6 @@ public class LanguagesButton extends AppCompatImageButton {
                 else {
                     setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onVenueWillEnter(@NonNull Venue venue) {
-
             }
         });
         this.mapwizeMap.addOnVenueExitListener(venue -> {

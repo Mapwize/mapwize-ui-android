@@ -144,4 +144,9 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
             }
         }
     }
+
+    @Override
+    public void onFloorChangeError(@Nullable Floor floor, @NonNull Throwable error) {
+
+    }
 }

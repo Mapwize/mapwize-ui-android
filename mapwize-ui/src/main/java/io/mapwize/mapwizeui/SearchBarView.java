@@ -356,6 +356,15 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         });
     }
 
+    @Override
+    public void onVenueEnterError(Venue venue, Throwable error) {
+        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
+        searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
+        searchEditText.setEnabled(true);
+        resultProgressBar.setVisibility(View.INVISIBLE);
+        rightImageView.setVisibility(View.VISIBLE);
+    }
+
     /**
      * On venue exit is called by mapwize sdk.
      * Hide direction button and change placeholder

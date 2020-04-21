@@ -99,6 +99,11 @@ public class UniversesButton extends AppCompatImageButton {
             public void onUniverseChange(@Nullable Universe universe) {
 
             }
+
+            @Override
+            public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
+
+            }
         });
         this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
             @Override
