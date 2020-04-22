@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -147,6 +148,10 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
 
     @Override
     public void onFloorChangeError(@Nullable Floor floor, @NonNull Throwable error) {
-
+        for (int i = 0; i< linearLayout.getChildCount(); i++) {
+            FloorView tv  = (FloorView) linearLayout.getChildAt(i);
+            tv.setSelected(false);
+        }
+        Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
     }
 }

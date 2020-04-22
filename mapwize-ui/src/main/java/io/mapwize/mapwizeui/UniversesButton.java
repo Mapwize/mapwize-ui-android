@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +103,7 @@ public class UniversesButton extends AppCompatImageButton {
 
             @Override
             public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
-
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
             }
         });
         this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
@@ -113,6 +114,11 @@ public class UniversesButton extends AppCompatImageButton {
 
             @Override
             public void onVenueWillEnter(@NonNull Venue venue) {
+
+            }
+
+            @Override
+            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
 
             }
         });

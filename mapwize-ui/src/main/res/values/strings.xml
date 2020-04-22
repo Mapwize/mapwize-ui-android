@@ -13,4 +13,5 @@
     <string name="starting_point">Starting point</string>
     <string name="destination">Destination</string>
     <string name="direction_not_found">No direction has been found</string>
+    <string name="display_content_error">Something went wrong. Make sure you are connected to any network and try again.</string>
 </resources>

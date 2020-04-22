@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
@@ -768,6 +769,11 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     @Override
     public void onVenueWillEnter(@NonNull Venue venue) {
 
+    }
+
+    @Override
+    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
+        Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
     }
 
     @Override
