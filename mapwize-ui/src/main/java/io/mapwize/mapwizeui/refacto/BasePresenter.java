@@ -9,6 +9,8 @@ import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.map.ClickEvent;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
 
 interface BasePresenter {
 
@@ -25,4 +27,8 @@ interface BasePresenter {
     void onUniversesChange(@NonNull List<Universe> list);
     void onUniverseWillChange(@NonNull Universe universe);
     void onUniverseChange(@Nullable Universe universe);
+    void onClickEvent(@NonNull ClickEvent clickEvent);
+    void onFollowUserModeChange(@NonNull FollowUserMode followUserMode);
+    void onDirectionButtonClick();
+
 }

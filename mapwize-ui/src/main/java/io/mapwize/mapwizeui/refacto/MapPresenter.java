@@ -13,13 +13,15 @@ import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
+import io.mapwize.mapwizesdk.map.ClickEvent;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
 
 public class MapPresenter implements BasePresenter {
 
     BaseFragment fragment;
     MapwizeConfiguration mapwizeConfiguration;
     // Global values
-    String language;
+    String language = "en";
     boolean menuButtonHidden;
     boolean followUserButtonHidden;
     boolean floorControllerHidden;
@@ -56,11 +58,12 @@ public class MapPresenter implements BasePresenter {
     public void onVenueEnter(Venue venue) {
         this.venue = venue;
         this.venueLanguages = venue.getSupportedLanguages();
+        fragment.showInVenueScene(venue, language);
     }
 
     @Override
     public void onVenueWillEnter(Venue venue) {
-
+        fragment.showVenueEntering(venue, language);
     }
 
     @Override
@@ -114,5 +117,20 @@ public class MapPresenter implements BasePresenter {
     @Override
     public void onUniverseChange(@Nullable Universe universe) {
         this.universe = universe;
+    }
+
+    @Override
+    public void onClickEvent(@NonNull ClickEvent clickEvent) {
+
+    }
+
+    @Override
+    public void onFollowUserModeChange(@NonNull FollowUserMode followUserMode) {
+
+    }
+
+    @Override
+    public void onDirectionButtonClick() {
+
     }
 }

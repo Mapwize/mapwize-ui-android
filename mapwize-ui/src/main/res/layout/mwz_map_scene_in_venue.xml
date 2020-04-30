@@ -28,17 +28,6 @@
         app:layout_goneMarginEnd="16dp"
         android:visibility="gone"/>
 
-    <ProgressBar
-        android:id="@+id/mwz_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mwz_search_bar_placeholder"
-        android:indeterminate="true"
-        android:visibility="invisible"/>
-
     <io.mapwize.mapwizeui.FollowUserButton
         android:id="@+id/mwz_follow_user_button"
         android:layout_width="52dp"

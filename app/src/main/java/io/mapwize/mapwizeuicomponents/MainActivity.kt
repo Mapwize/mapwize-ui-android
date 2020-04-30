@@ -1,6 +1,7 @@
 package io.mapwize.mapwizeuicomponents
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.mapwize.mapwizesdk.map.MapOptions
 import io.mapwize.mapwizesdk.map.MapwizeMap
@@ -9,6 +10,9 @@ import io.mapwize.mapwizeui.refacto.MapFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListener {
+    override fun onMenuButtonClick() {
+        Toast.makeText(applicationContext, "Menu click", Toast.LENGTH_LONG).show()
+    }
 
     private var mapwizeFragment: MapFragment? = null
     private var mapwizeMap: MapwizeMap? = null
