@@ -721,6 +721,11 @@ public class SearchDirectionView extends ConstraintLayout implements
         });
     }
 
+    @Override
+    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
+
+    }
+
     /*@Override
     public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
 

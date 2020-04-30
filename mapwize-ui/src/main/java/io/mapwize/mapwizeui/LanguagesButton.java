@@ -98,6 +98,11 @@ public class LanguagesButton extends AppCompatImageButton {
                 }
             }
 
+            @Override
+            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
+
+            }
+
             /*@Override
             public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
 

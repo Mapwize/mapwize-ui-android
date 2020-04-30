@@ -101,6 +101,11 @@ public class UniversesButton extends AppCompatImageButton {
 
             }
 
+            @Override
+            public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
+
+            }
+
             /*@Override
             public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
                 Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
@@ -115,6 +120,11 @@ public class UniversesButton extends AppCompatImageButton {
             @Override
             public void onVenueWillEnter(@NonNull Venue venue) {
 
+            }
+
+            @Override
+            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
+                
             }
 
             /*@Override

@@ -3,6 +3,7 @@ package io.mapwize.mapwizeui.refacto;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.transition.Fade;
 import androidx.transition.Scene;
+import androidx.transition.Transition;
+import androidx.transition.TransitionInflater;
 import androidx.transition.TransitionManager;
 
 import com.mapbox.mapboxsdk.Mapbox;
@@ -34,6 +37,7 @@ import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizeui.CompassView;
+import io.mapwize.mapwizeui.FloorControllerView;
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings;
 import io.mapwize.mapwizeui.R;
 
@@ -213,6 +217,7 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
             mapwizeMap.addOnLanguageChangeListener(this);
             mapwizeMap.addOnFollowUserModeChangeListener(this);
             mapwizeMap.addOnFloorChangeListener(this);
+            mapwizeMap.addOnFloorsChangeListener(this);
             presenter.onMapLoaded();
         });
     }
@@ -300,7 +305,8 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     // Scene management
     public void showDefaultScene() {
         currentScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_default, getContext());
-        TransitionManager.go(currentScene);
+        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.venue_to_default);
+        TransitionManager.go(currentScene, transition);
         SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
         searchBarPlaceholder.setText(getResources().getString(R.string.search_venue));
         searchBarPlaceholder.setDirectionButtonVisible(false);
@@ -322,11 +328,8 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
 
     public void showInVenueScene(Venue venue, String language) {
         currentScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_in_venue, getContext());
-        Fade fade = new Fade();
-        fade.excludeTarget(R.id.mwz_search_bar_placeholder, true);
-        fade.excludeTarget(R.id.mwz_follow_user_button, true);
-        fade.excludeTarget(R.id.mwz_compass_view, true);
-        TransitionManager.go(currentScene, fade);
+        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_venue);
+        TransitionManager.go(currentScene, transition);
         SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
         searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
@@ -355,6 +358,19 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
         searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
     }
 
+    public void setActiveFloors(List<Floor> floors) {
+        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
+        floorController.setFloors(floors);
+    }
+
+    public void setActiveFloor(Floor floor) {
+        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
+        if (floorController == null) {
+            return;
+        }
+        floorController.setFloor(floor);
+    }
+
     // Map Listeners
     @Override
     public void onDirectionModesChange(@NonNull List<DirectionMode> directionModes) {
@@ -372,8 +388,13 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     }
 
     @Override
-    public void onFloorsChange(@NonNull List<Floor> floors) {
-        presenter.onFloorsChange(floors);
+    public void onFloorChangeError(@Nullable Floor floor, @NonNull Throwable error) {
+
+    }
+
+    @Override
+    public void onFloorsChange(@NonNull List<Floor> list) {
+        presenter.onFloorsChange(list);
     }
 
     @Override
@@ -397,6 +418,11 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     }
 
     @Override
+    public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
+
+    }
+
+    @Override
     public void onVenueEnter(@NonNull Venue venue) {
         presenter.onVenueEnter(venue);
     }
@@ -404,6 +430,11 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     @Override
     public void onVenueWillEnter(@NonNull Venue venue) {
         presenter.onVenueWillEnter(venue);
+    }
+
+    @Override
+    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
+
     }
 
     @Override

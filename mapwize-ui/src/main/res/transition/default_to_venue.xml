@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:transitionOrdering="together">
+    <fade android:fadingMode="fade_out"
+        android:duration="500">
+        <targets>
+            <target android:targetId="@id/mwz_search_bar_direction_button"/>
+        </targets>
+    </fade>
+    <slide android:slideEdge="right"
+        android:duration="500">
+        <targets>
+            <target android:targetId="@id/mwz_floor_controller"/>
+        </targets>
+    </slide>
+</transitionSet>

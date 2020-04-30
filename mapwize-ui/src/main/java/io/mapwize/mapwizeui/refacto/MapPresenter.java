@@ -69,6 +69,7 @@ public class MapPresenter implements BasePresenter {
     @Override
     public void onVenueExit(Venue venue) {
         this.venue = null;
+        fragment.showDefaultScene();
     }
 
     @Override
@@ -92,11 +93,13 @@ public class MapPresenter implements BasePresenter {
     @Override
     public void onFloorChange(@Nullable Floor floor) {
         this.floor = floor;
+        fragment.setActiveFloor(floor);
     }
 
     @Override
     public void onFloorsChange(@NonNull List<Floor> floors) {
         this.floors = floors;
+        fragment.setActiveFloors(floors);
     }
 
     @Override

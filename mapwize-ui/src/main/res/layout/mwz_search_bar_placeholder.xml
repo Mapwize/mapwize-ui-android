@@ -13,12 +13,14 @@
     android:clickable="true">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/mwz_search_bar_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mwz_search_bar_cardview_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true">
@@ -31,6 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
                 <ImageView
+                    android:id="@+id/mwz_search_bar_menu_button_imageview"
                     android:layout_width="40dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_menu_black_24dp"
@@ -66,6 +69,7 @@
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/mwz_search_bar_direction_button_imageview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_directions_black_24dp"

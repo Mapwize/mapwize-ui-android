@@ -366,13 +366,13 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     private void initFloorController(FloorControllerView floorControllerView, MapwizeFragmentUISettings uiSettings, OnFragmentInteractionListener listener) {
-        if (uiSettings.isFloorControllerHidden()) {
+        /*if (uiSettings.isFloorControllerHidden()) {
             floorControllerView.setVisibility(View.GONE);
         }
         else {
             floorControllerView.setMapwizeMap(mapwizeMap);
             floorControllerView.setUiBehaviour(listener);
-        }
+        }*/
     }
 
     private void initFollowUserModeButton(FollowUserButton followUserButton, MapwizeFragmentUISettings uiSettings) {

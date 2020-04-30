@@ -347,6 +347,11 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         });
     }
 
+    @Override
+    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
+
+    }
+
     /*@Override
     public void onVenueEnterError(Venue venue, Throwable error) {
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
