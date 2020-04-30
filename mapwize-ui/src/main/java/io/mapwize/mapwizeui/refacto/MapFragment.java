@@ -17,7 +17,13 @@ import androidx.transition.TransitionManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
+import java.util.List;
+
+import io.mapwize.mapwizesdk.api.DirectionMode;
+import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
@@ -25,7 +31,9 @@ import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings;
 import io.mapwize.mapwizeui.R;
 
-public class MapFragment extends Fragment implements BaseFragment {
+public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.OnVenueEnterListener,
+        MapwizeMap.OnVenueExitListener, MapwizeMap.OnUniverseChangeListener, MapwizeMap.OnFloorChangeListener,
+        MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -276,6 +284,62 @@ public class MapFragment extends Fragment implements BaseFragment {
     public void showDefaultScene() {
         Scene defaultScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_default, getContext());
         TransitionManager.go(defaultScene);
+    }
+
+    // Map Listeners
+    @Override
+    public void onDirectionModesChange(@NonNull List<DirectionMode> directionModes) {
+        presenter.onDirectionModesChange(directionModes);
+    }
+
+    @Override
+    public void onFloorWillChange(@Nullable Floor floor) {
+        presenter.onFloorWillChange(floor);
+    }
+
+    @Override
+    public void onFloorChange(@Nullable Floor floor) {
+        presenter.onFloorChange(floor);
+    }
+
+    @Override
+    public void onFloorsChange(@NonNull List<Floor> floors) {
+        presenter.onFloorsChange(floors);
+    }
+
+    @Override
+    public void onLanguageChange(@NonNull String language) {
+        presenter.onLanguageChange(language);
+    }
+
+    @Override
+    public void onUniversesChange(@NonNull List<Universe> universes) {
+        presenter.onUniversesChange(universes);
+    }
+
+    @Override
+    public void onUniverseWillChange(@NonNull Universe universe) {
+        presenter.onUniverseWillChange(universe);
+    }
+
+    @Override
+    public void onUniverseChange(@Nullable Universe universe) {
+        presenter.onUniverseChange(universe);
+    }
+
+    @Override
+    public void onVenueEnter(@NonNull Venue venue) {
+        presenter.onVenueEnter(venue);
+    }
+
+    @Override
+    public void onVenueWillEnter(@NonNull Venue venue) {
+        presenter.onVenueWillEnter(venue);
+    }
+
+    @Override
+    public void onVenueExit(@NonNull Venue venue) {
+        presenter.onVenueExit(venue);
     }
 
 

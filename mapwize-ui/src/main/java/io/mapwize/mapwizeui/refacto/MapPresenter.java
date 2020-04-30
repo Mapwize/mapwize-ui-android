@@ -1,5 +1,8 @@
 package io.mapwize.mapwizeui.refacto;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.List;
 
 import io.mapwize.mapwizesdk.api.Direction;
@@ -51,7 +54,8 @@ public class MapPresenter implements BasePresenter {
 
     @Override
     public void onVenueEnter(Venue venue) {
-
+        this.venue = venue;
+        this.venueLanguages = venue.getSupportedLanguages();
     }
 
     @Override
@@ -61,11 +65,54 @@ public class MapPresenter implements BasePresenter {
 
     @Override
     public void onVenueExit(Venue venue) {
-
+        this.venue = null;
     }
 
     @Override
     public void onVenueEnterError(Venue venue, Throwable error) {
 
+    }
+
+    @Override
+    public void onDirectionModesChange(@NonNull List<DirectionMode> directionModes) {
+        this.directionModes = directionModes;
+        if (!directionModes.isEmpty() && !directionModes.contains(directionMode)) {
+            directionMode = directionModes.get(0);
+        }
+    }
+
+    @Override
+    public void onFloorWillChange(@Nullable Floor floor) {
+
+    }
+
+    @Override
+    public void onFloorChange(@Nullable Floor floor) {
+        this.floor = floor;
+    }
+
+    @Override
+    public void onFloorsChange(@NonNull List<Floor> floors) {
+        this.floors = floors;
+    }
+
+    @Override
+    public void onLanguageChange(@NonNull String language) {
+        this.venueLanguage = language;
+    }
+
+    @Override
+    public void onUniversesChange(@NonNull List<Universe> universes) {
+        this.universes = universes;
+    }
+
+    @Override
+    public void onUniverseWillChange(@NonNull Universe universe) {
+
+    }
+
+    @Override
+    public void onUniverseChange(@Nullable Universe universe) {
+        this.universe = universe;
     }
 }
