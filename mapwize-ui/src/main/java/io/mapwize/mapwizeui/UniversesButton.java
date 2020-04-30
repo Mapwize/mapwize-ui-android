@@ -101,10 +101,10 @@ public class UniversesButton extends AppCompatImageButton {
 
             }
 
-            @Override
+            /*@Override
             public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
                 Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
-            }
+            }*/
         });
         this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
             @Override
@@ -117,10 +117,10 @@ public class UniversesButton extends AppCompatImageButton {
 
             }
 
-            @Override
+            /*@Override
             public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
 
-            }
+            }*/
         });
         this.mapwizeMap.addOnVenueExitListener(venue -> {
             this.universes = new ArrayList<>();

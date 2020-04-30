@@ -771,7 +771,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
 
     }
 
-    @Override
     public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
         Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
     }

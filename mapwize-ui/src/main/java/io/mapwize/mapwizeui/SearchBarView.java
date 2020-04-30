@@ -46,7 +46,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
     private SearchResultList resultList;
-    private ProgressBar resultProgressBar;
     private SearchDataManager searchDataManager;
     private boolean menuHidden;
 
@@ -79,7 +78,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
                 listener.onLeftButtonClick(v);
             }
         });
-        resultProgressBar = findViewById(R.id.mapwizeResultListProgress);
         rightImageView = findViewById(R.id.mapwizeSearchBarRightFrame);
         rightImageView.setOnClickListener(v -> {
             if (listener != null) {
@@ -166,7 +164,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         if (!isSearching) {
             return;
         }
-        resultProgressBar.setVisibility(View.VISIBLE);
 
         if (query.length() == 0) {
             performEmptySearch();
@@ -191,7 +188,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
                         resultList.showData(mapwizeObjects, mapwizeMap.getUniverses(), mapwizeMap.getUniverse());
-                        resultProgressBar.setVisibility(View.INVISIBLE);
                     });
                 }
 
@@ -218,7 +214,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
                         resultList.showData(mapwizeObjects);
-                        resultProgressBar.setVisibility(View.INVISIBLE);
                     });
                 }
 
@@ -243,11 +238,9 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
     private void performEmptySearch() {
         if (mapwizeMap.getVenue() == null) {
             resultList.showData(searchDataManager.venuesList);
-            resultProgressBar.setVisibility(View.INVISIBLE);
         }
         else {
             resultList.showData(searchDataManager.mainSearch, mapwizeMap.getUniverses(), mapwizeMap.getUniverse());
-            resultProgressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -313,7 +306,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
         searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
         searchEditText.setEnabled(true);
-        resultProgressBar.setVisibility(View.INVISIBLE);
         rightImageView.setVisibility(View.VISIBLE);
     }
 
@@ -328,7 +320,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
         searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
         searchEditText.setEnabled(false);
-        resultProgressBar.setVisibility(View.VISIBLE);
 
         searchDataManager.setMainSearch(new ArrayList<>());
         searchDataManager.setMainFrom(new ArrayList<>());
@@ -356,14 +347,14 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
         });
     }
 
-    @Override
+    /*@Override
     public void onVenueEnterError(Venue venue, Throwable error) {
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
         searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
         searchEditText.setEnabled(true);
         resultProgressBar.setVisibility(View.INVISIBLE);
         rightImageView.setVisibility(View.VISIBLE);
-    }
+    }*/
 
     /**
      * On venue exit is called by mapwize sdk.
@@ -374,7 +365,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
     public void onVenueExit(@NonNull Venue venue) {
         searchEditText.setHint(getResources().getString(R.string.search_venue));
         rightImageView.setVisibility(View.GONE);
-        resultProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override

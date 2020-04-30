@@ -98,10 +98,10 @@ public class LanguagesButton extends AppCompatImageButton {
                 }
             }
 
-            @Override
+            /*@Override
             public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
 
-            }
+            }*/
         });
         this.mapwizeMap.addOnVenueExitListener(venue -> {
             this.languages = new ArrayList<>();
