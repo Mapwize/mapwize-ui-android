@@ -15,6 +15,10 @@ interface BaseFragment {
 
     void showVenueEntering(Venue venue, String language);
 
+    void showSearchScene();
+
+    void backFromSearchScene();
+
     void setActiveFloors(List<Floor> floors);
 
     void setActiveFloor(Floor floor);

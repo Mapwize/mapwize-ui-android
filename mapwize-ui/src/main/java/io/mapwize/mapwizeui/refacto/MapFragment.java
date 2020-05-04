@@ -44,7 +44,7 @@ import io.mapwize.mapwizeui.R;
 public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.OnVenueEnterListener,
         MapwizeMap.OnVenueExitListener, MapwizeMap.OnUniverseChangeListener, MapwizeMap.OnFloorChangeListener,
         MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener,
-        MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener {
+        MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener, SearchBar.SearchBarListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -65,6 +65,8 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
 
     private ViewGroup sceneRoot;
     private Scene currentScene;
+    Scene defaultScene;
+    Scene searchScene;
 
     // Component listener
     private MapFragment.OnFragmentInteractionListener listener;
@@ -220,6 +222,8 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
             mapwizeMap.addOnFloorsChangeListener(this);
             presenter.onMapLoaded();
         });
+        defaultScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_default, getContext());
+        searchScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_search_scene, getContext());
     }
 
     @Override
@@ -304,13 +308,18 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
 
     // Scene management
     public void showDefaultScene() {
-        currentScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_default, getContext());
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.venue_to_default);
-        TransitionManager.go(currentScene, transition);
-        SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
+        if (!defaultScene.equals(currentScene)) {
+            currentScene = defaultScene;
+            Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.venue_to_default);
+            transition.excludeChildren(R.id.mwz_search_bar_placeholder, true);
+            TransitionManager.go(defaultScene, transition);
+        }
+        SearchBarPlaceholder searchBarPlaceholder = defaultScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
         searchBarPlaceholder.setText(getResources().getString(R.string.search_venue));
         searchBarPlaceholder.setDirectionButtonVisible(false);
         searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
+        ProgressBar progressBar = defaultScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
         searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
             @Override
             public void onMenuButtonClick() {
@@ -320,6 +329,60 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
             @Override
             public void onDirectionButtonClick() {
                 presenter.onDirectionButtonClick();
+            }
+
+            @Override
+            public void onQueryClick() {
+                presenter.onQueryClick();
+            }
+        });
+        CompassView compassView = defaultScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
+        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
+    }
+
+    public void showVenueEntering(Venue venue, String language) {
+        ProgressBar progressBar = defaultScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        SearchBarPlaceholder searchBarPlaceholder = defaultScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
+        String searchPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
+        searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
+    }
+
+    @Override
+    public void showSearchScene() {
+        currentScene = searchScene;
+        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_search);
+        TransitionManager.go(searchScene, transition);
+        SearchBar searchBar = searchScene.getSceneRoot().findViewById(R.id.mwz_search_bar);
+        searchBar.setListener(this);
+        searchBar.textFieldRequestFocus();
+    }
+
+    @Override
+    public void backFromSearchScene() {
+        currentScene = defaultScene;
+        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.search_to_default);
+        TransitionManager.go(defaultScene, transition);
+        SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
+        searchBarPlaceholder.setText(getResources().getString(R.string.search_venue));
+        searchBarPlaceholder.setDirectionButtonVisible(false);
+        searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
+        ProgressBar progressBar = currentScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
+        searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
+            @Override
+            public void onMenuButtonClick() {
+                listener.onMenuButtonClick();
+            }
+
+            @Override
+            public void onDirectionButtonClick() {
+                presenter.onDirectionButtonClick();
+            }
+
+            @Override
+            public void onQueryClick() {
+                presenter.onQueryClick();
             }
         });
         CompassView compassView = currentScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
@@ -327,14 +390,13 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     }
 
     public void showInVenueScene(Venue venue, String language) {
-        currentScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_in_venue, getContext());
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_venue);
-        TransitionManager.go(currentScene, transition);
         SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
         searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
         searchBarPlaceholder.setDirectionButtonVisible(true);
         searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
+        ProgressBar progressBar = currentScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
         searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
             @Override
             public void onMenuButtonClick() {
@@ -345,17 +407,14 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
             public void onDirectionButtonClick() {
                 presenter.onDirectionButtonClick();
             }
+
+            @Override
+            public void onQueryClick() {
+                presenter.onQueryClick();
+            }
         });
         CompassView compassView = currentScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
         compassView.setMapboxMap(mapwizeMap.getMapboxMap());
-    }
-
-    public void showVenueEntering(Venue venue, String language) {
-        ProgressBar progressBar = currentScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-        SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
-        String searchPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
-        searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
     }
 
     public void setActiveFloors(List<Floor> floors) {
@@ -453,6 +512,16 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     @Override
     public void onFollowUserModeChange(@NonNull FollowUserMode followUserMode) {
         presenter.onFollowUserModeChange(followUserMode);
+    }
+
+    @Override
+    public void onQueryChange(String query) {
+
+    }
+
+    @Override
+    public void onSearchBackButtonClick() {
+        presenter.onSearchBackButtonClick();
     }
 
 

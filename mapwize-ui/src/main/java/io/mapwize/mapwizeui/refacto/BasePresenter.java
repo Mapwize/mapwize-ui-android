@@ -30,5 +30,7 @@ interface BasePresenter {
     void onClickEvent(@NonNull ClickEvent clickEvent);
     void onFollowUserModeChange(@NonNull FollowUserMode followUserMode);
     void onDirectionButtonClick();
+    void onQueryClick();
+    void onSearchBackButtonClick();
 
 }

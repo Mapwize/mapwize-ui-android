@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui.refacto;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -43,6 +45,7 @@ public class SearchBarPlaceholder extends ConstraintLayout {
         this.listener = listener;
         menuButton.setOnClickListener(v -> listener.onMenuButtonClick());
         directionButton.setOnClickListener(v -> listener.onDirectionButtonClick());
+        titleView.setOnClickListener(v -> listener.onQueryClick());
     }
 
     public void setMenuButtonVisible(boolean visible) {
@@ -50,7 +53,33 @@ public class SearchBarPlaceholder extends ConstraintLayout {
     }
 
     public void setDirectionButtonVisible(boolean visible) {
-        directionButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+        if (View.VISIBLE == directionButton.getVisibility() && visible || View.GONE == directionButton.getVisibility() && !visible) {
+            return;
+        }
+        if (visible) {
+            directionButton.animate()
+                    .alpha(1.0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            directionButton.setVisibility(VISIBLE);
+                        }
+                    });
+        }
+        else {
+            directionButton.animate()
+                    .alpha(0.0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            directionButton.setVisibility(GONE);
+                        }
+                    });
+        }
     }
 
     public void setText(String text) {
@@ -60,6 +89,7 @@ public class SearchBarPlaceholder extends ConstraintLayout {
     public interface Listener {
         void onMenuButtonClick();
         void onDirectionButtonClick();
+        void onQueryClick();
     }
 
 }

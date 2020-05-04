@@ -136,4 +136,19 @@ public class MapPresenter implements BasePresenter {
     public void onDirectionButtonClick() {
 
     }
+
+    @Override
+    public void onQueryClick() {
+        fragment.showSearchScene();
+    }
+
+    @Override
+    public void onSearchBackButtonClick() {
+        if (venue == null) {
+            fragment.backFromSearchScene();
+        }
+        else {
+            fragment.showInVenueScene(venue, language);
+        }
+    }
 }
