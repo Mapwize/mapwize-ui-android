@@ -26,6 +26,7 @@ public class FloorControllerView extends ScrollView {
 
     private LinearLayout linearLayout;
     private int viewSize = 0;
+    private OnFloorClickListener listener;
 
     public FloorControllerView(@NonNull Context context) {
         super(context);
@@ -42,6 +43,10 @@ public class FloorControllerView extends ScrollView {
         initLayout();
     }
 
+    public void setListener(OnFloorClickListener listener) {
+        this.listener = listener;
+    }
+
     private void initLayout() {
         this.setVerticalScrollBarEnabled(false);
         viewSize = (int)getContext().getResources().getDimension(R.dimen.mapwize_ui_floor_button_size);
@@ -53,10 +58,10 @@ public class FloorControllerView extends ScrollView {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
         linearLayout.setVerticalGravity(Gravity.BOTTOM);
-        linearLayout.setLayoutTransition(new LayoutTransition());
+        /*linearLayout.setLayoutTransition(new LayoutTransition());
         setLayoutTransition(new LayoutTransition());
         getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        linearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        linearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);*/
         this.addView(linearLayout);
     }
 
@@ -76,8 +81,8 @@ public class FloorControllerView extends ScrollView {
             floorView.setBackgroundResource(R.drawable.rounded_button);
             floorView.setOnClickListener(v -> {
                 FloorView tv = (FloorView) v;
-                Double selectedFloor = tv.getFloor().getNumber();
-
+                Floor selectedFloor = tv.getFloor();
+                this.listener.onFloorClick(selectedFloor);
             });
             linearLayout.addView(floorView);
         }
@@ -107,5 +112,9 @@ public class FloorControllerView extends ScrollView {
                 tv.setSelected(false);
             }
         }
+    }
+
+    public interface OnFloorClickListener {
+        void onFloorClick(Floor floor);
     }
 }

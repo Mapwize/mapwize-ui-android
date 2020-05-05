@@ -13,6 +13,15 @@
         android:duration="300">
         <targets>
             <target android:targetId="@id/mwz_search_background_view"/>
+            <target android:targetId="@id/mwz_search_results_list"/>
         </targets>
     </slide>
+
+    <!--<fade android:fadingMode="fade_in"
+        android:duration="300"
+        android:startDelay="500">
+        <targets>
+
+        </targets>
+    </fade>-->
 </transitionSet>

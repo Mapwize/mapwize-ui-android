@@ -1,25 +1,38 @@
 package io.mapwize.mapwizeui.refacto;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.MapwizeApi;
+import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
+import io.mapwize.mapwizesdk.api.SearchParams;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.ClickEvent;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
+import io.mapwize.mapwizesdk.map.MapOptions;
 
 public class MapPresenter implements BasePresenter {
 
     BaseFragment fragment;
     MapwizeConfiguration mapwizeConfiguration;
+    MapOptions mapOptions;
+    MapwizeApi api;
     // Global values
     String language = "en";
     boolean menuButtonHidden;
@@ -44,9 +57,40 @@ public class MapPresenter implements BasePresenter {
     DirectionPoint to;
     Direction direction;
 
-    public MapPresenter(BaseFragment fragment, MapwizeConfiguration mapwizeConfiguration) {
+    List<MapwizeObject> preloadedSearchResults;
+
+    public MapPresenter(BaseFragment fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
         this.fragment = fragment;
         this.mapwizeConfiguration = mapwizeConfiguration;
+        this.mapOptions = mapOptions;
+        api = MapwizeApiFactory.getApi(mapwizeConfiguration);
+        preloadVenueSearchResults();
+    }
+
+    private void preloadVenueSearchResults() {
+        SearchParams.Builder builder = new SearchParams.Builder();
+        builder.setQuery("");
+        // Filter by object type
+        builder.setObjectClass(new String[]{"venue"});
+        // Filter by organization if present in map options
+        builder.setOrganizationId(mapOptions.getRestrictContentToOrganizationId());
+        // Filter by venue if present in map options
+        if (mapOptions.getRestrictContentToVenueIds() != null) {
+            builder.setVenueIds(mapOptions.getRestrictContentToVenueIds());
+        }
+        SearchParams params = builder.build();
+        // Api call
+        api.search(params, new ApiCallback<List<MapwizeObject>>() {
+            @Override
+            public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
+                // Display the result
+                preloadedSearchResults = mapwizeObjects;
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable throwable) {
+            }
+        });
     }
 
     @Override
@@ -150,5 +194,97 @@ public class MapPresenter implements BasePresenter {
         else {
             fragment.showInVenueScene(venue, language);
         }
+    }
+
+    @Override
+    public void onSearchQueryChange(String query) {
+        if (query.length() == 0) {
+            // Perform main searches
+            if (venue == null) {
+                fragment.showSearchResults(preloadedSearchResults);
+            }
+            return;
+        }
+
+        SearchParams.Builder builder = new SearchParams.Builder();
+        builder.setQuery(query);
+
+        // If we are in a venue, search for venue content
+        if (venue != null) {
+            // Filter object by type
+            builder.setObjectClass(new String[]{"place", "placeList"});
+            // Filter object for the current venue
+            builder.setVenueId(venue.getId());
+
+            SearchParams params = builder.build();
+            // Api Call
+            api.search(params, new ApiCallback<List<MapwizeObject>>() {
+                @Override
+                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
+                    // Display the result
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        fragment.showSearchResults(mapwizeObjects);
+                    });
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable throwable) {
+                }
+            });
+        }
+        // If we are not in a venue, search for venue
+        else {
+            // Filter by object type
+            builder.setObjectClass(new String[]{"venue"});
+            // Filter by organization if present in map options
+            builder.setOrganizationId(mapOptions.getRestrictContentToOrganizationId());
+            // Filter by venue if present in map options
+            if (mapOptions.getRestrictContentToVenueIds() != null) {
+                builder.setVenueIds(mapOptions.getRestrictContentToVenueIds());
+            }
+            SearchParams params = builder.build();
+            // Api call
+            api.search(params, new ApiCallback<List<MapwizeObject>>() {
+                @Override
+                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
+                    // Display the result
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                       fragment.showSearchResults(mapwizeObjects);
+                    });
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable throwable) {
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSearchResultPlaceClick(Place place, Universe universe) {
+        fragment.backFromSearchScene();
+        selectPlace(place, universe);
+    }
+
+    @Override
+    public void onSearchResultVenueClick(Venue venue) {
+        fragment.backFromSearchScene();
+        fragment.centerOnVenue(venue);
+    }
+
+    @Override
+    public void onSearchResultPlacelistClick(Placelist placelist) {
+        fragment.backFromSearchScene();
+        selectPlacelist(placelist);
+    }
+
+    private void selectPlace(Place place, Universe universe) {
+        Log.i("Debug", "Select place");
+        selectedContent = place;
+        fragment.centerOnPlace(place, universe);
+    }
+
+    private void selectPlacelist(Placelist placelist) {
+        Log.i("Debug", "Select placelist");
     }
 }

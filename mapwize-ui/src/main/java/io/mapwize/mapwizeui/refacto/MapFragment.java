@@ -28,6 +28,7 @@ import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
@@ -40,11 +41,13 @@ import io.mapwize.mapwizeui.CompassView;
 import io.mapwize.mapwizeui.FloorControllerView;
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings;
 import io.mapwize.mapwizeui.R;
+import io.mapwize.mapwizeui.SearchResultList;
 
 public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.OnVenueEnterListener,
         MapwizeMap.OnVenueExitListener, MapwizeMap.OnUniverseChangeListener, MapwizeMap.OnFloorChangeListener,
         MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener,
-        MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener, SearchBar.SearchBarListener {
+        MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener, SearchBar.SearchBarListener,
+        SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -184,12 +187,16 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
             initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
             mapwizeConfiguration = bundle.getParcelable(ARG_MAPWIZE_CONFIGURATION);
         }
-        else {
+        if (initializeOptions == null) {
             initializeOptions = new MapOptions.Builder().build();
+        }
+        if (initializeUiSettings == null) {
             initializeUiSettings = new MapwizeFragmentUISettings.Builder().build();
+        }
+        if (mapwizeConfiguration == null) {
             mapwizeConfiguration = MapwizeConfiguration.getInstance();
         }
-        presenter = new MapPresenter(this, mapwizeConfiguration);
+        presenter = new MapPresenter(this, mapwizeConfiguration, initializeOptions);
     }
 
     @Override
@@ -352,10 +359,39 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
     public void showSearchScene() {
         currentScene = searchScene;
         Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_search);
+        transition.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(@NonNull Transition transition) {
+                SearchBar searchBar = searchScene.getSceneRoot().findViewById(R.id.mwz_search_bar);
+                searchBar.setListener(MapFragment.this);
+                searchBar.textFieldRequestFocus();
+                presenter.onSearchQueryChange("");
+                SearchResultList resultList = searchScene.getSceneRoot().findViewById(R.id.mwz_search_results_list);
+                resultList.setListener(MapFragment.this);
+            }
+
+            @Override
+            public void onTransitionEnd(@NonNull Transition transition) {
+//                presenter.onSearchQueryChange("");
+            }
+
+            @Override
+            public void onTransitionCancel(@NonNull Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(@NonNull Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(@NonNull Transition transition) {
+
+            }
+        });
         TransitionManager.go(searchScene, transition);
-        SearchBar searchBar = searchScene.getSceneRoot().findViewById(R.id.mwz_search_bar);
-        searchBar.setListener(this);
-        searchBar.textFieldRequestFocus();
+
     }
 
     @Override
@@ -387,6 +423,8 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
         });
         CompassView compassView = currentScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
         compassView.setMapboxMap(mapwizeMap.getMapboxMap());
+        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
+        floorController.setListener(this);
     }
 
     public void showInVenueScene(Venue venue, String language) {
@@ -428,6 +466,25 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
             return;
         }
         floorController.setFloor(floor);
+    }
+
+    @Override
+    public void showSearchResults(List<MapwizeObject> results) {
+        if (currentScene == searchScene) {
+            SearchResultList resultList = searchScene.getSceneRoot().findViewById(R.id.mwz_search_results_list);
+            resultList.showData(results);
+        }
+    }
+
+    @Override
+    public void centerOnVenue(Venue venue) {
+        mapwizeMap.centerOnVenue(venue, 300);
+    }
+
+    @Override
+    public void centerOnPlace(Place place, Universe universe) {
+        mapwizeMap.centerOnPlace(place, 0);
+        mapwizeMap.setUniverse(universe);
     }
 
     // Map Listeners
@@ -516,12 +573,38 @@ public class MapFragment extends Fragment implements BaseFragment, MapwizeMap.On
 
     @Override
     public void onQueryChange(String query) {
-
+        presenter.onSearchQueryChange(query);
     }
 
     @Override
     public void onSearchBackButtonClick() {
         presenter.onSearchBackButtonClick();
+    }
+
+    @Override
+    public void onSearchResultNull() {
+
+    }
+
+    @Override
+    public void onSearchResult(Place place, Universe universe) {
+        presenter.onSearchResultPlaceClick(place, universe);
+    }
+
+    @Override
+    public void onSearchResult(Placelist placelist) {
+        presenter.onSearchResultPlacelistClick(placelist);
+    }
+
+    @Override
+    public void onSearchResult(Venue venue) {
+        presenter.onSearchResultVenueClick(venue);
+    }
+
+    @Override
+    public void onFloorClick(Floor floor) {
+        mapwizeMap.setFloor(floor.getNumber());
+        setActiveFloor(floor);
     }
 
 

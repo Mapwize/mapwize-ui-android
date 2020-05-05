@@ -7,6 +7,8 @@ import java.util.List;
 
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.map.ClickEvent;
@@ -32,5 +34,8 @@ interface BasePresenter {
     void onDirectionButtonClick();
     void onQueryClick();
     void onSearchBackButtonClick();
-
+    void onSearchQueryChange(String query);
+    void onSearchResultPlaceClick(Place place, Universe universe);
+    void onSearchResultVenueClick(Venue venue);
+    void onSearchResultPlacelistClick(Placelist placelist);
 }
