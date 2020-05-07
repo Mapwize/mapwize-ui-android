@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -43,7 +42,7 @@ public class SearchBar extends ConstraintLayout {
         backButton = findViewById(R.id.mwz_search_bar_back_button);
         backButton.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onSearchBackButtonClick();
+                listener.onSearchBarBackButtonClick();
             }
         });
         searchEditText = findViewById(R.id.mwz_search_bar_query_field);
@@ -55,7 +54,7 @@ public class SearchBar extends ConstraintLayout {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                listener.onQueryChange(s.toString());
+                listener.onSearchBarQueryChange(s.toString());
             }
 
             @Override
@@ -82,8 +81,8 @@ public class SearchBar extends ConstraintLayout {
     }
 
     public interface SearchBarListener {
-        void onQueryChange(String query);
-        void onSearchBackButtonClick();
+        void onSearchBarQueryChange(String query);
+        void onSearchBarBackButtonClick();
     }
 
 }

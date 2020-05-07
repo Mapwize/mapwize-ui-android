@@ -15,6 +15,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:elevation="10dp"/>
 
+    <ProgressBar
+        android:id="@+id/mwz_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mwz_search_bar_placeholder"
+        android:indeterminate="true"
+        android:visibility="invisible"/>
+
     <io.mapwize.mapwizeui.CompassView
         android:id="@+id/mwz_compass_view"
         android:layout_width="40dp"
@@ -27,6 +38,23 @@
         app:layout_constraintTop_toBottomOf="@+id/mwz_search_bar_placeholder"
         app:layout_goneMarginEnd="16dp"
         android:visibility="gone"/>
+
+    <io.mapwize.mapwizeui.FloorControllerView
+        android:id="@+id/mwz_floor_controller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="22dp"
+        android:maxHeight="0dp"
+        app:layout_constraintHeight_max="0dp"
+        app:layout_constrainedHeight="true"
+        app:layout_goneMarginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/mwz_follow_user_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mwz_compass_view"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <io.mapwize.mapwizeui.FollowUserButton
         android:id="@+id/mwz_follow_user_button"

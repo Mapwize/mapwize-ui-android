@@ -13,10 +13,11 @@ import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.map.ClickEvent;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 interface BasePresenter {
 
-    void onMapLoaded();
+    void onMapLoaded(MapwizeMap mapwizeMap);
     void onVenueEnter(Venue venue);
     void onVenueWillEnter(Venue venue);
     void onVenueExit(Venue venue);
@@ -38,4 +39,5 @@ interface BasePresenter {
     void onSearchResultPlaceClick(Place place, Universe universe);
     void onSearchResultVenueClick(Venue venue);
     void onSearchResultPlacelistClick(Placelist placelist);
+    void onFloorClick(Floor floor);
 }

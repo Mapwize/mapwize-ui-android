@@ -20,15 +20,17 @@ interface BaseFragment {
 
     void showSearchScene();
 
-    void backFromSearchScene();
+    void backToDefaultScene();
 
-    void setActiveFloors(List<Floor> floors);
+    void backToVenueScene(Venue venue, String language);
 
-    void setActiveFloor(Floor floor);
+    void showActiveFloors(List<Floor> floors);
 
-    void showSearchResults(List<MapwizeObject> results);
+    void showLoadingFloor(Floor floor);
 
-    void centerOnVenue(Venue venue);
+    void showActiveFloor(Floor floor);
 
-    void centerOnPlace(Place place, Universe universe);
+    void showSearchResults(List<? extends MapwizeObject> results);
+
+    void showErrorMessage(String message);
 }

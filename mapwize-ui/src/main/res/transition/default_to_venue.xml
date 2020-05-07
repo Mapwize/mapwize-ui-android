@@ -2,10 +2,11 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="together">
 
-    <slide android:slideEdge="right"
-        android:duration="500">
+    <fade android:fadingMode="fade_in"
+        android:duration="300">
         <targets>
             <target android:targetId="@id/mwz_floor_controller"/>
+            <target android:targetId="@id/mwz_search_bar_direction_button"/>
         </targets>
-    </slide>
+    </fade>
 </transitionSet>

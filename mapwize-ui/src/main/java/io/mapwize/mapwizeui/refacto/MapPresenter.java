@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.mapwize.mapwizesdk.api.ApiCallback;
@@ -26,13 +27,18 @@ import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.ClickEvent;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
 
-public class MapPresenter implements BasePresenter {
+public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListener,
+        MapwizeMap.OnVenueExitListener, MapwizeMap.OnUniverseChangeListener, MapwizeMap.OnFloorChangeListener,
+        MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener,
+        MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener {
 
     BaseFragment fragment;
     MapwizeConfiguration mapwizeConfiguration;
     MapOptions mapOptions;
     MapwizeApi api;
+    MapwizeMap mapwizeMap;
     // Global values
     String language = "en";
     boolean menuButtonHidden;
@@ -51,8 +57,8 @@ public class MapPresenter implements BasePresenter {
     List<String> venueLanguages;
     DirectionMode directionMode;
     List<DirectionMode> directionModes;
-    List<MapwizeObject> mainFroms;
-    List<MapwizeObject> mainSearches;
+    List<? extends MapwizeObject> mainFroms;
+    List<? extends MapwizeObject> mainSearches;
     DirectionPoint from;
     DirectionPoint to;
     Direction direction;
@@ -94,8 +100,18 @@ public class MapPresenter implements BasePresenter {
     }
 
     @Override
-    public void onMapLoaded() {
+    public void onMapLoaded(MapwizeMap mapwizeMap) {
         fragment.showDefaultScene();
+        this.mapwizeMap = mapwizeMap;
+        this.mapwizeMap.addOnClickListener(this);
+        this.mapwizeMap.addOnVenueEnterListener(this);
+        this.mapwizeMap.addOnVenueExitListener(this);
+        this.mapwizeMap.addOnDirectionModesChangeListener(this);
+        this.mapwizeMap.addOnUniverseChangeListener(this);
+        this.mapwizeMap.addOnLanguageChangeListener(this);
+        this.mapwizeMap.addOnFollowUserModeChangeListener(this);
+        this.mapwizeMap.addOnFloorChangeListener(this);
+        this.mapwizeMap.addOnFloorsChangeListener(this);
     }
 
     @Override
@@ -108,17 +124,41 @@ public class MapPresenter implements BasePresenter {
     @Override
     public void onVenueWillEnter(Venue venue) {
         fragment.showVenueEntering(venue, language);
+        api.getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
+            @Override
+            public void onSuccess(@NonNull List<MapwizeObject> object) {
+                mainSearches = object;
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+
+            }
+        });
+        api.getMainFromsForVenue(venue.getId(), new ApiCallback<List<Place>>() {
+            @Override
+            public void onSuccess(@NonNull List<Place> object) {
+                mainFroms = object;
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+
+            }
+        });
     }
 
     @Override
     public void onVenueExit(Venue venue) {
         this.venue = null;
         fragment.showDefaultScene();
+        mainFroms = new ArrayList<>();
+        mainSearches = new ArrayList<>();
     }
 
     @Override
     public void onVenueEnterError(Venue venue, Throwable error) {
-
+        fragment.showErrorMessage("Cannot load this venue");
     }
 
     @Override
@@ -131,19 +171,25 @@ public class MapPresenter implements BasePresenter {
 
     @Override
     public void onFloorWillChange(@Nullable Floor floor) {
-
+        fragment.showLoadingFloor(floor);
     }
 
     @Override
     public void onFloorChange(@Nullable Floor floor) {
         this.floor = floor;
-        fragment.setActiveFloor(floor);
+        fragment.showActiveFloor(floor);
+    }
+
+    @Override
+    public void onFloorChangeError(@Nullable Floor floor, @NonNull Throwable error) {
+        fragment.showActiveFloor(null);
+        fragment.showErrorMessage("Cannot load this floor");
     }
 
     @Override
     public void onFloorsChange(@NonNull List<Floor> floors) {
         this.floors = floors;
-        fragment.setActiveFloors(floors);
+        fragment.showActiveFloors(floors);
     }
 
     @Override
@@ -167,8 +213,15 @@ public class MapPresenter implements BasePresenter {
     }
 
     @Override
-    public void onClickEvent(@NonNull ClickEvent clickEvent) {
+    public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
+        fragment.showErrorMessage("Cannot load this universe");
+    }
 
+    @Override
+    public void onClickEvent(@NonNull ClickEvent clickEvent) {
+        if (clickEvent.getEventType() == ClickEvent.VENUE_CLICK) {
+            mapwizeMap.centerOnVenue(clickEvent.getVenuePreview(), 300);
+        }
     }
 
     @Override
@@ -189,10 +242,12 @@ public class MapPresenter implements BasePresenter {
     @Override
     public void onSearchBackButtonClick() {
         if (venue == null) {
-            fragment.backFromSearchScene();
+            fragment.backToDefaultScene();
         }
         else {
-            fragment.showInVenueScene(venue, language);
+            fragment.backToVenueScene(venue, language);
+            fragment.showActiveFloors(floors);
+            fragment.showActiveFloor(floor);
         }
     }
 
@@ -202,6 +257,9 @@ public class MapPresenter implements BasePresenter {
             // Perform main searches
             if (venue == null) {
                 fragment.showSearchResults(preloadedSearchResults);
+            }
+            else {
+                fragment.showSearchResults(mainSearches);
             }
             return;
         }
@@ -262,26 +320,41 @@ public class MapPresenter implements BasePresenter {
 
     @Override
     public void onSearchResultPlaceClick(Place place, Universe universe) {
-        fragment.backFromSearchScene();
+        fragment.backToVenueScene(venue, language);
+        fragment.showActiveFloors(floors);
+        fragment.showActiveFloor(floor);
         selectPlace(place, universe);
     }
 
     @Override
     public void onSearchResultVenueClick(Venue venue) {
-        fragment.backFromSearchScene();
-        fragment.centerOnVenue(venue);
+        fragment.backToDefaultScene();
+        mapwizeMap.centerOnVenue(venue, 300);
     }
 
     @Override
     public void onSearchResultPlacelistClick(Placelist placelist) {
-        fragment.backFromSearchScene();
+        fragment.backToVenueScene(venue, language);
+        fragment.showActiveFloors(floors);
+        fragment.showActiveFloor(floor);
         selectPlacelist(placelist);
     }
 
+    @Override
+    public void onFloorClick(Floor floor) {
+        mapwizeMap.setFloor(floor != null ? floor.getNumber() : null);
+    }
+
     private void selectPlace(Place place, Universe universe) {
-        Log.i("Debug", "Select place");
+        mapwizeMap.removeMarkers();
+        mapwizeMap.removePromotedPlaces();
         selectedContent = place;
-        fragment.centerOnPlace(place, universe);
+        mapwizeMap.centerOnPlace(place, 0);
+        if (universe != null && !universe.equals(this.universe)) {
+            mapwizeMap.setUniverse(universe);
+        }
+        mapwizeMap.addMarker(place);
+        mapwizeMap.addPromotedPlace(place);
     }
 
     private void selectPlacelist(Placelist placelist) {
