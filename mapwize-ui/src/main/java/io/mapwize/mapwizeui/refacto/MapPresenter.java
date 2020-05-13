@@ -28,6 +28,8 @@ import io.mapwize.mapwizesdk.map.ClickEvent;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
+import io.mapwize.mapwizesdk.map.PlacePreview;
+import io.mapwize.mapwizesdk.map.PreviewCallback;
 
 public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListener,
         MapwizeMap.OnVenueExitListener, MapwizeMap.OnUniverseChangeListener, MapwizeMap.OnFloorChangeListener,
@@ -118,7 +120,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onVenueEnter(Venue venue) {
         this.venue = venue;
         this.venueLanguages = venue.getSupportedLanguages();
+        this.venueLanguage = mapwizeMap.getLanguage();
         fragment.showInVenueScene(venue, language);
+        fragment.showLanguageButton(venueLanguages);
     }
 
     @Override
@@ -154,6 +158,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showDefaultScene();
         mainFroms = new ArrayList<>();
         mainSearches = new ArrayList<>();
+        unselectContent();
     }
 
     @Override
@@ -200,6 +205,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onUniversesChange(@NonNull List<Universe> universes) {
         this.universes = universes;
+        fragment.showUniverseButton(universes);
     }
 
     @Override
@@ -210,6 +216,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onUniverseChange(@Nullable Universe universe) {
         this.universe = universe;
+        unselectContent();
     }
 
     @Override
@@ -221,6 +228,14 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onClickEvent(@NonNull ClickEvent clickEvent) {
         if (clickEvent.getEventType() == ClickEvent.VENUE_CLICK) {
             mapwizeMap.centerOnVenue(clickEvent.getVenuePreview(), 300);
+        }
+        if (clickEvent.getEventType() == ClickEvent.PLACE_CLICK) {
+            selectPlace(clickEvent.getPlacePreview());
+        }
+        if (clickEvent.getEventType() == ClickEvent.MAP_CLICK) {
+            if (selectedContent != null) {
+                unselectContent();
+            }
         }
     }
 
@@ -343,6 +358,44 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onFloorClick(Floor floor) {
         mapwizeMap.setFloor(floor != null ? floor.getNumber() : null);
+    }
+
+    @Override
+    public void onLanguageClick(String language) {
+        mapwizeMap.setLanguageForVenue(language, venue);
+    }
+
+    @Override
+    public void onUniverseClick(Universe universe) {
+        mapwizeMap.setUniverseForVenue(universe, venue);
+    }
+
+    private void unselectContent() {
+        mapwizeMap.removeMarkers();
+        mapwizeMap.removePromotedPlaces();
+        selectedContent = null;
+        fragment.hidePlaceInfo();
+    }
+
+    private void selectPlace(PlacePreview preview) {
+        mapwizeMap.removeMarkers();
+        mapwizeMap.removePromotedPlaces();
+        mapwizeMap.addMarker(preview);
+        mapwizeMap.addPromotedPlace(preview);
+        fragment.showPlacePreviewInfo(preview, venueLanguage);
+        preview.getFullObjectAsync(new PreviewCallback<Place>() {
+            @Override
+            public void getObjectAsync(Place object) {
+                selectedContent = object;
+                fragment.showPlaceInfoFromPreview(object, venueLanguage);
+                Log.i("Debug", "Language " + venueLanguage);
+            }
+
+            @Override
+            public void error(Throwable t) {
+
+            }
+        });
     }
 
     private void selectPlace(Place place, Universe universe) {

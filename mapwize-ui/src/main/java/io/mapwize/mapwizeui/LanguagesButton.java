@@ -26,9 +26,9 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
  */
 public class LanguagesButton extends AppCompatImageButton {
 
-    private MapwizeMap mapwizeMap;
     private AlertDialog alertDialog = null;
     private List<String> languages = new ArrayList<>();
+    private OnLanguageClickListener listener;
 
     public LanguagesButton(Context context) {
         super(context);
@@ -54,64 +54,32 @@ public class LanguagesButton extends AppCompatImageButton {
                 return;
             }
             final View dialogView = inflater.inflate(R.layout.mapwize_languages_alert, null);
-
             RecyclerView languagesList = dialogView.findViewById(R.id.mapwizeLanguagesList);
             LanguagesAdapter languagesAdapter = new LanguagesAdapter();
             languagesList.setAdapter(languagesAdapter);
             languagesAdapter.swapData(languages);
             languagesAdapter.setListener(item -> {
-                if (mapwizeMap.getVenue() != null) {
-                    mapwizeMap.setLanguageForVenue(item.getLanguage(), mapwizeMap.getVenue());
-                }
+                listener.onLanguageClick(item.getLanguage());
                 alertDialog.dismiss();
             });
             dialogBuilder.setView(dialogView);
-
             alertDialog = dialogBuilder.create();
             alertDialog.show();
         });
     }
 
-    /**
-     * Set the mapwize plugin.
-     * @param mapwizeMap used to listen enter and exit event
-     */
-    public void setMapwizeMap(@Nullable MapwizeMap mapwizeMap) {
-        this.mapwizeMap = mapwizeMap;
-        if (this.mapwizeMap == null) {
-            return;
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
+        if (languages.size() > 1) {
+            setVisibility(View.VISIBLE);
         }
-        this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
-            @Override
-            public void onVenueEnter(@NonNull Venue venue) {
+        else {
+            setVisibility(View.GONE);
+        }
+    }
 
-            }
-
-            @Override
-            public void onVenueWillEnter(@NonNull Venue venue) {
-                languages = venue.getSupportedLanguages();
-                if (languages.size() > 1) {
-                    setVisibility(View.VISIBLE);
-                }
-                else {
-                    setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-
-            }
-
-            /*@Override
-            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-
-            }*/
-        });
-        this.mapwizeMap.addOnVenueExitListener(venue -> {
-            this.languages = new ArrayList<>();
-            setVisibility(View.INVISIBLE);
-        });
+    public void setListener(OnLanguageClickListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -165,7 +133,6 @@ public class LanguagesButton extends AppCompatImageButton {
             LanguageItemViewHolder(View itemView) {
                 super(itemView);
                 textView = itemView.findViewById(R.id.text_view);
-
                 itemView.setOnClickListener(view -> {
                     int adapterPosition = getAdapterPosition();
                     if (mListener != null && adapterPosition != RecyclerView.NO_POSITION) {
@@ -174,6 +141,10 @@ public class LanguagesButton extends AppCompatImageButton {
                 });
             }
         }
+    }
+
+    public interface OnLanguageClickListener {
+        void onLanguageClick(String language);
     }
 
     public interface OnItemClickListener {

@@ -33,11 +33,14 @@ import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
+import io.mapwize.mapwizesdk.map.PlacePreview;
 import io.mapwize.mapwizeui.CompassView;
 import io.mapwize.mapwizeui.FloorControllerView;
+import io.mapwize.mapwizeui.LanguagesButton;
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings;
 import io.mapwize.mapwizeui.R;
 import io.mapwize.mapwizeui.SearchResultList;
+import io.mapwize.mapwizeui.UniversesButton;
 
 public class MapFragment extends Fragment implements BaseFragment, SearchBar.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener {
@@ -342,6 +345,33 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
     }
 
     @Override
+    public void showPlacePreviewInfo(PlacePreview preview, String language) {
+        PlaceInfoView bottomCardView = defaultScene.getSceneRoot().findViewById(R.id.mwz_bottom_card_view);
+        if (bottomCardView == null) {
+            return;
+        }
+        bottomCardView.setContent(preview);
+    }
+
+    @Override
+    public void showPlaceInfoFromPreview(Place place, String language) {
+        PlaceInfoView bottomCardView = defaultScene.getSceneRoot().findViewById(R.id.mwz_bottom_card_view);
+        if (bottomCardView == null) {
+            return;
+        }
+        bottomCardView.setContentFromPreview(place, language);
+    }
+
+    @Override
+    public void hidePlaceInfo() {
+        PlaceInfoView bottomCardView = defaultScene.getSceneRoot().findViewById(R.id.mwz_bottom_card_view);
+        if (bottomCardView == null) {
+            return;
+        }
+        bottomCardView.removeContent();
+    }
+
+    @Override
     public void showSearchScene() {
         currentScene = searchScene;
         Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_search);
@@ -358,7 +388,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
 
             @Override
             public void onTransitionEnd(@NonNull Transition transition) {
-//                presenter.onSearchQueryChange("");
+                presenter.onSearchQueryChange("");
             }
 
             @Override
@@ -378,6 +408,26 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
         });
         TransitionManager.go(searchScene, transition);
 
+    }
+
+    @Override
+    public void showLanguageButton(List<String> languages) {
+        LanguagesButton languagesButton = currentScene.getSceneRoot().findViewById(R.id.mwz_language_button);
+        if (languagesButton == null) {
+            return;
+        }
+        languagesButton.setLanguages(languages);
+        languagesButton.setListener(language -> presenter.onLanguageClick(language));
+    }
+
+    @Override
+    public void showUniverseButton(List<Universe> universes) {
+        UniversesButton universesButton = currentScene.getSceneRoot().findViewById(R.id.mwz_universe_button);
+        if (universesButton == null) {
+            return;
+        }
+        universesButton.setUniverses(universes);
+        universesButton.setListener(universe -> presenter.onUniverseClick(universe));
     }
 
     @Override

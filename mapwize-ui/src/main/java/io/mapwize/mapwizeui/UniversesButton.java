@@ -29,8 +29,8 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
 public class UniversesButton extends AppCompatImageButton {
 
     private AlertDialog alertDialog = null;
-    private MapwizeMap mapwizeMap;
     private List<Universe> universes = new ArrayList<>();
+    private OnUniverseClickListener listener;
 
     public UniversesButton(Context context) {
         super(context);
@@ -57,15 +57,12 @@ public class UniversesButton extends AppCompatImageButton {
                 return;
             }
             final View dialogView = inflater.inflate(R.layout.mapwize_universes_alert, null);
-
             RecyclerView universesList = dialogView.findViewById(R.id.mapwizeUniversesList);
             UniversesAdapter universesAdapter = new UniversesAdapter(getContext());
             universesList.setAdapter(universesAdapter);
             universesAdapter.swapData(universes);
             universesAdapter.setListener(item -> {
-                if (mapwizeMap.getVenue() != null) {
-                    mapwizeMap.setUniverseForVenue(item, mapwizeMap.getVenue());
-                }
+                listener.onUniverseClick(item);
                 alertDialog.dismiss();
             });
             dialogBuilder.setView(dialogView);
@@ -75,69 +72,13 @@ public class UniversesButton extends AppCompatImageButton {
         });
     }
 
-    /**
-     * Set the mapwize plugin.
-     * @param mapwizeMap used to listen enter and exit event
-     */
-    public void setMapwizeMap(@Nullable MapwizeMap mapwizeMap) {
-        this.mapwizeMap = mapwizeMap;
-        if (this.mapwizeMap == null) {
-            return;
-        }
-        this.mapwizeMap.addOnUniverseChangeListener(new MapwizeMap.OnUniverseChangeListener() {
-            @Override
-            public void onUniversesChange(@NonNull List<Universe> list) {
-                universes = list;
-                showIfNeeded();
-            }
+    public void setUniverses(List<Universe> universes) {
+        this.universes = universes;
+        showIfNeeded();
+    }
 
-            @Override
-            public void onUniverseWillChange(@NonNull Universe universe) {
-
-            }
-
-            @Override
-            public void onUniverseChange(@Nullable Universe universe) {
-
-            }
-
-            @Override
-            public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
-
-            }
-
-            /*@Override
-            public void onUniverseChangeError(@NonNull Universe universe, @NonNull Throwable error) {
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
-            }*/
-        });
-        this.mapwizeMap.addOnVenueEnterListener(new MapwizeMap.OnVenueEnterListener() {
-            @Override
-            public void onVenueEnter(@NonNull Venue venue) {
-                showIfNeeded();
-            }
-
-            @Override
-            public void onVenueWillEnter(@NonNull Venue venue) {
-
-            }
-
-            @Override
-            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-                
-            }
-
-            /*@Override
-            public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-
-            }*/
-        });
-        this.mapwizeMap.addOnVenueExitListener(venue -> {
-            this.universes = new ArrayList<>();
-            if (getVisibility() == View.VISIBLE) {
-                setVisibility(View.INVISIBLE);
-            }
-        });
+    public void setListener(OnUniverseClickListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -150,14 +91,6 @@ public class UniversesButton extends AppCompatImageButton {
         else {
             setVisibility(View.GONE);
         }
-    }
-
-    /**
-     * Refresh the universe
-     * Useful after a access request
-     */
-    public void refreshVenue(Venue venue) {
-        showIfNeeded();
     }
 
     /**
@@ -226,6 +159,10 @@ public class UniversesButton extends AppCompatImageButton {
                 });
             }
         }
+    }
+
+    public interface OnUniverseClickListener {
+        void onUniverseClick(Universe universe);
     }
 
     interface OnItemClickListener {

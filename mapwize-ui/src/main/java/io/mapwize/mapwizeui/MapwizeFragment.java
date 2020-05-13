@@ -408,11 +408,11 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     private void initUniversesButton(UniversesButton universesButton) {
-        universesButton.setMapwizeMap(mapwizeMap);
+        //universesButton.setMapwizeMap(mapwizeMap);
     }
 
     private void initLanguagesButton(LanguagesButton languagesButton) {
-        languagesButton.setMapwizeMap(mapwizeMap);
+        //languagesButton.setMapwizeMap(mapwizeMap);
     }
 
     private void initMapwizeListeners(MapwizeMap mapwizeMap) {
@@ -674,7 +674,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
             public void onSuccess(@Nullable Boolean object) {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (mapwizeMap.getVenue() != null) {
-                        universesButton.refreshVenue(mapwizeMap.getVenue());
+                        //universesButton.refreshVenue(mapwizeMap.getVenue());
                     }
                     callback.onSuccess(object);
                 });

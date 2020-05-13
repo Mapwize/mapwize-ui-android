@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="false"
     android:focusable="true"
     android:clickable="true">
 
@@ -90,7 +89,6 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
                 app:layout_goneMarginTop="0dp"
-                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mapwize_details_webview"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -103,7 +101,6 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
                 app:layout_goneMarginTop="0dp"
-                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/mapwizeBottomDirectionButton"
                 app:layout_constraintTop_toBottomOf="@+id/mapwize_details_webview"
                 app:layout_constraintBottom_toBottomOf="parent" />

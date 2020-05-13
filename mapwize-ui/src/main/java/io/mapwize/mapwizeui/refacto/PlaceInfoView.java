@@ -1,14 +1,6 @@
-package io.mapwize.mapwizeui;
+package io.mapwize.mapwizeui.refacto;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.cardview.widget.CardView;
-
-import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,86 +10,79 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Translation;
-import io.mapwize.mapwizesdk.api.Venue;
-import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
-import io.mapwize.mapwizesdk.map.PreviewCallback;
+import io.mapwize.mapwizeui.MapwizeFragment;
+import io.mapwize.mapwizeui.R;
 
-/**
- * Display information about place, placelist or direction
- */
-public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView {
+public class PlaceInfoView  extends CardView {
 
-    private BottomCardListener listener;
+    private PlaceInfoViewListener listener;
     private MapwizeFragment.OnFragmentInteractionListener interactionListener;
 
-    private FrameLayout objectInfoFrameLayout;
-    private FrameLayout directionFrameLayout;
+    private ConstraintLayout objectInfoFrameLayout;
     private ImageView titleImageView;
     private TextView titleTextView;
     private TextView subtitleTextView;
     private ConstraintLayout directionButton;
     private ConstraintLayout informationsButton;
-    private TextView directionTimeTextView;
-    private TextView directionDistanceTextView;
     private WebView detailsWebView;
     private ImageView closeDetailsButton;
     private ProgressBar progressBar;
     private boolean hasDetails;
 
-    public BottomCardView(@NonNull Context context) {
+    public PlaceInfoView(@NonNull Context context) {
         super(context);
         initialize(context);
     }
 
-    public BottomCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PlaceInfoView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initialize(context);
     }
 
-    public BottomCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PlaceInfoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
     }
 
     private void initialize(Context context) {
-        inflate(context, R.layout.mapwize_bottom_view, this);
-        titleImageView = findViewById(R.id.mapwizeBottomImageView);
-        titleTextView = findViewById(R.id.mapwizeBottomTitleTextView);
-        subtitleTextView = findViewById(R.id.mapwizeBottomSubtitleTextView);
-        objectInfoFrameLayout = findViewById(R.id.mapwizeObjectContentFrame);
-        directionFrameLayout = findViewById(R.id.mapwizeDirectionContentFrame);
-        directionTimeTextView = findViewById(R.id.direction_info_bottom_time_text);
-        directionDistanceTextView = findViewById(R.id.direction_info_bottom_distance_text);
-        directionButton = findViewById(R.id.mapwizeBottomDirectionButton);
+        inflate(context, R.layout.mwz_place_info_view, this);
+        titleImageView = findViewById(R.id.mwz_place_info_image_view);
+        titleTextView = findViewById(R.id.mwz_place_info_title);
+        subtitleTextView = findViewById(R.id.mwz_place_info_subtitle);
+        directionButton = findViewById(R.id.mwz_place_info_direction_button);
         directionButton.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDirectionClick();
             }
         });
-        informationsButton = findViewById(R.id.mapwizeBottomInformationsButton);
+        informationsButton = findViewById(R.id.mwz_place_info_information_button);
         informationsButton.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onInformationClick();
             }
         });
-        detailsWebView = findViewById(R.id.mapwize_details_webview);
+        detailsWebView = findViewById(R.id.mwz_place_info_details_webview);
 
+        objectInfoFrameLayout = findViewById(R.id.mwz_place_info_layout);
         objectInfoFrameLayout.setOnClickListener(v -> {
             if (hasDetails) {
                 showDetails();
             }
         });
-        closeDetailsButton = findViewById(R.id.mapwizeCloseDetails);
+        closeDetailsButton = findViewById(R.id.mwz_place_info_close_details);
         closeDetailsButton.setOnClickListener(v -> {
             hideDetails();
         });
-        progressBar = findViewById(R.id.mapwizeBottomLoader);
+        progressBar = findViewById(R.id.mwz_place_info_loader);
     }
 
     private void showDetails() {
@@ -106,9 +91,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
-        /*ViewGroup.LayoutParams layoutParams = objectInfoFrameLayout.getLayoutParams();
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        objectInfoFrameLayout.setLayoutParams(layoutParams);*/
         //listener.onDetailsOpen();
     }
 
@@ -142,7 +124,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      */
     public void removeContent() {
         objectInfoFrameLayout.setVisibility(View.GONE);
-        directionFrameLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -151,7 +132,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * @param language use to display text
      */
     public void setContent(Place place, String language) {
-        directionFrameLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         Translation translation = place.getTranslation(language);
         if (translation.getTitle().length() > 0) {
@@ -193,7 +173,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
     }
 
     public void setContent(PlacePreview placePreview) {
-        directionFrameLayout.setVisibility(View.GONE);
         if (placePreview.getTitle().length() > 0) {
             titleTextView.setText(placePreview.getTitle());
             titleTextView.setVisibility(View.VISIBLE);
@@ -243,16 +222,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         directionButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        /*float height = objectInfoFrameLayout.getMeasuredHeight();
-        ValueAnimator anim = ValueAnimator.ofInt(objectInfoFrameLayout.getMeasuredHeight(), (int)height);
-        anim.addUpdateListener(valueAnimator -> {
-            int val = (Integer) valueAnimator.getAnimatedValue();
-            ViewGroup.LayoutParams layoutParams = objectInfoFrameLayout.getLayoutParams();
-            layoutParams.height = val;
-            objectInfoFrameLayout.setLayoutParams(layoutParams);
-        });
-        anim.setDuration(300);
-        anim.start();*/
     }
 
     /**
@@ -261,7 +230,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * @param language use to display text
      */
     public void setContent(Placelist placelist, String language) {
-        directionFrameLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         Translation translation = placelist.getTranslation(language);
         if (translation.getTitle().length() > 0) {
@@ -301,61 +269,26 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void setContent(Venue venue, String language) {
-        // Do something here if you want to display info about venue
-    }
-
-    /**
-     * Display information about a direction
-     * @param direction to show information
-     */
-    @Override
-    public void setContent(Direction direction) {
-        directionFrameLayout.setVisibility(View.VISIBLE);
-        objectInfoFrameLayout.setVisibility(View.GONE);
-        long time = Math.round(direction.getTraveltime() / 60);
-        String timPlaceHolder = getResources().getString(R.string.time_placeholder);
-        directionTimeTextView.setText(String.format(timPlaceHolder,time));
-        directionDistanceTextView.setText(UnitLocale.distanceAsString(direction.getDistance()));
-    }
-
-    /**
-     * Display information about a navigation
-     * @param navigationInfo to show information
-     */
-    @Override
-    public void setContent(NavigationInfo navigationInfo) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            directionFrameLayout.setVisibility(View.VISIBLE);
-            objectInfoFrameLayout.setVisibility(View.GONE);
-            long time = Math.round(navigationInfo.getDuration() / 60);
-            String timPlaceHolder = getResources().getString(R.string.time_placeholder);
-            directionTimeTextView.setText(String.format(timPlaceHolder,time));
-            directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
-        });
-    }
-
     /**
      * Get the BottomCardListener
      * @return the listener
      */
-    public BottomCardListener getListener() {
+    public PlaceInfoViewListener getListener() {
         return listener;
     }
 
     /**
-     * Set the BottomCardListener
+     * Set the PlaceInfoViewListener
      * @param listener the listener
      */
-    public void setListener(BottomCardListener listener) {
+    public void setListener(PlaceInfoViewListener listener) {
         this.listener = listener;
     }
 
     /**
      * Interface used to listen bottom view event
      */
-    public interface BottomCardListener {
+    public interface PlaceInfoViewListener {
 
         /**
          * User click on direction button

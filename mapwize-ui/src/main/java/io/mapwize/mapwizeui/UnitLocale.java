@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * Helper class to display distance unit depends of the locale
  */
-class UnitLocale {
+public class UnitLocale {
 
     private static UnitLocale Imperial = new UnitLocale();
     private static UnitLocale Metric = new UnitLocale();
@@ -22,7 +22,7 @@ class UnitLocale {
         return Metric;
     }
 
-    static String distanceAsString(double distance) {
+    public static String distanceAsString(double distance) {
 
         if (getDefault() == Imperial) {
             long distanceInFeet = Math.round(distance * 3.28084);

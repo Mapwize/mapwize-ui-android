@@ -40,4 +40,6 @@ interface BasePresenter {
     void onSearchResultVenueClick(Venue venue);
     void onSearchResultPlacelistClick(Placelist placelist);
     void onFloorClick(Floor floor);
+    void onLanguageClick(String language);
+    void onUniverseClick(Universe universe);
 }
