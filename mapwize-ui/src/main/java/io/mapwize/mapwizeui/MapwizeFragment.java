@@ -51,10 +51,7 @@ import io.mapwize.mapwizeui.events.EventManager;
  * Mapwize Fragment allow you to integrate Mapwize in a simplest way.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class MapwizeFragment extends Fragment implements CompassView.OnCompassClickListener,
-        SearchBarView.SearchBarListener, SearchDirectionView.SearchDirectionListener,
-        MapwizeMap.OnVenueEnterListener, MapwizeMap.OnVenueExitListener,
-        BottomCardView.BottomCardListener, FollowUserButton.FollowUserButtonListener {
+public class MapwizeFragment extends Fragment {
 
     private static String ARG_OPTIONS = "param_options";
     private static String ARG_UI_SETTINGS = "param_ui_settings";
@@ -361,7 +358,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     private void initBottomCardView(BottomCardView bottomCardView, OnFragmentInteractionListener listener) {
-        bottomCardView.setListener(this);
+        //bottomCardView.setListener(this);
         bottomCardView.setInteractionListener(listener);
     }
 
@@ -381,7 +378,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         }
         else {
             followUserButton.setMapwizeMap(mapwizeMap);
-            followUserButton.setListener(this);
+            //followUserButton.setListener(this);
         }
     }
 
@@ -389,22 +386,22 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         if (!uiSettings.isCompassHidden()) {
             compassView.setMapboxMap(mapwizeMap.getMapboxMap());
             compassView.fadeCompassViewFacingNorth(true);
-            compassView.setOnCompassClickListener(this);
+            //compassView.setOnCompassClickListener(this);
         }
     }
 
     private void initSearchBar(SearchBarView searchBarView, MapwizeFragmentUISettings uiSettings) {
-        searchBarView.setMenuHidden(uiSettings.isMenuButtonHidden());
+        /*searchBarView.setMenuHidden(uiSettings.isMenuButtonHidden());
         searchBarView.setMapwizeMap(mapwizeMap);
         searchBarView.setListener(this);
         searchBarView.setResultList(searchResultList);
-        searchBarView.setVisibility(View.VISIBLE);
+        searchBarView.setVisibility(View.VISIBLE);*/
     }
 
     private void initDirectionBar(SearchDirectionView searchDirectionView) {
-        searchDirectionView.setMapwizeMap(mapwizeMap);
+        /*searchDirectionView.setMapwizeMap(mapwizeMap);
         searchDirectionView.setListener(this);
-        searchDirectionView.setDirectionInfoView(bottomCardView);
+        searchDirectionView.setDirectionInfoView(bottomCardView);*/
     }
 
     private void initUniversesButton(UniversesButton universesButton) {
@@ -429,8 +426,8 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
                     break;
             }
         });
-        mapwizeMap.addOnVenueEnterListener(this);
-        mapwizeMap.addOnVenueExitListener(this);
+        /*mapwizeMap.addOnVenueEnterListener(this);
+        mapwizeMap.addOnVenueExitListener(this);*/
     }
 
     /**
@@ -656,7 +653,7 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         isInDirection = false;
         searchBarView.setVisibility(View.VISIBLE);
         searchDirectionView.setVisibility(View.GONE);
-        searchBarView.setResultList(searchResultList);
+        //searchBarView.setResultList(searchResultList);
         if (mapwizeMap.getVenue() != null) {
             bottomCardView.setContent(mapwizeMap.getVenue(), mapwizeMap.getLanguage());
         }
@@ -688,34 +685,28 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
     }
 
     // Bottom view listener
-    @Override
     public void onDirectionClick() {
         showDirectionUI();
     }
 
-    @Override
     public void onInformationClick() {
         listener.onInformationButtonClick(selectedContent);
     }
 
-    @Override
     public void onDetailsOpen() {
         searchBarView.setVisibility(View.GONE);
     }
 
-    @Override
     public void onDetailsClose() {
         searchBarView.setVisibility(View.VISIBLE);
     }
 
     // Compass listener
-    @Override
     public void onClick(CompassView compassView) {
         mapwizeMap.setFollowUserMode(FollowUserMode.NONE);
     }
 
     // Search bar listener
-    @Override
     public void onSearchResult(Place place, Universe universe) {
         if (universe != null && (mapwizeMap.getUniverse() == null || !universe.getId().equals(mapwizeMap.getUniverse().getId()))) {
             mapwizeMap.setUniverse(universe);
@@ -723,41 +714,34 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         selectPlace(place, true);
     }
 
-    @Override
     public void onSearchResult(Placelist placelist) {
         selectPlacelist(placelist);
     }
 
-    @Override
     public void onSearchResult(Venue venue) {
         selectVenue(venue);
     }
 
-    @Override
     public void onLeftButtonClick(View view) {
         listener.onMenuButtonClick();
     }
 
-    @Override
     public void onRightButtonClick(View view) {
         showDirectionUI();
     }
 
     // Direction bar listener
-    @Override
     public void onBackClick() {
         showDefaultUi();
     }
 
     // Mapwize listener
-    @Override
     public void onVenueExit(@NonNull Venue venue) {
         if (mapwizeMap.getDirection() == null) {
             unselectContent();
         }
     }
 
-    @Override
     public void onVenueEnter(@NonNull Venue venue) {
         bottomCardView.setContent(venue, mapwizeMap.getLanguage());
         if (initializePlace != null) {
@@ -766,7 +750,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         }
     }
 
-    @Override
     public void onVenueWillEnter(@NonNull Venue venue) {
 
     }
@@ -775,7 +758,6 @@ public class MapwizeFragment extends Fragment implements CompassView.OnCompassCl
         Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
     }
 
-    @Override
     public void onFollowUserClickWithoutLocation() {
         listener.onFollowUserButtonClickWithoutLocation();
     }

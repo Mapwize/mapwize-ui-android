@@ -210,7 +210,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         }
         titleImageView.setVisibility(View.VISIBLE);
         detailsWebView.loadData("", null, null);
-        detailsWebView.setVisibility(INVISIBLE);
+        detailsWebView.setVisibility(GONE);
         titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
 
         informationsButton.setVisibility(View.INVISIBLE);

@@ -55,7 +55,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     private SearchDirectionListener listener;
     private DirectionInfoView directionInfoView;
     private ConstraintLayout mapwizeDirectionMainLayout;
-    private SearchResultList resultList;
     EditText fromEditText;
     EditText toEditText;
     private ProgressBar resultProgressBar;
@@ -93,7 +92,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         resultProgressBar = findViewById(R.id.mapwizeDirectionProgressBar);
         backButton = findViewById(R.id.mapwizeDirectionBarBackButton);
         swapButton = findViewById(R.id.mapwizeDirectionBarSwapButton);
-        swapButton.setOnClickListener(v -> swap());
+        swapButton.setOnClickListener(v -> listener.onDirectionSwapClick());
         backButton.setOnClickListener(v -> backClick());
         modeView = findViewById(R.id.mapwizeModeView);
         modeView.setListener(this);
@@ -105,7 +104,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             }
             else {
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
-                setTextViewValue(fromEditText, fromDirectionPoint);
+                //setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!toEditText.hasFocus() && toDirectionPoint != null) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -124,9 +123,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (fromEditText.hasFocus()) {
-                    performFromSearch(s.toString());
-                }
+                listener.onDirectionFromQueryChange(s.toString());
             }
 
             @Override
@@ -143,7 +140,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             }
             else {
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
-                setTextViewValue(toEditText, toDirectionPoint);
+                //setTextViewValue(toEditText, toDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!fromEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -162,9 +159,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (toEditText.hasFocus()) {
-                    performToSearch(s.toString());
-                }
+                listener.onDirectionToQueryChange(s.toString());
             }
 
             @Override
@@ -172,13 +167,6 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             }
         });
-    }
-
-    private void initSearchDataManager() {
-        if (mapwizeMap == null) {
-            return;
-        }
-        searchDataManager = new SearchDataManager();
     }
 
     /**
@@ -189,18 +177,6 @@ public class SearchDirectionView extends ConstraintLayout implements
         this.listener = listener;
     }
 
-
-    /**
-     * Set the mapwize plugin
-     * @param mapwizeMap used to listen enter and exit venue event
-     */
-    public void setMapwizeMap(MapwizeMap mapwizeMap) {
-        this.mapwizeMap = mapwizeMap;
-        this.mapwizeMap.addOnVenueEnterListener(this);
-        this.mapwizeMap.addOnVenueExitListener(this);
-        this.mapwizeMap.addOnDirectionModesChangeListener(this);
-        initSearchDataManager();
-    }
 
     /**
      * Set the view that will be used to display information (traveltime and distance)
@@ -215,8 +191,7 @@ public class SearchDirectionView extends ConstraintLayout implements
      * @param resultList the SearchResultList
      */
     public void setResultList(SearchResultList resultList) {
-        this.resultList = resultList;
-        this.resultList.setLanguage(mapwizeMap.getLanguage());
+
     }
 
     /**
@@ -247,7 +222,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             fromDirectionPoint = (DirectionPoint) directionPoint;
         }
 
-        setTextViewValue(fromEditText, fromDirectionPoint);
+        //setTextViewValue(fromEditText, fromDirectionPoint);
 
         if (directionPoint instanceof Place) {
             Place place = (Place)directionPoint;
@@ -278,7 +253,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             toDirectionPoint = (DirectionPoint) directionPoint;
         }
 
-        setTextViewValue(toEditText, toDirectionPoint);
+        //setTextViewValue(toEditText, toDirectionPoint);
 
         if (directionPoint instanceof Place) {
             Place place = (Place)directionPoint;
@@ -431,23 +406,22 @@ public class SearchDirectionView extends ConstraintLayout implements
     private void setupInSearch() {
         swapButton.setVisibility(View.INVISIBLE);
         isSearching = true;
-        resultList.show();
         mapwizeDirectionMainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
     }
 
     /**
      * Handle back click
      * If in search mode, close the search mode
-     * If not in search mode, call listener.onBackClick()
+     * If not in search mode, call listener.onDirectionBackClick()
      */
     private void backClick() {
         if (fromEditText.hasFocus()) {
             fromEditText.clearFocus();
-            setTextViewValue(fromEditText, fromDirectionPoint);
+            //setTextViewValue(fromEditText, fromDirectionPoint);
         }
         if (toEditText.hasFocus()) {
             toEditText.clearFocus();
-            setTextViewValue(toEditText, toDirectionPoint);
+            //setTextViewValue(toEditText, toDirectionPoint);
         }
         if (!isSearching && listener != null) {
             mapwizeMap.stopNavigation();
@@ -456,10 +430,10 @@ public class SearchDirectionView extends ConstraintLayout implements
             toEditText.setText("");
             fromEditText.setText("");
             directionInfoView.removeContent();
-            listener.onBackClick();
+            listener.onDirectionBackClick();
         }
         if (fromDirectionPoint == null || toDirectionPoint == null) {
-            listener.onBackClick();
+            listener.onDirectionBackClick();
         }
         setupDefault();
 
@@ -472,7 +446,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         isSearching = false;
         swapButton.setVisibility(View.VISIBLE);
         mapwizeDirectionMainLayout.setBackgroundColor(Color.TRANSPARENT);
-        resultList.hide();
+
     }
 
     /**
@@ -482,7 +456,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         fromEditText.setText("");
         setupInSearch();
 
-        resultList.setListener(new SearchResultList.SearchResultListListener() {
+        /*resultList.setListener(new SearchResultList.SearchResultListListener() {
             @Override
             public void onSearchResultNull() {
                 fromEditText.clearFocus();
@@ -514,7 +488,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             public void onSearchResult(Venue venue) {
 
             }
-        });
+        });*/
 
         performFromSearch(fromEditText.getText().toString());
     }
@@ -524,14 +498,14 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     private void performEmptyFromSearch() {
         if (mapwizeMap.getVenue() != null) {
-            resultList.showData(searchDataManager.mainFrom);
+
             if (mapwizeMap.getUserLocation() != null
                     && mapwizeMap.getUserLocation().getFloor() != null) {
-                resultList.showCurrentLocationCard();
+
             }
         }
         else {
-            resultList.showData(new ArrayList<>());
+
         }
         resultProgressBar.setVisibility(View.INVISIBLE);
     }
@@ -553,7 +527,6 @@ public class SearchDirectionView extends ConstraintLayout implements
             return;
         }
 
-        resultList.hideCurrentLocationCard();
         SearchParams.Builder builder = new SearchParams.Builder();
         builder.setQuery(query);
         if (mapwizeMap.getVenue() != null) {
@@ -565,7 +538,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 @Override
                 public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        resultList.showData(mapwizeObjects);
+
                         resultProgressBar.setVisibility(View.INVISIBLE);
                     });
                 }
@@ -576,7 +549,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             });
         }
         else {
-            resultList.showData(new ArrayList<>());
+
             resultProgressBar.setVisibility(View.INVISIBLE);
         }
 
@@ -588,7 +561,7 @@ public class SearchDirectionView extends ConstraintLayout implements
     void setupToSearch() {
         setupInSearch();
         toEditText.setText("");
-        resultList.setListener(new SearchResultList.SearchResultListListener() {
+        /*resultList.setListener(new SearchResultList.SearchResultListListener() {
             @Override
             public void onSearchResultNull() {
                 toEditText.clearFocus();
@@ -622,7 +595,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             }
         });
-        performToSearch(toEditText.getText().toString());
+        performToSearch(toEditText.getText().toString());*/
     }
 
     /**
@@ -630,13 +603,13 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     private void performEmptyToSearch() {
         if (mapwizeMap.getVenue() != null) {
-            resultList.showData(searchDataManager.mainSearch);
+            //resultList.showData(searchDataManager.mainSearch);
         }
         else {
-            resultList.showData(new ArrayList<>());
+            //resultList.showData(new ArrayList<>());
         }
         resultProgressBar.setVisibility(View.INVISIBLE);
-        resultList.hideCurrentLocationCard();
+        //resultList.hideCurrentLocationCard();
     }
 
     /**
@@ -656,7 +629,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             return;
         }
 
-        resultList.hideCurrentLocationCard();
+        //resultList.hideCurrentLocationCard();
         SearchParams.Builder builder = new SearchParams.Builder();
         builder.setQuery(query);
         if (mapwizeMap.getVenue() != null) {
@@ -668,7 +641,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 @Override
                 public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        resultList.showData(mapwizeObjects);
+                        //resultList.showData(mapwizeObjects);
                         resultProgressBar.setVisibility(View.INVISIBLE);
                     });
                 }
@@ -679,7 +652,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             });
         }
         else {
-            resultList.showData(new ArrayList<>());
+            //resultList.showData(new ArrayList<>());
             resultProgressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -736,13 +709,45 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     }
 
-    private void setTextViewValue(TextView textView, DirectionPoint directionPoint) {
+    public void setModes(List<DirectionMode> modes) {
+        modeView.setModes(modes);
+    }
+
+    public void setMode(DirectionMode mode) {
+        modeView.setMode(mode);
+    }
+
+    public void openFromSearch() {
+        fromEditText.requestFocus();
+        InputMethodManager imm =(InputMethodManager)
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(fromEditText, InputMethodManager.SHOW_IMPLICIT);
+        listener.onDirectionFromQueryChange("");
+    }
+
+    public void openToSearch() {
+        toEditText.requestFocus();
+        InputMethodManager imm =(InputMethodManager)
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(fromEditText, InputMethodManager.SHOW_IMPLICIT);
+        listener.onDirectionToQueryChange("");
+    }
+
+    public void setFromTitle(DirectionPoint from, String language) {
+        setTextViewValue(fromEditText, from, language);
+    }
+
+    public void setToTitle(DirectionPoint to, String language) {
+        setTextViewValue(toEditText, to, language);
+    }
+
+    private void setTextViewValue(TextView textView, DirectionPoint directionPoint, String language) {
         if (directionPoint == null) {
             textView.setText("");
         }
         else if (directionPoint instanceof Place || directionPoint instanceof Placelist) {
             MapwizeObject mapwizeObject = (MapwizeObject) directionPoint;
-            textView.setText(mapwizeObject.getTranslation(mapwizeMap.getLanguage()).getTitle());
+            textView.setText(mapwizeObject.getTranslation(language).getTitle());
         }
         else if (directionPoint instanceof MapwizeIndoorLocation) {
             textView.setText(getResources().getString(R.string.current_location));
@@ -760,7 +765,10 @@ public class SearchDirectionView extends ConstraintLayout implements
     }
 
     public interface SearchDirectionListener {
-        void onBackClick();
+        void onDirectionBackClick();
+        void onDirectionSwapClick();
+        void onDirectionFromQueryChange(String query);
+        void onDirectionToQueryChange(String query);
 
     }
 }

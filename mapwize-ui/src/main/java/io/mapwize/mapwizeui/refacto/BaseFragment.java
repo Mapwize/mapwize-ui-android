@@ -2,20 +2,22 @@ package io.mapwize.mapwizeui.refacto;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.DirectionMode;
+import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.map.PlacePreview;
-import io.mapwize.mapwizeui.FloorControllerView;
-import io.mapwize.mapwizeui.R;
 
 interface BaseFragment {
 
     void showDefaultScene();
 
-    void showInVenueScene(Venue venue, String language);
+    void showVenueEntered(Venue venue, String language);
 
     void showVenueEntering(Venue venue, String language);
 
@@ -23,17 +25,35 @@ interface BaseFragment {
 
     void showPlaceInfoFromPreview(Place place, String language);
 
+    void showPlaceInfo(Place place, String language);
+
+    void showPlacelistInfo(Placelist placelist, String language);
+
     void hidePlaceInfo();
 
     void showSearchScene();
 
+    void hideSearchScene();
+
+    void showSearchDirectionScene();
+
+    void hideSearchDirectionScene();
+
+    void showFromDirection(DirectionPoint from, String language);
+
+    void showToDirection(DirectionPoint to, String language);
+
+    void showDirectionModes(List<DirectionMode> modes);
+
+    void showDirectionMode(DirectionMode mode);
+
+    void openSearchDirectionFrom();
+
+    void openSearchDirectionTo();
+
     void showLanguageButton(List<String> languages);
 
     void showUniverseButton(List<Universe> universes);
-
-    void backToDefaultScene();
-
-    void backToVenueScene(Venue venue, String language);
 
     void showActiveFloors(List<Floor> floors);
 
@@ -41,7 +61,13 @@ interface BaseFragment {
 
     void showActiveFloor(Floor floor);
 
+    void showDirectionButton();
+
+    void hideDirectionButton();
+
     void showSearchResults(List<? extends MapwizeObject> results);
+
+    void showSearchResults(List<? extends MapwizeObject> results, List<Universe> universes, Universe universe);
 
     void showErrorMessage(String message);
 }

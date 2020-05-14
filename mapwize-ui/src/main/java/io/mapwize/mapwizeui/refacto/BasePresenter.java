@@ -42,4 +42,8 @@ interface BasePresenter {
     void onFloorClick(Floor floor);
     void onLanguageClick(String language);
     void onUniverseClick(Universe universe);
+    void onDirectionBackClick();
+    void onDirectionSwapClick();
+    void onDirectionFromQueryChange(String query);
+    void onDirectionToQueryChange(String query);
 }

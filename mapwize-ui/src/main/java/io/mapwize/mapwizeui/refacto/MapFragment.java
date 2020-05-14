@@ -8,21 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.transition.Scene;
-import androidx.transition.Transition;
-import androidx.transition.TransitionInflater;
-import androidx.transition.TransitionManager;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.DirectionMode;
+import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
@@ -34,16 +31,21 @@ import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.PlacePreview;
+import io.mapwize.mapwizeui.BottomCardView;
 import io.mapwize.mapwizeui.CompassView;
 import io.mapwize.mapwizeui.FloorControllerView;
+import io.mapwize.mapwizeui.FollowUserButton;
 import io.mapwize.mapwizeui.LanguagesButton;
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings;
 import io.mapwize.mapwizeui.R;
+import io.mapwize.mapwizeui.SearchBarView;
+import io.mapwize.mapwizeui.SearchDirectionView;
 import io.mapwize.mapwizeui.SearchResultList;
 import io.mapwize.mapwizeui.UniversesButton;
 
-public class MapFragment extends Fragment implements BaseFragment, SearchBar.SearchBarListener,
-        SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener {
+public class MapFragment extends Fragment implements BaseFragment, SearchBarView.SearchBarListener,
+        SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
+        BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -62,11 +64,15 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
 
     private BasePresenter presenter;
 
-    private ViewGroup sceneRoot;
-    private Scene currentScene;
-    private Scene defaultScene;
-    private Scene searchScene;
-    private Scene inVenueScene;
+    private BottomCardView bottomCardView;
+    private FloorControllerView floorControllerView;
+    private UniversesButton universesButton;
+    private LanguagesButton languagesButton;
+    private SearchBarView searchBarView;
+    private SearchResultList searchResultList;
+    private SearchDirectionView searchDirectionView;
+    private FollowUserButton followUserButton;
+    private CompassView compassView;
 
     // Component listener
     private MapFragment.OnFragmentInteractionListener listener;
@@ -199,13 +205,12 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(container.getContext(), "pk.mapwize");
-        return inflater.inflate(R.layout.mwz_map_fragment, container, false);
+        return inflater.inflate(R.layout.mapwize_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        sceneRoot = view.findViewById(R.id.scene_root);
         mapwizeView = new MapwizeView(view.getContext(), mapwizeConfiguration, initializeOptions);
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapwizeView);
@@ -217,9 +222,21 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
             mapwizeMap.getMapboxMap().getUiSettings().setCompassEnabled(false);
             presenter.onMapLoaded(mapwizeMap);
         });
-        defaultScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_default, getContext());
-        searchScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_search_scene, getContext());
-        inVenueScene = Scene.getSceneForLayout(sceneRoot, R.layout.mwz_map_scene_in_venue, getContext());
+
+        bottomCardView = view.findViewById(R.id.mapwizeBottomCardView);
+        bottomCardView.setListener(this);
+        floorControllerView = view.findViewById(R.id.mapwizeFloorController);
+        floorControllerView.setListener(this);
+        universesButton = view.findViewById(R.id.mapwizeUniversesButton);
+        languagesButton = view.findViewById(R.id.mapwizeLanguagessButton);
+        searchBarView = view.findViewById(R.id.mapwizeSearchBar);
+        searchBarView.setListener(this);
+        searchResultList = view.findViewById(R.id.mapwizeSearchResultList);
+        searchResultList.setListener(this);
+        searchDirectionView = view.findViewById(R.id.mapwizeDirectionSearchBar);
+        searchDirectionView.setListener(this);
+        followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
+        compassView = view.findViewById(R.id.mapwizeCompassView);
     }
 
     @Override
@@ -304,261 +321,145 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
 
     // Scene management
     public void showDefaultScene() {
-        if (!defaultScene.equals(currentScene)) {
-            currentScene = defaultScene;
-            Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.venue_to_default);
-            transition.excludeChildren(R.id.mwz_search_bar_placeholder, true);
-            TransitionManager.go(defaultScene, transition);
-        }
-        SearchBarPlaceholder searchBarPlaceholder = defaultScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
-        searchBarPlaceholder.setText(getResources().getString(R.string.search_venue));
-        searchBarPlaceholder.setDirectionButtonVisible(false);
-        searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
-        ProgressBar progressBar = defaultScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
-        progressBar.setVisibility(View.INVISIBLE);
-        searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
-            @Override
-            public void onMenuButtonClick() {
-                listener.onMenuButtonClick();
-            }
-
-            @Override
-            public void onDirectionButtonClick() {
-                presenter.onDirectionButtonClick();
-            }
-
-            @Override
-            public void onQueryClick() {
-                presenter.onQueryClick();
-            }
-        });
-        CompassView compassView = defaultScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
-        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
+        searchBarView.showOutOfVenue();
+        searchBarView.setVisibility(View.VISIBLE);
+        universesButton.setVisibility(View.GONE);
+        languagesButton.setVisibility(View.GONE);
+        searchDirectionView.setVisibility(View.GONE);
     }
 
     public void showVenueEntering(Venue venue, String language) {
-        ProgressBar progressBar = defaultScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-        SearchBarPlaceholder searchBarPlaceholder = defaultScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
-        String searchPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
-        searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
+        searchBarView.showVenueEntering(venue, language);
     }
 
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
-        PlaceInfoView bottomCardView = defaultScene.getSceneRoot().findViewById(R.id.mwz_bottom_card_view);
-        if (bottomCardView == null) {
-            return;
-        }
         bottomCardView.setContent(preview);
     }
 
     @Override
     public void showPlaceInfoFromPreview(Place place, String language) {
-        PlaceInfoView bottomCardView = defaultScene.getSceneRoot().findViewById(R.id.mwz_bottom_card_view);
-        if (bottomCardView == null) {
-            return;
-        }
         bottomCardView.setContentFromPreview(place, language);
     }
 
     @Override
+    public void showPlaceInfo(Place place, String language) {
+        bottomCardView.setContent(place, language);
+    }
+
+    @Override
+    public void showPlacelistInfo(Placelist placelist, String language) {
+        bottomCardView.setContent(placelist, language);
+    }
+
+    @Override
     public void hidePlaceInfo() {
-        PlaceInfoView bottomCardView = defaultScene.getSceneRoot().findViewById(R.id.mwz_bottom_card_view);
-        if (bottomCardView == null) {
-            return;
-        }
         bottomCardView.removeContent();
     }
 
     @Override
     public void showSearchScene() {
-        currentScene = searchScene;
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_search);
-        transition.addListener(new Transition.TransitionListener() {
-            @Override
-            public void onTransitionStart(@NonNull Transition transition) {
-                SearchBar searchBar = searchScene.getSceneRoot().findViewById(R.id.mwz_search_bar);
-                searchBar.setListener(MapFragment.this);
-                searchBar.textFieldRequestFocus();
-                presenter.onSearchQueryChange("");
-                SearchResultList resultList = searchScene.getSceneRoot().findViewById(R.id.mwz_search_results_list);
-                resultList.setListener(MapFragment.this);
-            }
+        searchBarView.setupInSearch();
+        searchResultList.show();
+    }
 
-            @Override
-            public void onTransitionEnd(@NonNull Transition transition) {
-                presenter.onSearchQueryChange("");
-            }
+    @Override
+    public void hideSearchScene() {
+        searchBarView.setupDefault();
+        searchResultList.hide();
+    }
 
-            @Override
-            public void onTransitionCancel(@NonNull Transition transition) {
+    @Override
+    public void showSearchDirectionScene() {
+        searchBarView.setVisibility(View.GONE);
+        searchDirectionView.setVisibility(View.VISIBLE);
+        searchResultList.show();
+    }
 
-            }
+    @Override
+    public void hideSearchDirectionScene() {
+        searchBarView.setVisibility(View.VISIBLE);
+        searchDirectionView.setVisibility(View.GONE);
+        searchResultList.hide();
+    }
 
-            @Override
-            public void onTransitionPause(@NonNull Transition transition) {
+    @Override
+    public void showFromDirection(DirectionPoint from, String language) {
+        searchDirectionView.setFromTitle(from, language);
+    }
 
-            }
+    @Override
+    public void showToDirection(DirectionPoint to, String language) {
+        searchDirectionView.setToTitle(to, language);
+    }
 
-            @Override
-            public void onTransitionResume(@NonNull Transition transition) {
+    @Override
+    public void showDirectionModes(List<DirectionMode> modes) {
+        searchDirectionView.setModes(modes);
+    }
 
-            }
-        });
-        TransitionManager.go(searchScene, transition);
+    @Override
+    public void showDirectionMode(DirectionMode mode) {
+        searchDirectionView.setMode(mode);
+    }
 
+    @Override
+    public void openSearchDirectionFrom() {
+        searchDirectionView.openFromSearch();
+    }
+
+    @Override
+    public void openSearchDirectionTo() {
+        searchDirectionView.openToSearch();
     }
 
     @Override
     public void showLanguageButton(List<String> languages) {
-        LanguagesButton languagesButton = currentScene.getSceneRoot().findViewById(R.id.mwz_language_button);
-        if (languagesButton == null) {
-            return;
-        }
         languagesButton.setLanguages(languages);
         languagesButton.setListener(language -> presenter.onLanguageClick(language));
     }
 
     @Override
     public void showUniverseButton(List<Universe> universes) {
-        UniversesButton universesButton = currentScene.getSceneRoot().findViewById(R.id.mwz_universe_button);
-        if (universesButton == null) {
-            return;
-        }
         universesButton.setUniverses(universes);
         universesButton.setListener(universe -> presenter.onUniverseClick(universe));
     }
 
-    @Override
-    public void backToDefaultScene() {
-        currentScene = defaultScene;
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.search_to_default);
-        TransitionManager.go(defaultScene, transition);
-        SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
-        searchBarPlaceholder.setText(getResources().getString(R.string.search_venue));
-        searchBarPlaceholder.setDirectionButtonVisible(false);
-        searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
-        ProgressBar progressBar = currentScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
-        progressBar.setVisibility(View.INVISIBLE);
-        searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
-            @Override
-            public void onMenuButtonClick() {
-                listener.onMenuButtonClick();
-            }
-
-            @Override
-            public void onDirectionButtonClick() {
-                presenter.onDirectionButtonClick();
-            }
-
-            @Override
-            public void onQueryClick() {
-                presenter.onQueryClick();
-            }
-        });
-        CompassView compassView = currentScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
-        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
-    }
-
-    @Override
-    public void backToVenueScene(Venue venue, String language) {
-        currentScene = inVenueScene;
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.search_to_default);
-        TransitionManager.go(inVenueScene, transition);
-        SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
-        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
-        searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
-        searchBarPlaceholder.setDirectionButtonVisible(true);
-        searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
-        ProgressBar progressBar = currentScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
-        progressBar.setVisibility(View.INVISIBLE);
-        searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
-            @Override
-            public void onMenuButtonClick() {
-                listener.onMenuButtonClick();
-            }
-
-            @Override
-            public void onDirectionButtonClick() {
-                presenter.onDirectionButtonClick();
-            }
-
-            @Override
-            public void onQueryClick() {
-                presenter.onQueryClick();
-            }
-        });
-        CompassView compassView = currentScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
-        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
-        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
-        floorController.setListener(this);
-    }
-
-    public void showInVenueScene(Venue venue, String language) {
-        currentScene = inVenueScene;
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.default_to_venue);
-        TransitionManager.go(inVenueScene, transition);
-        SearchBarPlaceholder searchBarPlaceholder = currentScene.getSceneRoot().findViewById(R.id.mwz_search_bar_placeholder);
-        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
-        searchBarPlaceholder.setText(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
-        searchBarPlaceholder.setDirectionButtonVisible(true);
-        searchBarPlaceholder.setMenuButtonVisible(!initializeUiSettings.isMenuButtonHidden());
-        ProgressBar progressBar = currentScene.getSceneRoot().findViewById(R.id.mwz_progress_bar);
-        progressBar.setVisibility(View.INVISIBLE);
-        searchBarPlaceholder.setListener(new SearchBarPlaceholder.Listener() {
-            @Override
-            public void onMenuButtonClick() {
-                listener.onMenuButtonClick();
-            }
-
-            @Override
-            public void onDirectionButtonClick() {
-                presenter.onDirectionButtonClick();
-            }
-
-            @Override
-            public void onQueryClick() {
-                presenter.onQueryClick();
-            }
-        });
-        CompassView compassView = currentScene.getSceneRoot().findViewById(R.id.mwz_compass_view);
-        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
-        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
-        floorController.setListener(this);
+    public void showVenueEntered(Venue venue, String language) {
+        searchBarView.showVenueEntered(venue, language);
     }
 
     public void showActiveFloors(List<Floor> floors) {
-        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
-        if (floorController == null) {
-            return;
-        }
-        floorController.setFloors(floors);
+        floorControllerView.setFloors(floors);
     }
 
     @Override
     public void showLoadingFloor(Floor floor) {
-        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
-        if (floorController == null) {
-            return;
-        }
-        floorController.setLoadingFloor(floor);
+        floorControllerView.setLoadingFloor(floor);
     }
 
     public void showActiveFloor(Floor floor) {
-        FloorControllerView floorController = currentScene.getSceneRoot().findViewById(R.id.mwz_floor_controller);
-        if (floorController == null) {
-            return;
-        }
-        floorController.setFloor(floor);
+        floorControllerView.setFloor(floor);
+    }
+
+    @Override
+    public void showDirectionButton() {
+        searchBarView.setDirectionButtonHidden(false);
+    }
+
+    @Override
+    public void hideDirectionButton() {
+        searchBarView.setDirectionButtonHidden(true);
     }
 
     @Override
     public void showSearchResults(List<? extends MapwizeObject> results) {
-        if (currentScene == searchScene) {
-            SearchResultList resultList = searchScene.getSceneRoot().findViewById(R.id.mwz_search_results_list);
-            resultList.showData(results);
-        }
+        searchResultList.showData(results);
+    }
+
+    @Override
+    public void showSearchResults(List<? extends MapwizeObject> results, List<Universe> universes, Universe universe) {
+        searchResultList.showData(results, universes, universe);
     }
 
     @Override
@@ -567,8 +468,23 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
     }
 
     @Override
+    public void onSearchStart() {
+        presenter.onQueryClick();
+    }
+
+    @Override
+    public void onSearchBarMenuClick() {
+        listener.onMenuButtonClick();
+    }
+
+    @Override
     public void onSearchBarQueryChange(String query) {
         presenter.onSearchQueryChange(query);
+    }
+
+    @Override
+    public void onSearchBarDirectionButtonClick() {
+        presenter.onDirectionButtonClick();
     }
 
     @Override
@@ -599,6 +515,46 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBar.Sea
     @Override
     public void onFloorClick(Floor floor) {
         presenter.onFloorClick(floor);
+    }
+
+    @Override
+    public void onDirectionClick() {
+        presenter.onDirectionButtonClick();
+    }
+
+    @Override
+    public void onInformationClick() {
+
+    }
+
+    @Override
+    public void onDetailsOpen() {
+
+    }
+
+    @Override
+    public void onDetailsClose() {
+
+    }
+
+    @Override
+    public void onDirectionBackClick() {
+        presenter.onDirectionBackClick();
+    }
+
+    @Override
+    public void onDirectionSwapClick() {
+        presenter.onDirectionSwapClick();
+    }
+
+    @Override
+    public void onDirectionFromQueryChange(String query) {
+        presenter.onDirectionFromQueryChange(query);
+    }
+
+    @Override
+    public void onDirectionToQueryChange(String query) {
+        presenter.onDirectionToQueryChange(query);
     }
 
 
