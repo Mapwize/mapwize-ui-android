@@ -2,12 +2,15 @@ package io.mapwize.mapwizeui.refacto;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
@@ -377,10 +381,27 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     @Override
+    public void showDirectionLoadingScene() {
+        universesButton.setVisibility(View.GONE);
+        languagesButton.setVisibility(View.GONE);
+        searchResultList.hide();
+        searchDirectionView.showSwapButton();
+    }
+
+    @Override
+    public void showDirectionScene() {
+
+    }
+
+    @Override
     public void hideSearchDirectionScene() {
         searchBarView.setVisibility(View.VISIBLE);
         searchDirectionView.setVisibility(View.GONE);
+        universesButton.showIfNeeded();
+        languagesButton.showIfNeeded();
         searchResultList.hide();
+        showFromDirection(null, null);
+        showToDirection(null, null);
     }
 
     @Override
@@ -405,12 +426,24 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     @Override
     public void openSearchDirectionFrom() {
+        searchResultList.show();
         searchDirectionView.openFromSearch();
     }
 
     @Override
     public void openSearchDirectionTo() {
+        searchResultList.show();
         searchDirectionView.openToSearch();
+    }
+
+    @Override
+    public void hideSearchList() {
+        searchResultList.hide();
+    }
+
+    @Override
+    public void showDirection(Direction direction) {
+        searchResultList.hide();
     }
 
     @Override
@@ -464,7 +497,9 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     @Override
     public void showErrorMessage(String message) {
-
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(getContext(), "Error to display", Toast.LENGTH_LONG).show();
+        });
     }
 
     @Override
@@ -555,6 +590,21 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     @Override
     public void onDirectionToQueryChange(String query) {
         presenter.onDirectionToQueryChange(query);
+    }
+
+    @Override
+    public void onDirectionModeChange(DirectionMode mode) {
+        presenter.onDirectionModeChange(mode);
+    }
+
+    @Override
+    public void onDirectionFromFieldGetFocus() {
+        presenter.onDirectionFromFieldGetFocus();
+    }
+
+    @Override
+    public void onDirectionToFieldGetFocus() {
+        presenter.onDirectionToFieldGetFocus();
     }
 
 

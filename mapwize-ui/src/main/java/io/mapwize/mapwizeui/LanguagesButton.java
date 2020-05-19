@@ -68,6 +68,15 @@ public class LanguagesButton extends AppCompatImageButton {
         });
     }
 
+    public void showIfNeeded() {
+        if (languages.size() > 1) {
+            setVisibility(View.VISIBLE);
+        }
+        else {
+            setVisibility(View.GONE);
+        }
+    }
+
     public void setLanguages(List<String> languages) {
         this.languages = languages;
         if (languages.size() > 1) {

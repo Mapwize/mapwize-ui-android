@@ -101,12 +101,13 @@ public class SearchDirectionView extends ConstraintLayout implements
             if (hasFocus) {
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field_selected));
                 setupFromSearch();
+                listener.onDirectionFromFieldGetFocus();
             }
             else {
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
                 //setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
-                if (!toEditText.hasFocus() && toDirectionPoint != null) {
+                if (!toEditText.hasFocus()) {
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -123,7 +124,9 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                listener.onDirectionFromQueryChange(s.toString());
+                if (fromEditText.hasFocus()) {
+                    listener.onDirectionFromQueryChange(s.toString());
+                }
             }
 
             @Override
@@ -135,6 +138,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         toEditText.setOnFocusChangeListener((v, hasFocus) -> {
             // If to edit text has focus, setup from search ui
             if (hasFocus) {
+                listener.onDirectionToFieldGetFocus();
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field_selected));
                 setupToSearch();
             }
@@ -159,7 +163,9 @@ public class SearchDirectionView extends ConstraintLayout implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                listener.onDirectionToQueryChange(s.toString());
+                if (toEditText.hasFocus()) {
+                    listener.onDirectionToQueryChange(s.toString());
+                }
             }
 
             @Override
@@ -415,28 +421,7 @@ public class SearchDirectionView extends ConstraintLayout implements
      * If not in search mode, call listener.onDirectionBackClick()
      */
     private void backClick() {
-        if (fromEditText.hasFocus()) {
-            fromEditText.clearFocus();
-            //setTextViewValue(fromEditText, fromDirectionPoint);
-        }
-        if (toEditText.hasFocus()) {
-            toEditText.clearFocus();
-            //setTextViewValue(toEditText, toDirectionPoint);
-        }
-        if (!isSearching && listener != null) {
-            mapwizeMap.stopNavigation();
-            fromDirectionPoint = null;
-            toDirectionPoint = null;
-            toEditText.setText("");
-            fromEditText.setText("");
-            directionInfoView.removeContent();
-            listener.onDirectionBackClick();
-        }
-        if (fromDirectionPoint == null || toDirectionPoint == null) {
-            listener.onDirectionBackClick();
-        }
-        setupDefault();
-
+        listener.onDirectionBackClick();
     }
 
     /**
@@ -447,6 +432,14 @@ public class SearchDirectionView extends ConstraintLayout implements
         swapButton.setVisibility(View.VISIBLE);
         mapwizeDirectionMainLayout.setBackgroundColor(Color.TRANSPARENT);
 
+    }
+
+    public void showSwapButton() {
+        swapButton.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSwapButton() {
+        swapButton.setVisibility(View.GONE);
     }
 
     /**
@@ -734,11 +727,13 @@ public class SearchDirectionView extends ConstraintLayout implements
     }
 
     public void setFromTitle(DirectionPoint from, String language) {
+        fromEditText.clearFocus();
         setTextViewValue(fromEditText, from, language);
     }
 
     public void setToTitle(DirectionPoint to, String language) {
         setTextViewValue(toEditText, to, language);
+        toEditText.clearFocus();
     }
 
     private void setTextViewValue(TextView textView, DirectionPoint directionPoint, String language) {
@@ -756,7 +751,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     @Override
     public void onModeChange(DirectionMode mode) {
-        setDirectionMode(mode);
+        listener.onDirectionModeChange(mode);
     }
 
     @Override
@@ -769,6 +764,8 @@ public class SearchDirectionView extends ConstraintLayout implements
         void onDirectionSwapClick();
         void onDirectionFromQueryChange(String query);
         void onDirectionToQueryChange(String query);
-
+        void onDirectionModeChange(DirectionMode mode);
+        void onDirectionFromFieldGetFocus();
+        void onDirectionToFieldGetFocus();
     }
 }

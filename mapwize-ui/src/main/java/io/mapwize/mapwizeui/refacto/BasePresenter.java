@@ -46,4 +46,7 @@ interface BasePresenter {
     void onDirectionSwapClick();
     void onDirectionFromQueryChange(String query);
     void onDirectionToQueryChange(String query);
+    void onDirectionModeChange(DirectionMode mode);
+    void onDirectionFromFieldGetFocus();
+    void onDirectionToFieldGetFocus();
 }

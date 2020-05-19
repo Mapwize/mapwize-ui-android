@@ -30,7 +30,6 @@ import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
-import io.mapwize.mapwizesdk.map.Marker;
 import io.mapwize.mapwizesdk.map.NavigationException;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
@@ -232,7 +231,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onUniverseChange(@Nullable Universe universe) {
         this.universe = universe;
-        unselectContent();
+        if (selectedContent != null && !selectedContent.getUniverses().contains(universe)) {
+            unselectContent();
+        }
     }
 
     @Override
@@ -264,68 +265,22 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onDirectionButtonClick() {
         fragment.showSearchDirectionScene();
         if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-            from = mapwizeMap.getUserLocation();
+            validateDirectionFrom(mapwizeMap.getUserLocation());
         }
         if (selectedContent != null) {
-            to = (DirectionPoint)selectedContent;
+            validateDirectionTo((DirectionPoint)selectedContent);
         }
         fragment.hidePlaceInfo();
-        fragment.showFromDirection(from, venueLanguage);
-        fragment.showToDirection(to, venueLanguage);
         fragment.showDirectionModes(directionModes);
-        fragment.showDirectionMode(directionMode);
+        validateDirectionMode(directionMode);
         if (from == null) {
-            fragment.openSearchDirectionFrom();
-            state = UIState.SEARCH_FROM;
+            requestDirectionFrom();
         }
         else if (to == null) {
-            fragment.openSearchDirectionTo();
-            state = UIState.SEARCH_TO;
+            requestDirectionTo();
         }
         else {
-            state = UIState.DIRECTION;
-            if (from instanceof MapwizeIndoorLocation) {
-                try {
-                    mapwizeMap.startNavigation(to, directionMode, new DirectionOptions.Builder().build(), new OnNavigationUpdateListener() {
-                        @Override
-                        public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
-                            return false;
-                        }
-
-                        @Override
-                        public void navigationWillStart() {
-
-                        }
-
-                        @Override
-                        public void navigationDidStart() {
-
-                        }
-
-                        @Override
-                        public void navigationDidFail(Throwable throwable) {
-
-                        }
-                    });
-                } catch (NavigationException e) {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                api.getDirection(from, to, directionMode, new ApiCallback<Direction>() {
-                    @Override
-                    public void onSuccess(@NonNull Direction direction) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            mapwizeMap.setDirection(direction);
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Throwable t) {
-                        fragment.showErrorMessage(t.getMessage());
-                    }
-                });
-            }
+            tryToStartDirection();
         }
     }
 
@@ -414,15 +369,22 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
         if (state == UIState.SEARCH_FROM) {
             from = place;
-            fragment.showFromDirection(from, venueLanguage);
             if (to == null) {
-                fragment.openSearchDirectionTo();
                 state = UIState.SEARCH_TO;
+                fragment.openSearchDirectionTo();
             }
+            else {
+                state = UIState.DIRECTION;
+                startDirection();
+            }
+            fragment.showFromDirection(from, venueLanguage);
+
         }
         else if (state == UIState.SEARCH_TO) {
             to = place;
+            state = UIState.DIRECTION;
             fragment.showToDirection(to, venueLanguage);
+            startDirection();
         }
     }
 
@@ -463,25 +425,37 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onDirectionBackClick() {
+        Log.i("Debug", "On back click " + state);
         if (state == UIState.SEARCH_FROM || state == UIState.SEARCH_TO) {
-            fragment.hideSearchDirectionScene();
-            state = UIState.DEFAULT;
+            Log.i("Debug", "" + mapwizeMap.getDirection());
+            if (mapwizeMap.getDirection() != null) {
+                state = UIState.DIRECTION;
+                fragment.hideSearchList();
+                fragment.showFromDirection(from, venueLanguage);
+                fragment.showToDirection(to, venueLanguage);
+            }
+            else {
+                fragment.hideSearchDirectionScene();
+                state = UIState.DEFAULT;
+            }
+        }
+        else if (state == UIState.DIRECTION) {
+            quitDirection();
         }
     }
 
     @Override
     public void onDirectionSwapClick() {
-        DirectionPoint tmp = from;
-        from = to;
-        to = tmp;
-        fragment.showFromDirection(from, venueLanguage);
-        fragment.showToDirection(to, venueLanguage);
+        swap();
     }
 
     @Override
     public void onDirectionFromQueryChange(String query) {
+        if (state != UIState.SEARCH_FROM) {
+            return;
+        }
         if (query.length() == 0 && venue != null) {
-            fragment.showSearchResults(mainFroms, universes, universe);
+            fragment.showSearchResults(mainFroms);
             return;
         }
         SearchParams.Builder builder = new SearchParams.Builder();
@@ -506,8 +480,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onDirectionToQueryChange(String query) {
+        if (state != UIState.SEARCH_TO) {
+            return;
+        }
         if (query.length() == 0 && venue != null) {
-            fragment.showSearchResults(mainSearches, universes, universe);
+            fragment.showSearchResults(mainSearches);
             return;
         }
         SearchParams.Builder builder = new SearchParams.Builder();
@@ -528,6 +505,30 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             public void onFailure(@NonNull Throwable throwable) {
             }
         });
+    }
+
+    @Override
+    public void onDirectionModeChange(DirectionMode mode) {
+        directionMode = mode;
+        if (state == UIState.DIRECTION) {
+            startDirection();
+        }
+    }
+
+    @Override
+    public void onDirectionFromFieldGetFocus() {
+        if (state != UIState.SEARCH_FROM) {
+            requestDirectionFrom();
+            fragment.showToDirection(to, venueLanguage);
+        }
+    }
+
+    @Override
+    public void onDirectionToFieldGetFocus() {
+        if (state != UIState.SEARCH_TO) {
+            requestDirectionTo();
+            fragment.showFromDirection(from, venueLanguage);
+        }
     }
 
     private void unselectContent() {
@@ -581,4 +582,137 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.addPromotedPlaces(placelist, places -> {});
         fragment.showPlacelistInfo(placelist, venueLanguage);
     }
+
+    private void startDirection() {
+        state = UIState.DIRECTION;
+        if (from instanceof MapwizeIndoorLocation) {
+            fragment.showDirectionLoadingScene();
+            try {
+                mapwizeMap.startNavigation(to, directionMode, new DirectionOptions.Builder().build(), new OnNavigationUpdateListener() {
+                    @Override
+                    public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
+                        return false;
+                    }
+
+                    @Override
+                    public void navigationWillStart() {
+
+                    }
+
+                    @Override
+                    public void navigationDidStart() {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            fragment.showDirectionLoadingScene();
+                            promoteDirectionPoint();
+                        });
+                    }
+
+                    @Override
+                    public void navigationDidFail(Throwable throwable) {
+
+                    }
+                });
+            } catch (NavigationException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            fragment.showDirectionLoadingScene();
+            api.getDirection(from, to, directionMode, new ApiCallback<Direction>() {
+                @Override
+                public void onSuccess(@NonNull Direction direction) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        mapwizeMap.setDirection(direction);
+                        mapwizeMap.removePromotedPlaces();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            promoteDirectionPoint();
+                        });
+                        promoteDirectionPoint();
+                    });
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable t) {
+                    fragment.showErrorMessage(t.getMessage());
+                }
+            });
+        }
+    }
+
+    void promoteDirectionPoint() {
+        mapwizeMap.removePromotedPlaces();
+        mapwizeMap.removeMarkers();
+        if (from instanceof Place) {
+            mapwizeMap.addPromotedPlace((Place)from);
+        }
+        if (to instanceof Place) {
+            mapwizeMap.addPromotedPlace((Place)to);
+        }
+        if (to instanceof Placelist) {
+            mapwizeMap.addPromotedPlaces((Placelist) to, places -> {
+
+            });
+        }
+    }
+
+    void requestDirectionFrom() {
+        state = UIState.SEARCH_FROM;
+        fragment.openSearchDirectionFrom();
+    }
+
+    void requestDirectionTo() {
+        state = UIState.SEARCH_TO;
+        fragment.openSearchDirectionTo();
+    }
+
+    void validateDirectionFrom(DirectionPoint point) {
+        from = point;
+        fragment.showFromDirection(point, venueLanguage);
+        tryToStartDirection();
+    }
+
+    void validateDirectionTo(DirectionPoint point) {
+        to = point;
+        fragment.showToDirection(point, venueLanguage);
+        tryToStartDirection();
+    }
+
+    void validateDirectionMode(DirectionMode mode) {
+        directionMode = mode;
+        fragment.showDirectionMode(mode);
+        tryToStartDirection();
+    }
+
+    void swap() {
+        DirectionPoint tmpTo = from;
+        DirectionPoint tmpFrom = to;
+        from = null;
+        to = null;
+        validateDirectionFrom(tmpFrom);
+        validateDirectionTo(tmpTo);
+        Log.i("Debug", "Swap");
+    }
+
+    void tryToStartDirection() {
+        Log.i("Debug", "Try");
+        Log.i("Debug", "from " + from);
+        Log.i("Debug", "to " + to);
+        if (from != null && to != null) {
+            startDirection();
+            Log.i("Debug", "Start direction");
+        }
+    }
+
+    void quitDirection() {
+        mapwizeMap.removeDirection();
+        mapwizeMap.removePromotedPlaces();
+        mapwizeMap.removeMarkers();
+        from = null;
+        to = null;
+        fragment.hideSearchDirectionScene();
+        state = UIState.DEFAULT;
+    }
+
+
+
 }

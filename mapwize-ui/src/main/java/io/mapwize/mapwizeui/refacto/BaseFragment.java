@@ -37,6 +37,10 @@ interface BaseFragment {
 
     void showSearchDirectionScene();
 
+    void showDirectionLoadingScene();
+
+    void showDirectionScene();
+
     void hideSearchDirectionScene();
 
     void showFromDirection(DirectionPoint from, String language);
@@ -50,6 +54,10 @@ interface BaseFragment {
     void openSearchDirectionFrom();
 
     void openSearchDirectionTo();
+
+    void hideSearchList();
+
+    void showDirection(Direction direction);
 
     void showLanguageButton(List<String> languages);
 
