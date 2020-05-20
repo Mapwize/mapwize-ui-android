@@ -31,9 +31,11 @@ import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
+import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 import io.mapwize.mapwizeui.BottomCardView;
 import io.mapwize.mapwizeui.CompassView;
@@ -49,7 +51,7 @@ import io.mapwize.mapwizeui.UniversesButton;
 
 public class MapFragment extends Fragment implements BaseFragment, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
-        BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener {
+        BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener, FollowUserButton.FollowUserButtonListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -240,6 +242,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         searchDirectionView = view.findViewById(R.id.mapwizeDirectionSearchBar);
         searchDirectionView.setListener(this);
         followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
+        followUserButton.setListener(this);
         compassView = view.findViewById(R.id.mapwizeCompassView);
     }
 
@@ -343,17 +346,17 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     @Override
     public void showPlaceInfoFromPreview(Place place, String language) {
-        bottomCardView.setContentFromPreview(place, language);
+        bottomCardView.setContentFromPreview(place, language, listener.shouldDisplayInformationButton(place));
     }
 
     @Override
     public void showPlaceInfo(Place place, String language) {
-        bottomCardView.setContent(place, language);
+        bottomCardView.setContent(place, language, listener.shouldDisplayInformationButton(place));
     }
 
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
-        bottomCardView.setContent(placelist, language);
+        bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
     }
 
     @Override
@@ -389,8 +392,14 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     @Override
-    public void showDirectionScene() {
+    public void showDirectionScene(Direction direction) {
+        searchResultList.hide();
+        bottomCardView.setContent(direction);
+    }
 
+    @Override
+    public void showNavigationInfo(NavigationInfo navigationInfo) {
+        bottomCardView.setContent(navigationInfo);
     }
 
     @Override
@@ -400,6 +409,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         universesButton.showIfNeeded();
         languagesButton.showIfNeeded();
         searchResultList.hide();
+        bottomCardView.removeContent();
         showFromDirection(null, null);
         showToDirection(null, null);
     }
@@ -442,11 +452,6 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     @Override
-    public void showDirection(Direction direction) {
-        searchResultList.hide();
-    }
-
-    @Override
     public void showLanguageButton(List<String> languages) {
         languagesButton.setLanguages(languages);
         languagesButton.setListener(language -> presenter.onLanguageClick(language));
@@ -463,7 +468,9 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     public void showActiveFloors(List<Floor> floors) {
-        floorControllerView.setFloors(floors);
+        if (listener.shouldDisplayFloorController(floors)) {
+            floorControllerView.setFloors(floors);
+        }
     }
 
     @Override
@@ -500,6 +507,26 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         new Handler(Looper.getMainLooper()).post(() -> {
             Toast.makeText(getContext(), "Error to display", Toast.LENGTH_LONG).show();
         });
+    }
+
+    @Override
+    public void showFollowUserMode(FollowUserMode mode) {
+        followUserButton.onFollowUserModeChange(mode);
+    }
+
+    @Override
+    public void showFollowUserModeWithoutLocation() {
+        listener.onFollowUserButtonClickWithoutLocation();
+    }
+
+    @Override
+    public void showInformationButtonClick(MapwizeObject object) {
+        listener.onInformationButtonClick(object);
+    }
+
+    @Override
+    public void showMapwizeReady(MapwizeMap mapwizeMap) {
+        listener.onFragmentReady(mapwizeMap);
     }
 
     @Override
@@ -559,7 +586,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     @Override
     public void onInformationClick() {
-
+        presenter.onInformationClick();
     }
 
     @Override
@@ -605,6 +632,11 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     @Override
     public void onDirectionToFieldGetFocus() {
         presenter.onDirectionToFieldGetFocus();
+    }
+
+    @Override
+    public void onFollowUserClick() {
+        presenter.onFollowUserModeButtonClick();
     }
 
 

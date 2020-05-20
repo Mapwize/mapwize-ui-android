@@ -6,8 +6,8 @@ import io.mapwize.mapwizesdk.api.Venue;
 
 public interface MapwizeObjectInfoView {
 
-    void setContent(Place place, String language);
-    void setContent(Placelist placelist, String language);
+    void setContent(Place place, String language, boolean showInfoButton);
+    void setContent(Placelist placelist, String language, boolean showInfoButton);
     void setContent(Venue venue, String language);
     void removeContent();
 

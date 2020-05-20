@@ -31,7 +31,7 @@ import io.mapwize.mapwizesdk.map.PreviewCallback;
 /**
  * Display information about place, placelist or direction
  */
-public class BottomCardView extends CardView implements MapwizeObjectInfoView, DirectionInfoView {
+public class BottomCardView extends CardView {
 
     private BottomCardListener listener;
     private MapwizeFragment.OnFragmentInteractionListener interactionListener;
@@ -150,7 +150,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * @param place to show information
      * @param language use to display text
      */
-    public void setContent(Place place, String language) {
+    public void setContent(Place place, String language, boolean showInfoButton) {
         directionFrameLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         Translation translation = place.getTranslation(language);
@@ -172,7 +172,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
 
         titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
 
-        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(place)) {
+        if (showInfoButton) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -221,9 +221,9 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
     }
 
-    public void setContentFromPreview(Place place, String language) {
+    public void setContentFromPreview(Place place, String language, boolean showInfoButton) {
         progressBar.setVisibility(View.GONE);
-        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(place)) {
+        if (showInfoButton) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -243,16 +243,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         directionButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        /*float height = objectInfoFrameLayout.getMeasuredHeight();
-        ValueAnimator anim = ValueAnimator.ofInt(objectInfoFrameLayout.getMeasuredHeight(), (int)height);
-        anim.addUpdateListener(valueAnimator -> {
-            int val = (Integer) valueAnimator.getAnimatedValue();
-            ViewGroup.LayoutParams layoutParams = objectInfoFrameLayout.getLayoutParams();
-            layoutParams.height = val;
-            objectInfoFrameLayout.setLayoutParams(layoutParams);
-        });
-        anim.setDuration(300);
-        anim.start();*/
     }
 
     /**
@@ -260,7 +250,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * @param placelist to show information
      * @param language use to display text
      */
-    public void setContent(Placelist placelist, String language) {
+    public void setContent(Placelist placelist, String language, boolean showInfoButton) {
         directionFrameLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         Translation translation = placelist.getTranslation(language);
@@ -279,7 +269,7 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
             subtitleTextView.setVisibility(View.GONE);
         }
         titleImageView.setVisibility(View.VISIBLE);
-        if (interactionListener != null && interactionListener.shouldDisplayInformationButton(placelist)) {
+        if (showInfoButton) {
             informationsButton.setVisibility(View.VISIBLE);
         }
         else {
@@ -301,7 +291,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
     }
 
-    @Override
     public void setContent(Venue venue, String language) {
         // Do something here if you want to display info about venue
     }
@@ -310,7 +299,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * Display information about a direction
      * @param direction to show information
      */
-    @Override
     public void setContent(Direction direction) {
         directionFrameLayout.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.GONE);
@@ -324,7 +312,6 @@ public class BottomCardView extends CardView implements MapwizeObjectInfoView, D
      * Display information about a navigation
      * @param navigationInfo to show information
      */
-    @Override
     public void setContent(NavigationInfo navigationInfo) {
         new Handler(Looper.getMainLooper()).post(() -> {
             directionFrameLayout.setVisibility(View.VISIBLE);

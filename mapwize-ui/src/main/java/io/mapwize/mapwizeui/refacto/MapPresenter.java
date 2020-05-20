@@ -116,6 +116,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onMapLoaded(MapwizeMap mapwizeMap) {
+        fragment.showMapwizeReady(mapwizeMap);
         fragment.showDefaultScene();
         this.mapwizeMap = mapwizeMap;
         this.mapwizeMap.addOnClickListener(this);
@@ -131,6 +132,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onVenueEnter(Venue venue) {
+        if (state == UIState.DIRECTION) {
+            return;
+        }
         this.venue = venue;
         this.venueLanguages = venue.getSupportedLanguages();
         this.venueLanguage = mapwizeMap.getLanguage();
@@ -141,6 +145,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onVenueWillEnter(Venue venue) {
+        if (state == UIState.DIRECTION) {
+            return;
+        }
         fragment.showVenueEntering(venue, language);
         api.getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
             @Override
@@ -169,11 +176,13 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onVenueExit(Venue venue) {
         this.venue = null;
-        fragment.showDefaultScene();
-        mainFroms = new ArrayList<>();
-        mainSearches = new ArrayList<>();
-        unselectContent();
-        fragment.hideDirectionButton();
+        if (state != UIState.DIRECTION) {
+            fragment.showDefaultScene();
+            mainFroms = new ArrayList<>();
+            mainSearches = new ArrayList<>();
+            unselectContent();
+            fragment.hideDirectionButton();
+        }
     }
 
     @Override
@@ -258,7 +267,27 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onFollowUserModeChange(@NonNull FollowUserMode followUserMode) {
+        fragment.showFollowUserMode(followUserMode);
+    }
 
+    public void onFollowUserModeButtonClick() {
+        if (mapwizeMap.getUserLocation() == null) {
+            fragment.showFollowUserModeWithoutLocation();
+        }
+        switch (mapwizeMap.getFollowUserMode()) {
+            case NONE:
+            case FOLLOW_USER_AND_HEADING:
+                mapwizeMap.setFollowUserMode(FollowUserMode.FOLLOW_USER);
+                break;
+            case FOLLOW_USER:
+                mapwizeMap.setFollowUserMode(FollowUserMode.FOLLOW_USER_AND_HEADING);
+                break;
+        }
+    }
+
+    @Override
+    public void onInformationClick() {
+        fragment.showInformationButtonClick(selectedContent);
     }
 
     @Override
@@ -462,6 +491,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         builder.setQuery(query);
         builder.setObjectClass(new String[]{"place"});
         builder.setVenueId(venue.getId());
+        builder.setUniverseId(universe.getId());
         SearchParams params = builder.build();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
             @Override
@@ -491,6 +521,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         builder.setQuery(query);
         builder.setObjectClass(new String[]{"place", "placeList"});
         builder.setVenueId(venue.getId());
+        builder.setUniverseId(universe.getId());
         SearchParams params = builder.build();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
             @Override
@@ -591,7 +622,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 mapwizeMap.startNavigation(to, directionMode, new DirectionOptions.Builder().build(), new OnNavigationUpdateListener() {
                     @Override
                     public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
-                        return false;
+                        fragment.showNavigationInfo(navigationInfo);
+                        return navigationInfo.getLocationDelta() > 15;
                     }
 
                     @Override
@@ -626,6 +658,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                         mapwizeMap.removePromotedPlaces();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             promoteDirectionPoint();
+                            fragment.showDirectionScene(direction);
                         });
                         promoteDirectionPoint();
                     });
@@ -690,6 +723,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         to = null;
         validateDirectionFrom(tmpFrom);
         validateDirectionTo(tmpTo);
+        if (tmpTo != null && (tmpTo instanceof Place || tmpTo instanceof Placelist)) {
+            selectedContent = (MapwizeObject)tmpTo;
+        }
         Log.i("Debug", "Swap");
     }
 
@@ -711,6 +747,14 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         to = null;
         fragment.hideSearchDirectionScene();
         state = UIState.DEFAULT;
+        if (selectedContent != null) {
+            if (selectedContent instanceof Place) {
+                selectPlace((Place)selectedContent, universe);
+            }
+            else {
+                selectPlacelist((Placelist)selectedContent);
+            }
+        }
     }
 
 

@@ -11,6 +11,9 @@ import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
+import io.mapwize.mapwizesdk.map.FollowUserMode;
+import io.mapwize.mapwizesdk.map.MapwizeMap;
+import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 
 interface BaseFragment {
@@ -39,7 +42,9 @@ interface BaseFragment {
 
     void showDirectionLoadingScene();
 
-    void showDirectionScene();
+    void showDirectionScene(Direction direction);
+
+    void showNavigationInfo(NavigationInfo navigationInfo);
 
     void hideSearchDirectionScene();
 
@@ -56,8 +61,6 @@ interface BaseFragment {
     void openSearchDirectionTo();
 
     void hideSearchList();
-
-    void showDirection(Direction direction);
 
     void showLanguageButton(List<String> languages);
 
@@ -78,4 +81,12 @@ interface BaseFragment {
     void showSearchResults(List<? extends MapwizeObject> results, List<Universe> universes, Universe universe);
 
     void showErrorMessage(String message);
+
+    void showFollowUserMode(FollowUserMode mode);
+
+    void showFollowUserModeWithoutLocation();
+
+    void showInformationButtonClick(MapwizeObject object);
+
+    void showMapwizeReady(MapwizeMap mapwizeMap);
 }

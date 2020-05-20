@@ -18,20 +18,6 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
 interface BasePresenter {
 
     void onMapLoaded(MapwizeMap mapwizeMap);
-    void onVenueEnter(Venue venue);
-    void onVenueWillEnter(Venue venue);
-    void onVenueExit(Venue venue);
-    void onVenueEnterError(Venue venue, Throwable error);
-    void onDirectionModesChange(@NonNull List<DirectionMode> list);
-    void onFloorWillChange(@Nullable Floor floor);
-    void onFloorChange(@Nullable Floor floor);
-    void onFloorsChange(@NonNull List<Floor> list);
-    void onLanguageChange(@NonNull String s);
-    void onUniversesChange(@NonNull List<Universe> list);
-    void onUniverseWillChange(@NonNull Universe universe);
-    void onUniverseChange(@Nullable Universe universe);
-    void onClickEvent(@NonNull ClickEvent clickEvent);
-    void onFollowUserModeChange(@NonNull FollowUserMode followUserMode);
     void onDirectionButtonClick();
     void onQueryClick();
     void onSearchBackButtonClick();
@@ -49,4 +35,6 @@ interface BasePresenter {
     void onDirectionModeChange(DirectionMode mode);
     void onDirectionFromFieldGetFocus();
     void onDirectionToFieldGetFocus();
+    void onFollowUserModeButtonClick();
+    void onInformationClick();
 }

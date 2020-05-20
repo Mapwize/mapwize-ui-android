@@ -377,7 +377,7 @@ public class MapwizeFragment extends Fragment {
             followUserButton.setVisibility(View.GONE);
         }
         else {
-            followUserButton.setMapwizeMap(mapwizeMap);
+            //followUserButton.setMapwizeMap(mapwizeMap);
             //followUserButton.setListener(this);
         }
     }
@@ -479,7 +479,7 @@ public class MapwizeFragment extends Fragment {
             @Override
             public void getObjectAsync(Place place) {
                 selectedContent = place;
-                bottomCardView.setContentFromPreview(place, mapwizeMap.getLanguage());
+                //bottomCardView.setContentFromPreview(place, mapwizeMap.getLanguage());
                 EventManager.getInstance().triggerOnContentSelect(
                         place, mapwizeMap.getUniverse(),
                         mapwizeMap.getUniverse(),
@@ -506,7 +506,7 @@ public class MapwizeFragment extends Fragment {
             mapwizeMap.centerOnPlace(place, 300);
         }
         selectedContent = place;
-        bottomCardView.setContent(place, mapwizeMap.getLanguage());
+        //bottomCardView.setContent(place, mapwizeMap.getLanguage());
         mapwizeMap.addPromotedPlace(place);
     }
 
@@ -532,7 +532,7 @@ public class MapwizeFragment extends Fragment {
      */
     public void selectPlacelist(Placelist placelist) {
         selectedContent = placelist;
-        bottomCardView.setContent(placelist, mapwizeMap.getLanguage());
+        //bottomCardView.setContent(placelist, mapwizeMap.getLanguage());
         mapwizeMap.addMarkers(placelist, markers -> {
 
         });
