@@ -642,7 +642,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                     @Override
                     public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
                         fragment.showNavigationInfo(navigationInfo);
-                        return navigationInfo.getLocationDelta() > 15;
+                        if (navigationInfo.getLocationDelta() > 15) {
+                            fragment.showDirectionLoadingScene();
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
@@ -653,7 +657,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                     @Override
                     public void navigationDidStart() {
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            fragment.showDirectionLoadingScene();
+                            fragment.showDirectionScene(mapwizeMap.getDirection());
                             promoteDirectionPoint();
                         });
                     }
@@ -665,6 +669,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                             mapwizeMap.removeMarkers();
                             mapwizeMap.removePromotedPlaces();
                             mapwizeMap.removeDirection();
+                            mapwizeMap.stopNavigation();
                         });
                     }
                 });
@@ -770,6 +775,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     void quitDirection() {
         mapwizeMap.removeDirection();
+        mapwizeMap.stopNavigation();
         mapwizeMap.removePromotedPlaces();
         mapwizeMap.removeMarkers();
         from = null;
