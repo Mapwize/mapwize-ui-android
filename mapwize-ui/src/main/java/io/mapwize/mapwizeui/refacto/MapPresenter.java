@@ -291,6 +291,19 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
+    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
+        this.from = from;
+        this.to = to;
+        this.directionMode = directionMode;
+        fragment.showDirectionLoadingScene();
+        fragment.showFromDirection(from, venueLanguage);
+        fragment.showToDirection(to, venueLanguage);
+        fragment.showDirectionModes(directionModes);
+        fragment.showDirectionMode(directionMode);
+        startDirection();
+    }
+
+    @Override
     public void onDirectionButtonClick() {
         fragment.showSearchDirectionScene();
         if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {

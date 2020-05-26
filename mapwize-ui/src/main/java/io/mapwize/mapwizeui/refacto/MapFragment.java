@@ -393,6 +393,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     public void showDirectionLoadingScene() {
         universesButton.setVisibility(View.GONE);
         languagesButton.setVisibility(View.GONE);
+        searchDirectionView.setVisibility(View.VISIBLE);
         searchResultList.hide();
         searchDirectionView.showSwapButton();
         bottomCardView.showDirectionLoading();
@@ -539,11 +540,6 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     @Override
-    public void showDirectionLoading() {
-        bottomCardView.showDirectionLoading();
-    }
-
-    @Override
     public void showDirectionError() {
         bottomCardView.showDirectionError();
     }
@@ -673,12 +669,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
      * @param directionMode used to find the direction
      */
     public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
-        searchBarView.setVisibility(View.GONE);
-        searchDirectionView.setVisibility(View.VISIBLE);
-        searchDirectionView.setResultList(searchResultList);
-        searchDirectionView.setDirectionMode(directionMode);
-        //searchDirectionView.setToDirectionPoint(to);
-        //searchDirectionView.setFromDirectionPoint(from);
+        presenter.setDirection(direction, from, to, directionMode);
     }
 
     /**
@@ -691,9 +682,6 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
             @Override
             public void onSuccess(@Nullable Boolean object) {
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (mapwizeMap.getVenue() != null) {
-                        //universesButton.refreshVenue(mapwizeMap.getVenue());
-                    }
                     callback.onSuccess(object);
                 });
             }

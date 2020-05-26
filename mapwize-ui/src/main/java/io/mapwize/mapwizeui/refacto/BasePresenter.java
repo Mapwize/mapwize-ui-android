@@ -5,7 +5,9 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
+import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
@@ -37,4 +39,5 @@ interface BasePresenter {
     void onDirectionToFieldGetFocus();
     void onFollowUserModeButtonClick();
     void onInformationClick();
+    void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode);
 }

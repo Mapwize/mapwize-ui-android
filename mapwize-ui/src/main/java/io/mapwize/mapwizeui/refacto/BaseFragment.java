@@ -90,7 +90,5 @@ interface BaseFragment {
 
     void showMapwizeReady(MapwizeMap mapwizeMap);
 
-    void showDirectionLoading();
-
     void showDirectionError();
 }
