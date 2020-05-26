@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.mapbox.mapboxsdk.Mapbox;
@@ -20,6 +21,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
@@ -79,6 +81,8 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     private SearchDirectionView searchDirectionView;
     private FollowUserButton followUserButton;
     private CompassView compassView;
+    private ConstraintLayout mainLayout;
+    private FrameLayout headerLayout;
 
     // Component listener
     private MapFragment.OnFragmentInteractionListener listener;
@@ -244,7 +248,8 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
         followUserButton.setListener(this);
         compassView = view.findViewById(R.id.mapwizeCompassView);
-
+        mainLayout = view.findViewById(R.id.mapwizeFragmentLayout);
+        headerLayout = view.findViewById(R.id.headerFrameLayout);
     }
 
     @Override
@@ -658,6 +663,92 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     }
 
+
+
+    /**
+     * Set a direction on Mapwize UI will display the direction and the user interface
+     * @param direction to display
+     * @param from the starting point
+     * @param to the destination point
+     * @param directionMode used to find the direction
+     */
+    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
+        searchBarView.setVisibility(View.GONE);
+        searchDirectionView.setVisibility(View.VISIBLE);
+        searchDirectionView.setResultList(searchResultList);
+        searchDirectionView.setDirectionMode(directionMode);
+        //searchDirectionView.setToDirectionPoint(to);
+        //searchDirectionView.setFromDirectionPoint(from);
+    }
+
+    /**
+     * Helper method to get access and refresh the UI
+     * @param accesskey
+     * @param callback called when the method is ended
+     */
+    public void grantAccess(String accesskey, ApiCallback<Boolean> callback) {
+        mapwizeMap.grantAccess(accesskey, new ApiCallback<Boolean>() {
+            @Override
+            public void onSuccess(@Nullable Boolean object) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (mapwizeMap.getVenue() != null) {
+                        //universesButton.refreshVenue(mapwizeMap.getVenue());
+                    }
+                    callback.onSuccess(object);
+                });
+            }
+
+            @Override
+            public void onFailure(@Nullable Throwable t) {
+                callback.onFailure(t);
+            }
+        });
+    }
+
+    /**
+     * Getter for UI Component
+     */
+    public ConstraintLayout getMainLayout() {
+        return mainLayout;
+    }
+
+    public CompassView getCompassView() {
+        return compassView;
+    }
+
+    public FollowUserButton getFollowUserButton() {
+        return followUserButton;
+    }
+
+    public FloorControllerView getFloorControllerView() {
+        return floorControllerView;
+    }
+
+    public SearchBarView getSearchBarView() {
+        return searchBarView;
+    }
+
+    public SearchDirectionView getSearchDirectionView() {
+        return searchDirectionView;
+    }
+
+    public LanguagesButton getLanguagesButton() {
+        return languagesButton;
+    }
+
+    public UniversesButton getUniversesButton() {
+        return universesButton;
+    }
+
+    public BottomCardView getBottomCardView() {
+        return bottomCardView;
+    }
+
+    public SearchResultList getSearchResultList() {
+        return searchResultList;
+    }
+
+    public FrameLayout getHeaderLayout() { return headerLayout; }
 
     public interface OnFragmentInteractionListener {
         void onMenuButtonClick();
