@@ -1,8 +1,5 @@
 package io.mapwize.mapwizeui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +25,6 @@ import io.mapwize.mapwizesdk.api.Translation;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
-import io.mapwize.mapwizesdk.map.PreviewCallback;
 
 /**
  * Display information about place, placelist or direction
@@ -112,10 +108,7 @@ public class BottomCardView extends CardView {
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
-        /*ViewGroup.LayoutParams layoutParams = objectInfoFrameLayout.getLayoutParams();
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        objectInfoFrameLayout.setLayoutParams(layoutParams);*/
-        //listener.onDetailsOpen();
+        listener.onDetailsOpen();
     }
 
     private void hideDetails() {
@@ -123,7 +116,7 @@ public class BottomCardView extends CardView {
         lp.height = LayoutParams.WRAP_CONTENT;
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.GONE);
-        //listener.onDetailsClose();
+        listener.onDetailsClose();
     }
 
     /**
@@ -149,42 +142,6 @@ public class BottomCardView extends CardView {
     public void removeContent() {
         setVisibility(View.GONE);
     }
-
-    /*@Override
-    public void setVisibility(int visibility) {
-        if (visibility == getVisibility()) {
-            return;
-        }
-        if (visibility == View.INVISIBLE || visibility == View.GONE) {
-            this.animate()
-                    .translationY(this.getHeight())
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            BottomCardView.super.setVisibility(visibility);
-                        }
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            BottomCardView.super.setVisibility(visibility);
-                        }
-                    })
-                    .start();
-        }
-        else {
-            this.animate()
-                    .translationY(0)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            BottomCardView.super.setVisibility(visibility);
-                        }
-                    })
-                    .start();
-        }
-    }*/
 
     /**
      * Display information about a place

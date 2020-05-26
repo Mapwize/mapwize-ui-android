@@ -1,6 +1,5 @@
 package io.mapwize.mapwizeui;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
@@ -10,14 +9,12 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.mapwize.mapwizesdk.api.Floor;
-import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Floor controller

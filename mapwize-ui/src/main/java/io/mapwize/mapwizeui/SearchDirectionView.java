@@ -49,22 +49,17 @@ import io.mapwize.mapwizeui.modeview.ModeViewAdapter;
  * Include all component used to search direction and set accessibility option
  */
 public class SearchDirectionView extends ConstraintLayout implements
-        MapwizeMap.OnVenueEnterListener,
-        MapwizeMap.OnVenueExitListener,
-        MapwizeMap.OnDirectionModesChangeListener,
         ModeViewAdapter.OnModeChangeListener {
 
     private SearchDirectionListener listener;
     private DirectionInfoView directionInfoView;
     private ConstraintLayout mapwizeDirectionMainLayout;
-    EditText fromEditText;
-    EditText toEditText;
+    private EditText fromEditText;
+    private EditText toEditText;
     private ProgressBar resultProgressBar;
     private ImageView backButton;
     private ImageView swapButton;
-    private MapwizeMap mapwizeMap;
     private boolean isSearching = false;
-    private SearchDataManager searchDataManager;
     private ModeView modeView;
 
     private DirectionPoint fromDirectionPoint;
@@ -211,203 +206,10 @@ public class SearchDirectionView extends ConstraintLayout implements
     public void setDirectionMode(DirectionMode mode) {
         this.mode = mode;
         this.modeView.setMode(mode);
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
-    }
-
-    /**
-     * Set the from field
-     * @param directionPoint object that will be used as starting point
-     */
-    public void setFromDirectionPoint(Object directionPoint) {
-        if (fromDirectionPoint instanceof Place) {
-            mapwizeMap.removePromotedPlace((Place) fromDirectionPoint);
-        }
-        if (directionPoint == null) {
-            fromDirectionPoint = null;
-        }
-        else if (directionPoint instanceof MapwizeIndoorLocation){
-            fromDirectionPoint = (MapwizeIndoorLocation)directionPoint;
-        }
-        else {
-            fromDirectionPoint = (DirectionPoint) directionPoint;
-        }
-
-        //setTextViewValue(fromEditText, fromDirectionPoint);
-
-        if (directionPoint instanceof Place) {
-            Place place = (Place)directionPoint;
-            mapwizeMap.addPromotedPlace(place);
-        }
-
-        if (toDirectionPoint == null) {
-            toEditText.requestFocus();
-        }
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
-    }
-
-    /**
-     * Set the to field
-     * @param directionPoint object that will be used as destination
-     */
-    public void setToDirectionPoint(Object directionPoint) {
-        if (toDirectionPoint instanceof Place) {
-            mapwizeMap.removePromotedPlace((Place) toDirectionPoint);
-        }
-        if (directionPoint == null) {
-            toDirectionPoint = null;
-        }
-        else if (directionPoint instanceof MapwizeIndoorLocation){
-            toDirectionPoint = (MapwizeIndoorLocation)directionPoint;
-        }
-        else {
-            toDirectionPoint = (DirectionPoint) directionPoint;
-        }
-
-        //setTextViewValue(toEditText, toDirectionPoint);
-
-        if (directionPoint instanceof Place) {
-            Place place = (Place)directionPoint;
-            mapwizeMap.addPromotedPlace(place);
-        }
-        tryToStartDirection(fromDirectionPoint, toDirectionPoint, mode, true);
-    }
-
-    /**
-     * Method called when something change in the direction module (from, to, swap, accessiblity)
-     * @param from starting point
-     * @param to destination
-     * @param mode determine if the direction should be accessible to low mobility people
-     */
-    private void tryToStartDirection(DirectionPoint from, DirectionPoint to, DirectionMode mode, boolean centerOnStart) {
-        if (from == null ||to == null) {
-            return;
-        }
-        resultProgressBar.setVisibility(View.VISIBLE);
-        mapwizeMap.getMapwizeApi().getDirection(from, to, mode, new ApiCallback<Direction>() {
-            @Override
-            public void onSuccess(@NonNull final Direction object) {
-                Handler uiHandler = new Handler(Looper.getMainLooper());
-                Runnable runnable = () -> {
-                    resultProgressBar.setVisibility(View.INVISIBLE);
-                    startDirection(from, to, object, centerOnStart);
-                };
-                uiHandler.post(runnable);
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                Handler uiHandler = new Handler(Looper.getMainLooper());
-                Runnable runnable = () -> {
-                    resultProgressBar.setVisibility(View.INVISIBLE);
-                    mapwizeMap.removeDirection();
-                    directionInfoView.removeContent();
-                    Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
-                };
-                uiHandler.post(runnable);
-            }
-        });
     }
 
     public void centerOnActiveMode() {
         modeView.centerOnActiveMode();
-    }
-
-    /**
-     * Start a direction. Parameters are not used at this point but will be in a near future.
-     * @param fromPoint the starting point
-     * @param toPoint the destination
-     * @param direction the entire direction object
-     * @param centerOnStart if true, the camera will be centered on the starting point
-     */
-    private void startDirection(DirectionPoint fromPoint, DirectionPoint toPoint, Direction direction, boolean centerOnStart) {
-
-        DirectionOptions.Builder optsBuilder = new DirectionOptions.Builder();
-        if (!centerOnStart) {
-            optsBuilder.centerOnStart(false);
-            optsBuilder.displayStartingFloor(false);
-            optsBuilder.displayEndMarker(true);
-        }
-
-        mapwizeMap.stopNavigation();
-
-        if (fromPoint instanceof MapwizeIndoorLocation && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-            try {
-                mapwizeMap.startNavigation(toPoint, mode, optsBuilder.build(), new OnNavigationUpdateListener() {
-                    @Override
-                    public boolean shouldRecomputeNavigation(@NonNull NavigationInfo navigationInfo) {
-                        directionInfoView.setContent(navigationInfo);
-                        return navigationInfo.getLocationDelta() > 10 && mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null;
-                    }
-
-                    @Override
-                    public void navigationWillStart() {
-
-                    }
-
-                    @Override
-                    public void navigationDidStart() {
-                        EventManager.getInstance().triggerOnDirectionStart(
-                                mapwizeMap.getVenue(),
-                                mapwizeMap.getUniverse(),
-                                fromPoint,
-                                toPoint,
-                                mode.getId(),
-                                true);
-                    }
-
-                    @Override
-                    public void navigationDidFail(Throwable throwable) {
-                        mapwizeMap.removeDirection();
-                        directionInfoView.removeContent();
-                        Toast.makeText(getContext(), getResources().getString(R.string.direction_not_found), Toast.LENGTH_LONG).show();
-                    }
-                });
-            } catch (NavigationException e) {
-                mapwizeMap.setFollowUserMode(FollowUserMode.NONE);
-                if (mapwizeMap.getDirection() != direction) {
-                    mapwizeMap.removeMarkers();
-                    mapwizeMap.setDirection(direction);
-                    EventManager.getInstance().triggerOnDirectionStart(
-                            mapwizeMap.getVenue(),
-                            mapwizeMap.getUniverse(),
-                            fromPoint,
-                            toPoint,
-                            mode.getId(),
-                            false);
-                }
-                directionInfoView.setContent(direction);
-            }
-        }
-        else {
-            mapwizeMap.setFollowUserMode(FollowUserMode.NONE);
-            if (mapwizeMap.getDirection() != direction) {
-                mapwizeMap.removeMarkers();
-                mapwizeMap.setDirection(direction);
-                EventManager.getInstance().triggerOnDirectionStart(
-                        mapwizeMap.getVenue(),
-                        mapwizeMap.getUniverse(),
-                        fromPoint,
-                        toPoint,
-                        mode.getId(),
-                        false);
-            }
-
-            directionInfoView.setContent(direction);
-        }
-
-    }
-
-    /**
-     * Reverse from and to
-     */
-    private void swap() {
-        DirectionPoint oldFrom = fromDirectionPoint;
-        DirectionPoint oldTo = toDirectionPoint;
-        fromDirectionPoint = null;
-        toDirectionPoint = null;
-        setToDirectionPoint(oldFrom);
-        setFromDirectionPoint(oldTo);
     }
 
     /**
@@ -452,104 +254,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     void setupFromSearch() {
         fromEditText.setText("");
         setupInSearch();
-
-        /*resultList.setListener(new SearchResultList.SearchResultListListener() {
-            @Override
-            public void onSearchResultNull() {
-                fromEditText.clearFocus();
-                setFromDirectionPoint(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()));
-                if (toDirectionPoint != null) {
-                    setupDefault();
-                }
-            }
-
-            @Override
-            public void onSearchResult(Place place, Universe universe) {
-                fromEditText.clearFocus();
-                setFromDirectionPoint(place);
-                if (toDirectionPoint != null) {
-                    setupDefault();
-                }
-            }
-
-            @Override
-            public void onSearchResult(Placelist placelist) {
-                fromEditText.clearFocus();
-                setFromDirectionPoint(placelist);
-                if (toDirectionPoint != null) {
-                    setupDefault();
-                }
-            }
-
-            @Override
-            public void onSearchResult(Venue venue) {
-
-            }
-        });*/
-
-        performFromSearch(fromEditText.getText().toString());
-    }
-
-    /**
-     * Perform an empty search for the from field
-     */
-    private void performEmptyFromSearch() {
-        if (mapwizeMap.getVenue() != null) {
-
-            if (mapwizeMap.getUserLocation() != null
-                    && mapwizeMap.getUserLocation().getFloor() != null) {
-
-            }
-        }
-        else {
-
-        }
-        resultProgressBar.setVisibility(View.INVISIBLE);
-    }
-
-    /**
-     * Perform search from the from field
-     */
-    private void performFromSearch(String query) {
-        if (mapwizeMap == null) {
-            return;
-        }
-        if (!isSearching) {
-            return;
-        }
-        resultProgressBar.setVisibility(View.VISIBLE);
-
-        if (query.length() == 0) {
-            performEmptyFromSearch();
-            return;
-        }
-
-        SearchParams.Builder builder = new SearchParams.Builder();
-        builder.setQuery(query);
-        if (mapwizeMap.getVenue() != null) {
-            builder.setObjectClass(new String[]{"place"});
-            builder.setVenueId(mapwizeMap.getVenue().getId());
-            builder.setUniverseId(mapwizeMap.getUniverseForVenue(mapwizeMap.getVenue()).getId());
-            SearchParams params = builder.build();
-            mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
-                @Override
-                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-
-                        resultProgressBar.setVisibility(View.INVISIBLE);
-                    });
-                }
-
-                @Override
-                public void onFailure(@NonNull Throwable throwable) {
-                }
-            });
-        }
-        else {
-
-            resultProgressBar.setVisibility(View.INVISIBLE);
-        }
-
     }
 
     /**
@@ -558,152 +262,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     void setupToSearch() {
         setupInSearch();
         toEditText.setText("");
-        /*resultList.setListener(new SearchResultList.SearchResultListListener() {
-            @Override
-            public void onSearchResultNull() {
-                toEditText.clearFocus();
-                setupDefault();
-                setToDirectionPoint(null);
-            }
-
-            @Override
-            public void onSearchResult(Place place, Universe universe) {
-                String query = toEditText.getText().toString().length() > 0 ? toEditText.getText().toString() : null;
-                Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
-                Universe sentUniverse = universe == null ? mapwizeMap.getUniverse() : universe;
-                EventManager.getInstance().triggerOnContentSelect(place, mapwizeMap.getUniverse(), sentUniverse, channel, query);
-                toEditText.clearFocus();
-                setupDefault();
-                setToDirectionPoint(place);
-            }
-
-            @Override
-            public void onSearchResult(Placelist placelist) {
-                String query = toEditText.getText().toString().length() > 0 ? toEditText.getText().toString() : null;
-                Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
-                EventManager.getInstance().triggerOnContentSelect(placelist, mapwizeMap.getUniverse(), mapwizeMap.getUniverse(), channel, query);
-                toEditText.clearFocus();
-                setupDefault();
-                setToDirectionPoint(placelist);
-            }
-
-            @Override
-            public void onSearchResult(Venue venue) {
-
-            }
-        });
-        performToSearch(toEditText.getText().toString());*/
-    }
-
-    /**
-     * Perform an empty search for the to field
-     */
-    private void performEmptyToSearch() {
-        if (mapwizeMap.getVenue() != null) {
-            //resultList.showData(searchDataManager.mainSearch);
-        }
-        else {
-            //resultList.showData(new ArrayList<>());
-        }
-        resultProgressBar.setVisibility(View.INVISIBLE);
-        //resultList.hideCurrentLocationCard();
-    }
-
-    /**
-     * Perform search for the to field
-     */
-    private void performToSearch(String query) {
-        if (mapwizeMap == null) {
-            return;
-        }
-        if (!isSearching) {
-            return;
-        }
-        resultProgressBar.setVisibility(View.VISIBLE);
-
-        if (query.length() == 0) {
-            performEmptyToSearch();
-            return;
-        }
-
-        //resultList.hideCurrentLocationCard();
-        SearchParams.Builder builder = new SearchParams.Builder();
-        builder.setQuery(query);
-        if (mapwizeMap.getVenue() != null) {
-            builder.setObjectClass(new String[]{"place", "placeList"});
-            builder.setVenueId(mapwizeMap.getVenue().getId());
-            builder.setUniverseId(mapwizeMap.getUniverseForVenue(mapwizeMap.getVenue()).getId());
-            SearchParams params = builder.build();
-            mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
-                @Override
-                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        //resultList.showData(mapwizeObjects);
-                        resultProgressBar.setVisibility(View.INVISIBLE);
-                    });
-                }
-
-                @Override
-                public void onFailure(@NonNull Throwable throwable) {
-                }
-            });
-        }
-        else {
-            //resultList.showData(new ArrayList<>());
-            resultProgressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void onVenueEnter(@NonNull Venue venue) {
-
-    }
-
-    /**
-     * Load data in searchDataManager to improve result list reactivity on empty search
-     * @param venue
-     */
-    @Override
-    public void onVenueWillEnter(@NonNull Venue venue) {
-        searchDataManager.setMainSearch(new ArrayList<>());
-        searchDataManager.setMainFrom(new ArrayList<>());
-        mapwizeMap.getMapwizeApi().getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
-            @Override
-            public void onSuccess(@NonNull List<MapwizeObject> mapwizeObjects) {
-                searchDataManager.setMainSearch(mapwizeObjects);
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable throwable) {
-
-            }
-        });
-        mapwizeMap.getMapwizeApi().getMainFromsForVenue(venue.getId(), new ApiCallback<List<Place>>() {
-            @Override
-            public void onSuccess(@NonNull List<Place> mapwizeObjects) {
-                searchDataManager.setMainFrom(mapwizeObjects);
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable throwable) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-
-    }
-
-    /*@Override
-    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-
-    }*/
-
-    @Override
-    public void onVenueExit(@NonNull Venue venue) {
-
     }
 
     public void setModes(List<DirectionMode> modes) {
@@ -791,11 +349,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     @Override
     public void onModeChange(DirectionMode mode) {
         listener.onDirectionModeChange(mode);
-    }
-
-    @Override
-    public void onDirectionModesChange(@NonNull List<DirectionMode> modes) {
-        modeView.setModes(modes);
     }
 
     public interface SearchDirectionListener {

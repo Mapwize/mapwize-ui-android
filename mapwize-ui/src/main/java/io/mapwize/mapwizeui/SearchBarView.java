@@ -4,36 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.mapwize.mapwizesdk.api.ApiCallback;
-import io.mapwize.mapwizesdk.api.MapwizeObject;
-import io.mapwize.mapwizesdk.api.Place;
-import io.mapwize.mapwizesdk.api.Placelist;
-import io.mapwize.mapwizesdk.api.SearchParams;
-import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
-import io.mapwize.mapwizesdk.map.MapOptions;
-import io.mapwize.mapwizesdk.map.MapwizeMap;
-import io.mapwize.mapwizeui.events.Channel;
-import io.mapwize.mapwizeui.events.EventManager;
-import io.mapwize.mapwizeui.refacto.SearchBar;
 
 /**
  * Floating search bar.

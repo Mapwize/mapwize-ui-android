@@ -603,25 +603,25 @@ public class MapwizeFragment extends Fragment {
         boolean showFrom = false;
         boolean showTo = false;
         if (selectedContent != null) {
-            searchDirectionView.setToDirectionPoint(selectedContent);
+            //searchDirectionView.setToDirectionPoint(selectedContent);
             unselectContent();
         }
         else {
             showTo = true;
         }
         if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-            searchDirectionView.setFromDirectionPoint(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()));
+            //searchDirectionView.setFromDirectionPoint(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()));
         }
         else {
             showFrom = true;
         }
         if (showFrom) {
-            searchDirectionView.fromEditText.requestFocus();
+            //searchDirectionView.fromEditText.requestFocus();
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
         }
         else if (showTo) {
-            searchDirectionView.toEditText.requestFocus();
+            //searchDirectionView.toEditText.requestFocus();
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
         }
@@ -642,8 +642,8 @@ public class MapwizeFragment extends Fragment {
         searchDirectionView.setVisibility(View.VISIBLE);
         searchDirectionView.setResultList(searchResultList);
         searchDirectionView.setDirectionMode(directionMode);
-        searchDirectionView.setToDirectionPoint(to);
-        searchDirectionView.setFromDirectionPoint(from);
+        //searchDirectionView.setToDirectionPoint(to);
+        //searchDirectionView.setFromDirectionPoint(from);
     }
 
     /**
