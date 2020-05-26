@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -48,6 +50,8 @@ public class BottomCardView extends CardView {
     private WebView detailsWebView;
     private ImageView closeDetailsButton;
     private ProgressBar progressBar;
+    private ConstraintLayout directionLoadingLayout;
+    private ConstraintLayout directionNotFoundLayout;
     private boolean hasDetails;
 
     public BottomCardView(@NonNull Context context) {
@@ -98,6 +102,8 @@ public class BottomCardView extends CardView {
             hideDetails();
         });
         progressBar = findViewById(R.id.mapwizeBottomLoader);
+        directionLoadingLayout = findViewById(R.id.mwz_direction_loader_view);
+        directionNotFoundLayout = findViewById(R.id.mwz_direction_not_found_text_view);
     }
 
     private void showDetails() {
@@ -141,9 +147,44 @@ public class BottomCardView extends CardView {
      * Hide the view
      */
     public void removeContent() {
-        objectInfoFrameLayout.setVisibility(View.GONE);
-        directionFrameLayout.setVisibility(View.GONE);
+        setVisibility(View.GONE);
     }
+
+    /*@Override
+    public void setVisibility(int visibility) {
+        if (visibility == getVisibility()) {
+            return;
+        }
+        if (visibility == View.INVISIBLE || visibility == View.GONE) {
+            this.animate()
+                    .translationY(this.getHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            BottomCardView.super.setVisibility(visibility);
+                        }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            BottomCardView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+        else {
+            this.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            BottomCardView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+    }*/
 
     /**
      * Display information about a place
@@ -152,6 +193,8 @@ public class BottomCardView extends CardView {
      */
     public void setContent(Place place, String language, boolean showInfoButton) {
         directionFrameLayout.setVisibility(View.GONE);
+        directionLoadingLayout.setVisibility(View.GONE);
+        directionNotFoundLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         Translation translation = place.getTranslation(language);
         if (translation.getTitle().length() > 0) {
@@ -190,10 +233,13 @@ public class BottomCardView extends CardView {
         }
         directionButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
+        setVisibility(View.VISIBLE);
     }
 
     public void setContent(PlacePreview placePreview) {
         directionFrameLayout.setVisibility(View.GONE);
+        directionLoadingLayout.setVisibility(View.GONE);
+        directionNotFoundLayout.setVisibility(View.GONE);
         if (placePreview.getTitle().length() > 0) {
             titleTextView.setText(placePreview.getTitle());
             titleTextView.setVisibility(View.VISIBLE);
@@ -219,6 +265,7 @@ public class BottomCardView extends CardView {
         hasDetails = false;
         progressBar.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
+        setVisibility(View.VISIBLE);
     }
 
     public void setContentFromPreview(Place place, String language, boolean showInfoButton) {
@@ -243,6 +290,7 @@ public class BottomCardView extends CardView {
         directionButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        setVisibility(View.VISIBLE);
     }
 
     /**
@@ -252,6 +300,8 @@ public class BottomCardView extends CardView {
      */
     public void setContent(Placelist placelist, String language, boolean showInfoButton) {
         directionFrameLayout.setVisibility(View.GONE);
+        directionLoadingLayout.setVisibility(View.GONE);
+        directionNotFoundLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         Translation translation = placelist.getTranslation(language);
         if (translation.getTitle().length() > 0) {
@@ -289,10 +339,27 @@ public class BottomCardView extends CardView {
         }
         directionButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
+        setVisibility(View.VISIBLE);
     }
 
     public void setContent(Venue venue, String language) {
         // Do something here if you want to display info about venue
+    }
+
+    public void showDirectionLoading() {
+        directionLoadingLayout.setVisibility(View.VISIBLE);
+        directionNotFoundLayout.setVisibility(View.GONE);
+        directionFrameLayout.setVisibility(View.GONE);
+        objectInfoFrameLayout.setVisibility(View.GONE);
+        setVisibility(View.VISIBLE);
+    }
+
+    public void showDirectionError() {
+        directionLoadingLayout.setVisibility(View.GONE);
+        directionNotFoundLayout.setVisibility(View.VISIBLE);
+        directionFrameLayout.setVisibility(View.GONE);
+        objectInfoFrameLayout.setVisibility(View.GONE);
+        setVisibility(View.VISIBLE);
     }
 
     /**
@@ -302,10 +369,13 @@ public class BottomCardView extends CardView {
     public void setContent(Direction direction) {
         directionFrameLayout.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.GONE);
+        directionLoadingLayout.setVisibility(View.GONE);
+        directionNotFoundLayout.setVisibility(View.GONE);
         long time = Math.round(direction.getTraveltime() / 60);
         String timPlaceHolder = getResources().getString(R.string.time_placeholder);
         directionTimeTextView.setText(String.format(timPlaceHolder,time));
         directionDistanceTextView.setText(UnitLocale.distanceAsString(direction.getDistance()));
+        setVisibility(View.VISIBLE);
     }
 
     /**
@@ -316,10 +386,13 @@ public class BottomCardView extends CardView {
         new Handler(Looper.getMainLooper()).post(() -> {
             directionFrameLayout.setVisibility(View.VISIBLE);
             objectInfoFrameLayout.setVisibility(View.GONE);
+            directionLoadingLayout.setVisibility(View.GONE);
+            directionNotFoundLayout.setVisibility(View.GONE);
             long time = Math.round(navigationInfo.getDuration() / 60);
             String timPlaceHolder = getResources().getString(R.string.time_placeholder);
             directionTimeTextView.setText(String.format(timPlaceHolder,time));
             directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
+            setVisibility(View.VISIBLE);
         });
     }
 

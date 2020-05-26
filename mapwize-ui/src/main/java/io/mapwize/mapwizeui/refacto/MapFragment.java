@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,8 @@ import io.mapwize.mapwizeui.UniversesButton;
 
 public class MapFragment extends Fragment implements BaseFragment, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
-        BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener, FollowUserButton.FollowUserButtonListener {
+        BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener,
+        FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -244,6 +244,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
         followUserButton.setListener(this);
         compassView = view.findViewById(R.id.mapwizeCompassView);
+
     }
 
     @Override
@@ -389,6 +390,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         languagesButton.setVisibility(View.GONE);
         searchResultList.hide();
         searchDirectionView.showSwapButton();
+        bottomCardView.showDirectionLoading();
     }
 
     @Override
@@ -526,7 +528,19 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     @Override
     public void showMapwizeReady(MapwizeMap mapwizeMap) {
+        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
+        compassView.setOnCompassClickListener(this);
         listener.onFragmentReady(mapwizeMap);
+    }
+
+    @Override
+    public void showDirectionLoading() {
+        bottomCardView.showDirectionLoading();
+    }
+
+    @Override
+    public void showDirectionError() {
+        bottomCardView.showDirectionError();
     }
 
     @Override
@@ -637,6 +651,11 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     @Override
     public void onFollowUserClick() {
         presenter.onFollowUserModeButtonClick();
+    }
+
+    @Override
+    public void onClick(CompassView compassView) {
+
     }
 
 

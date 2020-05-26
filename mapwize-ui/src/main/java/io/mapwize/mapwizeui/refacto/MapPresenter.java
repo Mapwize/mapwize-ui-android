@@ -411,9 +411,16 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
         else if (state == UIState.SEARCH_TO) {
             to = place;
-            state = UIState.DIRECTION;
-            fragment.showToDirection(to, venueLanguage);
-            startDirection();
+            if (from != null) {
+                state = UIState.DIRECTION;
+                fragment.showToDirection(to, venueLanguage);
+                startDirection();
+            }
+            else {
+                state = UIState.SEARCH_FROM;
+                fragment.openSearchDirectionFrom();
+                fragment.showToDirection(to, venueLanguage);
+            }
         }
     }
 
@@ -464,8 +471,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 fragment.showToDirection(to, venueLanguage);
             }
             else {
-                fragment.hideSearchDirectionScene();
-                state = UIState.DEFAULT;
+                quitDirection();
             }
         }
         else if (state == UIState.DIRECTION) {
@@ -641,7 +647,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
                     @Override
                     public void navigationDidFail(Throwable throwable) {
-
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            fragment.showDirectionError();
+                            mapwizeMap.removeMarkers();
+                            mapwizeMap.removePromotedPlaces();
+                            mapwizeMap.removeDirection();
+                        });
                     }
                 });
             } catch (NavigationException e) {
@@ -666,7 +677,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
                 @Override
                 public void onFailure(@NonNull Throwable t) {
-                    fragment.showErrorMessage(t.getMessage());
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        fragment.showDirectionError();
+                        mapwizeMap.removeMarkers();
+                        mapwizeMap.removePromotedPlaces();
+                        mapwizeMap.removeDirection();
+                    });
                 }
             });
         }

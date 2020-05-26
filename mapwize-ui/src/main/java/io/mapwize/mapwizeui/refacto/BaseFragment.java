@@ -89,4 +89,8 @@ interface BaseFragment {
     void showInformationButtonClick(MapwizeObject object);
 
     void showMapwizeReady(MapwizeMap mapwizeMap);
+
+    void showDirectionLoading();
+
+    void showDirectionError();
 }

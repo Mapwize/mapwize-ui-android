@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -31,6 +33,7 @@ import io.mapwize.mapwizesdk.map.MapOptions;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
+import io.mapwize.mapwizeui.refacto.SearchBar;
 
 /**
  * Floating search bar.
@@ -67,7 +70,6 @@ public class SearchBarView extends ConstraintLayout {
         mainLayout = findViewById(R.id.mapwizeSearchMainLayout);
         backImageView = findViewById(R.id.mapwizeSearchBarBackButton);
         backImageView.setOnClickListener(v -> {
-            Log.i("Debug", "Back pressed");
             setupDefault();
             listener.onSearchBarBackButtonClick();
         });
@@ -125,6 +127,37 @@ public class SearchBarView extends ConstraintLayout {
         this.menuHidden = isHidden;
         if (this.menuHidden) {
             this.leftImageView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == getVisibility()) {
+            return;
+        }
+        if (visibility == View.INVISIBLE || visibility == View.GONE) {
+            this.animate()
+                    .translationY(-this.getHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            SearchBarView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+        else {
+            this.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            SearchBarView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
         }
     }
 

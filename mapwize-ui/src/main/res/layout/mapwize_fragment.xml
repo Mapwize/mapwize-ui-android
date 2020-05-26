@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.mapwize.mapwizeui.MapwizeFragment"
     android:id="@+id/mapwizeFragmentLayout"
+    android:animateLayoutChanges="true"
     android:paddingBottom="@dimen/mapwize_ui_padding_bottom"
     android:paddingStart="@dimen/mapwize_ui_padding_start"
     android:paddingEnd="@dimen/mapwize_ui_padding_end">

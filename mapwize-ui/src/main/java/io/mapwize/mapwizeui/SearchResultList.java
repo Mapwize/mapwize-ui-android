@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
@@ -122,6 +124,37 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
         }
         else {
             hideNoResultCard();
+        }
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == getVisibility()) {
+            return;
+        }
+        if (visibility == View.INVISIBLE || visibility == View.GONE) {
+            this.animate()
+                    .translationY(this.getHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            SearchResultList.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+        else {
+            this.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            SearchResultList.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
         }
     }
 

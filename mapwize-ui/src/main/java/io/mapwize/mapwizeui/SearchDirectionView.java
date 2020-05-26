@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -108,6 +110,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 //setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!toEditText.hasFocus()) {
+                    setupDefault();
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -147,6 +150,7 @@ public class SearchDirectionView extends ConstraintLayout implements
                 //setTextViewValue(toEditText, toDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!fromEditText.hasFocus()) {
+                    setupDefault();
                     InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -746,6 +750,41 @@ public class SearchDirectionView extends ConstraintLayout implements
         }
         else if (directionPoint instanceof MapwizeIndoorLocation) {
             textView.setText(getResources().getString(R.string.current_location));
+        }
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == getVisibility()) {
+            return;
+        }
+        if (visibility == View.INVISIBLE || visibility == View.GONE) {
+            this.animate()
+                    .translationY(-this.getHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                        }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            SearchDirectionView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+        else {
+            this.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            SearchDirectionView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
         }
     }
 
