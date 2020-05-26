@@ -182,6 +182,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             mainSearches = new ArrayList<>();
             unselectContent();
             fragment.hideDirectionButton();
+            fragment.showLanguageButton(new ArrayList<>());
         }
     }
 
