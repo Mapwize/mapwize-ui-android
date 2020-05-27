@@ -598,7 +598,6 @@ public class MapwizeFragment extends Fragment {
         isInDirection = true;
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
-        searchDirectionView.setResultList(searchResultList);
         searchDirectionView.centerOnActiveMode();
         boolean showFrom = false;
         boolean showTo = false;
@@ -640,7 +639,6 @@ public class MapwizeFragment extends Fragment {
         isInDirection = true;
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
-        searchDirectionView.setResultList(searchResultList);
         searchDirectionView.setDirectionMode(directionMode);
         //searchDirectionView.setToDirectionPoint(to);
         //searchDirectionView.setFromDirectionPoint(from);

@@ -4,9 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,30 +14,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import io.mapwize.mapwizesdk.api.ApiCallback;
-import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
-import io.mapwize.mapwizesdk.api.SearchParams;
-import io.mapwize.mapwizesdk.api.Universe;
-import io.mapwize.mapwizesdk.api.Venue;
-import io.mapwize.mapwizesdk.map.DirectionOptions;
-import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
-import io.mapwize.mapwizesdk.map.MapwizeMap;
-import io.mapwize.mapwizesdk.map.NavigationException;
-import io.mapwize.mapwizesdk.map.NavigationInfo;
-import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
-import io.mapwize.mapwizeui.events.Channel;
-import io.mapwize.mapwizeui.events.EventManager;
 import io.mapwize.mapwizeui.modeview.ModeView;
 import io.mapwize.mapwizeui.modeview.ModeViewAdapter;
 
@@ -52,7 +33,6 @@ public class SearchDirectionView extends ConstraintLayout implements
         ModeViewAdapter.OnModeChangeListener {
 
     private SearchDirectionListener listener;
-    private DirectionInfoView directionInfoView;
     private ConstraintLayout mapwizeDirectionMainLayout;
     private EditText fromEditText;
     private EditText toEditText;
@@ -182,23 +162,6 @@ public class SearchDirectionView extends ConstraintLayout implements
         this.listener = listener;
     }
 
-
-    /**
-     * Set the view that will be used to display information (traveltime and distance)
-     * @param directionInfoView the DirectionInfoView
-     */
-    public void setDirectionInfoView(DirectionInfoView directionInfoView) {
-        this.directionInfoView = directionInfoView;
-    }
-
-    /**
-     * Set the view that will be used to display search result
-     * @param resultList the SearchResultList
-     */
-    public void setResultList(SearchResultList resultList) {
-
-    }
-
     /**
      * Change the accessibility
      * @param mode determine if the direction should be accessible to low mobility people
@@ -237,7 +200,6 @@ public class SearchDirectionView extends ConstraintLayout implements
         isSearching = false;
         swapButton.setVisibility(View.VISIBLE);
         mapwizeDirectionMainLayout.setBackgroundColor(Color.TRANSPARENT);
-
     }
 
     public void showSwapButton() {
