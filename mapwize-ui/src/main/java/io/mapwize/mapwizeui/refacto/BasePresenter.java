@@ -27,6 +27,7 @@ interface BasePresenter {
     void onSearchResultPlaceClick(Place place, Universe universe);
     void onSearchResultVenueClick(Venue venue);
     void onSearchResultPlacelistClick(Placelist placelist);
+    void onSearchResultCurrentLocationClick();
     void onFloorClick(Floor floor);
     void onLanguageClick(String language);
     void onUniverseClick(Universe universe);

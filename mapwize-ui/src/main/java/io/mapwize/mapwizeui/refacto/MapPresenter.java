@@ -46,40 +46,40 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         DEFAULT, SEARCH, SEARCH_FROM, SEARCH_TO, DIRECTION
     }
 
-    BaseFragment fragment;
-    MapwizeConfiguration mapwizeConfiguration;
-    MapOptions mapOptions;
-    MapwizeApi api;
-    MapwizeMap mapwizeMap;
+    private BaseFragment fragment;
+    private MapwizeConfiguration mapwizeConfiguration;
+    private MapOptions mapOptions;
+    private MapwizeApi api;
+    private MapwizeMap mapwizeMap;
 
-    UIState state;
+    private UIState state;
     // Global values
-    String language = "en";
-    boolean menuButtonHidden;
-    boolean followUserButtonHidden;
-    boolean floorControllerHidden;
-    boolean compassHidden;
+    private String language = "en";
+    private boolean menuButtonHidden;
+    private boolean followUserButtonHidden;
+    private boolean floorControllerHidden;
+    private boolean compassHidden;
 
     // In venue values
-    MapwizeObject selectedContent;
-    Venue venue;
-    Universe universe;
-    Floor floor;
-    List<Floor> floors;
-    List<Universe> universes;
-    String venueLanguage;
-    List<String> venueLanguages;
-    DirectionMode directionMode;
-    List<DirectionMode> directionModes;
-    List<? extends MapwizeObject> mainFroms;
-    List<? extends MapwizeObject> mainSearches;
-    DirectionPoint from;
-    DirectionPoint to;
-    Direction direction;
+    private MapwizeObject selectedContent;
+    private Venue venue;
+    private Universe universe;
+    private Floor floor;
+    private List<Floor> floors;
+    private List<Universe> universes;
+    private String venueLanguage;
+    private List<String> venueLanguages;
+    private DirectionMode directionMode;
+    private List<DirectionMode> directionModes;
+    private List<? extends MapwizeObject> mainFroms;
+    private List<? extends MapwizeObject> mainSearches;
+    private DirectionPoint from;
+    private DirectionPoint to;
+    private Direction direction;
 
-    List<MapwizeObject> preloadedSearchResults;
+    private List<MapwizeObject> preloadedSearchResults;
 
-    public MapPresenter(BaseFragment fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
+    MapPresenter(BaseFragment fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
         this.fragment = fragment;
         this.mapwizeConfiguration = mapwizeConfiguration;
         this.mapOptions = mapOptions;
@@ -148,7 +148,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
-    public void onVenueEnter(Venue venue) {
+    public void onVenueEnter(@NonNull Venue venue) {
         if (state == UIState.DIRECTION) {
             return;
         }
@@ -161,7 +161,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
-    public void onVenueWillEnter(Venue venue) {
+    public void onVenueWillEnter(@NonNull Venue venue) {
         if (state == UIState.DIRECTION) {
             return;
         }
@@ -191,7 +191,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
-    public void onVenueExit(Venue venue) {
+    public void onVenueExit(@NonNull Venue venue) {
         this.venue = null;
         if (state != UIState.DIRECTION) {
             fragment.showDefaultScene();
@@ -204,7 +204,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
-    public void onVenueEnterError(Venue venue, Throwable error) {
+    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
         fragment.showErrorMessage("Cannot load this venue");
     }
 
@@ -270,6 +270,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onClickEvent(@NonNull ClickEvent clickEvent) {
+        if (state == UIState.DIRECTION) {
+            return;
+        }
         if (clickEvent.getEventType() == ClickEvent.VENUE_CLICK) {
             mapwizeMap.centerOnVenue(clickEvent.getVenuePreview(), 300);
         }
@@ -362,7 +365,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             fragment.showSearchResults(preloadedSearchResults);
             return;
         }
-        if (query.length() == 0 && venue != null) {
+        if (query.length() == 0) {
             fragment.showSearchResults(mainSearches, universes, universe);
             return;
         }
@@ -449,7 +452,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
             else {
                 state = UIState.SEARCH_FROM;
-                fragment.openSearchDirectionFrom();
+                fragment.openSearchDirectionFrom(mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null);
                 fragment.showToDirection(to, venueLanguage);
             }
         }
@@ -473,6 +476,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             to = placelist;
             fragment.showToDirection(to, venueLanguage);
         }
+    }
+
+    @Override
+    public void onSearchResultCurrentLocationClick() {
+        from = mapwizeMap.getUserLocation();
+        if (to == null) {
+            state = UIState.SEARCH_TO;
+            fragment.openSearchDirectionTo();
+        }
+        else {
+            state = UIState.DIRECTION;
+            startDirection();
+        }
+        fragment.showFromDirection(from, venueLanguage);
     }
 
     @Override
@@ -742,7 +759,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     void requestDirectionFrom() {
         state = UIState.SEARCH_FROM;
-        fragment.openSearchDirectionFrom();
+        fragment.openSearchDirectionFrom(mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null);
     }
 
     void requestDirectionTo() {
@@ -796,6 +813,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.stopNavigation();
         mapwizeMap.removePromotedPlaces();
         mapwizeMap.removeMarkers();
+        if (to instanceof Place || to instanceof Placelist) {
+            selectedContent = (MapwizeObject)to;
+        }
         from = null;
         to = null;
         fragment.hideSearchDirectionScene();

@@ -373,6 +373,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     @Override
     public void showSearchScene() {
         searchBarView.setupInSearch();
+        searchResultList.hideCurrentLocationCard();
         searchResultList.show();
     }
 
@@ -386,6 +387,7 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     public void showSearchDirectionScene() {
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
+        searchResultList.hideCurrentLocationCard();
         searchResultList.show();
     }
 
@@ -443,14 +445,18 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     @Override
-    public void openSearchDirectionFrom() {
+    public void openSearchDirectionFrom(boolean showCurrentLocation) {
         searchResultList.show();
+        if (showCurrentLocation) {
+            searchResultList.showCurrentLocationCard();
+        }
         searchDirectionView.openFromSearch();
     }
 
     @Override
     public void openSearchDirectionTo() {
         searchResultList.show();
+        searchResultList.hideCurrentLocationCard();
         searchDirectionView.openToSearch();
     }
 
@@ -570,8 +576,8 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     @Override
-    public void onSearchResultNull() {
-
+    public void onCurrentLocationClick() {
+        presenter.onSearchResultCurrentLocationClick();
     }
 
     @Override

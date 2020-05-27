@@ -56,7 +56,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
         currentLocationCardView = findViewById(R.id.mapwizeCurrentLocationCard);
         currentLocationCardView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onSearchResultNull();
+                listener.onCurrentLocationClick();
             }
         });
         noResultCardView = findViewById(R.id.mapwize_no_result_card);
@@ -194,7 +194,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
 
 
     public interface SearchResultListListener {
-        void onSearchResultNull();
+        void onCurrentLocationClick();
         void onSearchResult(Place place, Universe universe);
         void onSearchResult(Placelist placelist);
         void onSearchResult(Venue venue);

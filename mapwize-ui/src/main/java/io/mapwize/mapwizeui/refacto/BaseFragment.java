@@ -56,7 +56,7 @@ interface BaseFragment {
 
     void showDirectionMode(DirectionMode mode);
 
-    void openSearchDirectionFrom();
+    public void openSearchDirectionFrom(boolean showCurrentLocation);
 
     void openSearchDirectionTo();
 
