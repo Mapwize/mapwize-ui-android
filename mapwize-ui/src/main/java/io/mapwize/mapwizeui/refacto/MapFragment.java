@@ -241,12 +241,14 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
         languagesButton = view.findViewById(R.id.mapwizeLanguagessButton);
         searchBarView = view.findViewById(R.id.mapwizeSearchBar);
         searchBarView.setListener(this);
+        searchBarView.setMenuHidden(initializeUiSettings.isMenuButtonHidden());
         searchResultList = view.findViewById(R.id.mapwizeSearchResultList);
         searchResultList.setListener(this);
         searchDirectionView = view.findViewById(R.id.mapwizeDirectionSearchBar);
         searchDirectionView.setListener(this);
         followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
         followUserButton.setListener(this);
+        followUserButton.setVisibility(initializeUiSettings.isFollowUserButtonHidden() ? View.GONE : View.VISIBLE);
         compassView = view.findViewById(R.id.mapwizeCompassView);
         mainLayout = view.findViewById(R.id.mapwizeFragmentLayout);
         headerLayout = view.findViewById(R.id.headerFrameLayout);
@@ -482,6 +484,10 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
     public void showActiveFloors(List<Floor> floors) {
+        if (initializeUiSettings.isFloorControllerHidden()) {
+            floorControllerView.setVisibility(View.GONE);
+            return;
+        }
         if (listener.shouldDisplayFloorController(floors)) {
             floorControllerView.setFloors(floors);
         }
@@ -540,9 +546,15 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
 
     @Override
     public void showMapwizeReady(MapwizeMap mapwizeMap) {
-        compassView.setMapboxMap(mapwizeMap.getMapboxMap());
-        compassView.setOnCompassClickListener(this);
-        listener.onFragmentReady(mapwizeMap);
+        if (!initializeUiSettings.isCompassHidden()) {
+            compassView.setMapboxMap(mapwizeMap.getMapboxMap());
+            compassView.setOnCompassClickListener(this);
+            listener.onFragmentReady(mapwizeMap);
+        }
+        else {
+            compassView.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
