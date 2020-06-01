@@ -1,4 +1,4 @@
-package io.mapwize.mapwizeui.refacto;
+package io.mapwize.mapwizeui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

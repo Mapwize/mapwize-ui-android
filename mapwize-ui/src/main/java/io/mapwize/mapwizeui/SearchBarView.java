@@ -13,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+
 import io.mapwize.mapwizesdk.api.Venue;
 
 /**
@@ -27,6 +29,7 @@ public class SearchBarView extends ConstraintLayout {
     private FrameLayout rightImageView;
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
+    private ProgressBar progressBar;
     private boolean directionButtonHidden;
     private boolean menuHidden;
 
@@ -92,6 +95,7 @@ public class SearchBarView extends ConstraintLayout {
 
             }
         });
+        progressBar = findViewById(R.id.mapwizeSearchBarProgressBar);
     }
 
     public void setDirectionButtonHidden(boolean isHidden) {
@@ -188,6 +192,26 @@ public class SearchBarView extends ConstraintLayout {
         searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
         searchEditText.setEnabled(true);
         rightImageView.setVisibility(View.VISIBLE);
+    }
+
+    public void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+        if (backImageView.getVisibility() == VISIBLE) {
+            backImageView.setVisibility(INVISIBLE);
+        }
+        if (leftImageView.getVisibility() == VISIBLE) {
+            leftImageView.setVisibility(INVISIBLE);
+        }
+    }
+
+    public void hideLoading() {
+        progressBar.setVisibility(GONE);
+        if (backImageView.getVisibility() == INVISIBLE) {
+            backImageView.setVisibility(VISIBLE);
+        }
+        if (leftImageView.getVisibility() == INVISIBLE) {
+            leftImageView.setVisibility(VISIBLE);
+        }
     }
 
     public interface SearchBarListener {

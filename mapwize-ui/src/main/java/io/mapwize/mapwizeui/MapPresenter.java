@@ -1,4 +1,4 @@
-package io.mapwize.mapwizeui.refacto;
+package io.mapwize.mapwizeui;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -156,6 +156,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showVenueEntered(venue, language);
         fragment.showLanguageButton(venueLanguages);
         fragment.showDirectionButton();
+        fragment.hideLoading();
     }
 
     @Override
@@ -164,6 +165,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             return;
         }
         fragment.showVenueEntering(venue, language);
+        fragment.showLoading();
         api.getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
             @Override
             public void onSuccess(@NonNull List<MapwizeObject> object) {
@@ -381,17 +383,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             SearchParams params = builder.build();
             // Api Call
+            fragment.showLoading();
             api.search(params, new ApiCallback<List<MapwizeObject>>() {
                 @Override
                 public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
                         fragment.showSearchResults(mapwizeObjects, universes, universe);
+                        fragment.hideLoading();
                     });
                 }
 
                 @Override
                 public void onFailure(@NonNull Throwable throwable) {
+                    fragment.hideLoading();
                 }
             });
         }
@@ -407,17 +412,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
             SearchParams params = builder.build();
             // Api call
+            fragment.showLoading();
             api.search(params, new ApiCallback<List<MapwizeObject>>() {
                 @Override
                 public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
                        fragment.showSearchResults(mapwizeObjects);
+                        fragment.hideLoading();
                     });
                 }
 
                 @Override
                 public void onFailure(@NonNull Throwable throwable) {
+                    fragment.hideLoading();
                 }
             });
         }
@@ -547,12 +555,14 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         builder.setVenueId(venue.getId());
         builder.setUniverseId(universe.getId());
         SearchParams params = builder.build();
+        fragment.showSearchDirectionLoading();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
             @Override
             public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                 // Display the result
                 new Handler(Looper.getMainLooper()).post(() -> {
                     fragment.showSearchResults(mapwizeObjects);
+                    fragment.hideSearchDirectionLoading();
                 });
             }
 
@@ -578,12 +588,14 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         builder.setVenueId(venue.getId());
         builder.setUniverseId(universe.getId());
         SearchParams params = builder.build();
+        fragment.showSearchDirectionLoading();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
             @Override
             public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                 // Display the result
                 new Handler(Looper.getMainLooper()).post(() -> {
                     fragment.showSearchResults(mapwizeObjects);
+                    fragment.hideSearchDirectionLoading();
                 });
             }
 

@@ -1,4 +1,4 @@
-package io.mapwize.mapwizeui.refacto;
+package io.mapwize.mapwizeui;
 
 import java.util.List;
 
@@ -17,6 +17,14 @@ import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 
 interface BaseFragment {
+
+    void showLoading();
+
+    void hideLoading();
+
+    void showSearchDirectionLoading();
+
+    void hideSearchDirectionLoading();
 
     void showDefaultScene();
 
@@ -56,7 +64,7 @@ interface BaseFragment {
 
     void showDirectionMode(DirectionMode mode);
 
-    public void openSearchDirectionFrom(boolean showCurrentLocation);
+    void openSearchDirectionFrom(boolean showCurrentLocation);
 
     void openSearchDirectionTo();
 

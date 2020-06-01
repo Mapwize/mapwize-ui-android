@@ -1,4 +1,4 @@
-package io.mapwize.mapwizeui.refacto;
+package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -38,17 +38,6 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
-import io.mapwize.mapwizeui.BottomCardView;
-import io.mapwize.mapwizeui.CompassView;
-import io.mapwize.mapwizeui.FloorControllerView;
-import io.mapwize.mapwizeui.FollowUserButton;
-import io.mapwize.mapwizeui.LanguagesButton;
-import io.mapwize.mapwizeui.MapwizeFragmentUISettings;
-import io.mapwize.mapwizeui.R;
-import io.mapwize.mapwizeui.SearchBarView;
-import io.mapwize.mapwizeui.SearchDirectionView;
-import io.mapwize.mapwizeui.SearchResultList;
-import io.mapwize.mapwizeui.UniversesButton;
 
 public class MapFragment extends Fragment implements BaseFragment, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
@@ -333,6 +322,25 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
     }
 
 
+    @Override
+    public void showLoading() {
+        searchBarView.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        searchBarView.hideLoading();
+    }
+
+    @Override
+    public void showSearchDirectionLoading() {
+        searchDirectionView.showLoading();
+    }
+
+    @Override
+    public void hideSearchDirectionLoading() {
+        searchDirectionView.hideLoading();
+    }
 
     // Scene management
     public void showDefaultScene() {
@@ -492,6 +500,8 @@ public class MapFragment extends Fragment implements BaseFragment, SearchBarView
             floorControllerView.setFloors(floors);
         }
     }
+
+
 
     @Override
     public void showLoadingFloor(Floor floor) {
