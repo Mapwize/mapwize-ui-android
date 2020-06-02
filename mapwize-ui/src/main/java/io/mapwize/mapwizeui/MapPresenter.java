@@ -252,7 +252,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onUniverseWillChange(@NonNull Universe universe) {
-
+        fragment.showLoading();
     }
 
     @Override
@@ -261,6 +261,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         if (selectedContent != null && !selectedContent.getUniverses().contains(universe)) {
             unselectContent();
         }
+        fragment.hideLoading();
     }
 
     @Override
