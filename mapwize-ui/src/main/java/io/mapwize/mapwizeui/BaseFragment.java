@@ -18,6 +18,25 @@ import io.mapwize.mapwizesdk.map.PlacePreview;
 
 interface BaseFragment {
 
+    void showSearchBar();
+    void hideSearchBar();
+    void showDirectionSearchBar();
+    void hideDirectionSearchBar();
+    void showOutOfVenueTitle();
+    void showVenueTitle(String title);
+    void showVenueTitleLoading(String title);
+    void showDirectionButton();
+    void hideDirectionButton();
+    void showLanguagesSelector();
+    void hideLanguagesSelector();
+    void showUniversesSelector();
+    void hideUniversesSelector();
+    void showPlacePreviewInfo(PlacePreview preview, String language);
+    void showPlaceInfoFromPreview(Place place, String language);
+    void showPlaceInfo(Place place, String language);
+    void showPlacelistInfo(Placelist placelist, String language);
+    void hideInfo();
+
     void showLoading();
 
     void hideLoading();
@@ -26,19 +45,6 @@ interface BaseFragment {
 
     void hideSearchDirectionLoading();
 
-    void showDefaultScene();
-
-    void showVenueEntered(Venue venue, String language);
-
-    void showVenueEntering(Venue venue, String language);
-
-    void showPlacePreviewInfo(PlacePreview preview, String language);
-
-    void showPlaceInfoFromPreview(Place place, String language);
-
-    void showPlaceInfo(Place place, String language);
-
-    void showPlacelistInfo(Placelist placelist, String language);
 
     void hidePlaceInfo();
 
@@ -79,10 +85,6 @@ interface BaseFragment {
     void showLoadingFloor(Floor floor);
 
     void showActiveFloor(Floor floor);
-
-    void showDirectionButton();
-
-    void hideDirectionButton();
 
     void showSearchResults(List<? extends MapwizeObject> results);
 

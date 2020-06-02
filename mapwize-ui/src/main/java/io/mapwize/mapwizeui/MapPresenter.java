@@ -2,6 +2,7 @@ package io.mapwize.mapwizeui;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -130,9 +131,13 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 }
             });
         }
-        else {
-            fragment.showDefaultScene();
-        }
+
+        fragment.showOutOfVenueTitle();
+        fragment.showSearchBar();
+        fragment.hideLanguagesSelector();
+        fragment.hideUniversesSelector();
+        fragment.hideDirectionSearchBar();
+
         this.mapwizeMap = mapwizeMap;
         this.mapwizeMap.addOnClickListener(this);
         this.mapwizeMap.addOnVenueEnterListener(this);
@@ -151,12 +156,14 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         this.venueLanguages = venue.getSupportedLanguages();
         this.venueLanguage = mapwizeMap.getLanguage();
         fragment.setAccessibleLanguages(venueLanguages);
-        fragment.showVenueEntered(venue, language);
         fragment.showDirectionButton();
+        fragment.showVenueTitle(venue.getTranslation(language).getTitle());
+        fragment.hideLoading();
         if (state == UIState.DIRECTION) {
             return;
         }
-        fragment.hideLoading();
+        fragment.showLanguagesSelector();
+        fragment.showUniversesSelector();
     }
 
     @Override
@@ -186,7 +193,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         if (state == UIState.DIRECTION) {
             return;
         }
-        fragment.showVenueEntering(venue, language);
+        fragment.showVenueTitleLoading(venue.getTranslation(language).getTitle());
         fragment.showLoading();
     }
 
@@ -194,7 +201,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onVenueExit(@NonNull Venue venue) {
         this.venue = null;
         if (state != UIState.DIRECTION) {
-            fragment.showDefaultScene();
+            fragment.showOutOfVenueTitle();
+            fragment.hideUniversesSelector();
+            fragment.hideLanguagesSelector();
+            fragment.hideDirectionSearchBar();
+            fragment.showSearchBar();
             mainFroms = new ArrayList<>();
             mainSearches = new ArrayList<>();
             unselectContent();
@@ -250,6 +261,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onUniversesChange(@NonNull List<Universe> universes) {
         this.universes = universes;
         fragment.setAccessibleUniverses(universes);
+        if (state != UIState.DIRECTION) {
+            fragment.showUniversesSelector();
+        }
     }
 
     @Override

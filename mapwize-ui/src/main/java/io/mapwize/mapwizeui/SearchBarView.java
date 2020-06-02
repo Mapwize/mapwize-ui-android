@@ -98,6 +98,19 @@ public class SearchBarView extends ConstraintLayout {
         progressBar = findViewById(R.id.mapwizeSearchBarProgressBar);
     }
 
+    public void showVenueTitleLoading(String title) {
+        String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
+        searchEditText.setHint(String.format(loadingPlaceHolder, title));
+        searchEditText.setEnabled(false);
+    }
+
+    public void showVenueTitle(String title) {
+        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
+        searchEditText.setHint(String.format(searchPlaceHolder, title));
+        searchEditText.setEnabled(true);
+        rightImageView.setVisibility(View.VISIBLE);
+    }
+
     public void setDirectionButtonHidden(boolean isHidden) {
         directionButtonHidden = isHidden;
         this.rightImageView.setVisibility(isHidden ? View.GONE : View.VISIBLE);

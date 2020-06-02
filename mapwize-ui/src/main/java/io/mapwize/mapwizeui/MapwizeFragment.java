@@ -325,6 +325,40 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
         presenter.selectPlace(place, centerOn);
     }
 
+    @Override
+    public void showSearchBar() {
+        searchBarView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSearchBar() {
+        searchBarView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showDirectionSearchBar() {
+        searchDirectionView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideDirectionSearchBar() {
+        searchDirectionView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showOutOfVenueTitle() {
+        searchBarView.showOutOfVenue();
+    }
+
+    @Override
+    public void showVenueTitle(String title) {
+        searchBarView.showVenueTitle(title);
+    }
+
+    @Override
+    public void showVenueTitleLoading(String title) {
+        searchBarView.showVenueTitleLoading(title);
+    }
 
     @Override
     public void showLoading() {
@@ -337,6 +371,16 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
+    public void showUniversesSelector() {
+        universesButton.showIfNeeded();
+    }
+
+    @Override
+    public void hideUniversesSelector() {
+        universesButton.hide();
+    }
+
+    @Override
     public void showSearchDirectionLoading() {
         searchDirectionView.showLoading();
     }
@@ -346,18 +390,6 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
         searchDirectionView.hideLoading();
     }
 
-    // Scene management
-    public void showDefaultScene() {
-        searchBarView.showOutOfVenue();
-        searchBarView.setVisibility(View.VISIBLE);
-        universesButton.setVisibility(View.GONE);
-        languagesButton.setVisibility(View.GONE);
-        searchDirectionView.setVisibility(View.GONE);
-    }
-
-    public void showVenueEntering(Venue venue, String language) {
-        searchBarView.showVenueEntering(venue, language);
-    }
 
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
@@ -377,6 +409,11 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
         bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
+    }
+
+    @Override
+    public void hideInfo() {
+        bottomCardView.removeContent();
     }
 
     @Override
@@ -407,8 +444,6 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
 
     @Override
     public void showDirectionLoadingScene() {
-        universesButton.setVisibility(View.GONE);
-        languagesButton.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
         searchResultList.hide();
         searchDirectionView.showSwapButton();
@@ -419,6 +454,8 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     public void showDirectionScene(Direction direction) {
         searchResultList.hide();
         bottomCardView.setContent(direction);
+        universesButton.setVisibility(View.GONE);
+        languagesButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -493,6 +530,8 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
 
     public void showVenueEntered(Venue venue, String language) {
         searchBarView.showVenueEntered(venue, language);
+        languagesButton.showIfNeeded();
+        universesButton.showIfNeeded();
     }
 
     public void showActiveFloors(List<Floor> floors) {
@@ -524,6 +563,16 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     @Override
     public void hideDirectionButton() {
         searchBarView.setDirectionButtonHidden(true);
+    }
+
+    @Override
+    public void showLanguagesSelector() {
+        languagesButton.showIfNeeded();
+    }
+
+    @Override
+    public void hideLanguagesSelector() {
+        languagesButton.setVisibility(View.GONE);
     }
 
     @Override
