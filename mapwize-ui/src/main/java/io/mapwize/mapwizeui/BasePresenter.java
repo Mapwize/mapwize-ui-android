@@ -41,4 +41,5 @@ interface BasePresenter {
     void onFollowUserModeButtonClick();
     void onInformationClick();
     void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode);
+    void selectPlace(Place place, boolean centerOn);
 }

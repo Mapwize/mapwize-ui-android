@@ -25,7 +25,7 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
 
     void swapData(List<DirectionMode> modes) {
         this.modes = modes;
-        if (selectedMode == null || !modes.contains(selectedMode)) {
+        if (modes != null && modes.size() > 0 && (selectedMode == null || !modes.contains(selectedMode))) {
             setSelectedMode(modes.get(0), true);
         }
         else {

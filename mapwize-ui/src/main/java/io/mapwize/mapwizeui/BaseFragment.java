@@ -70,9 +70,9 @@ interface BaseFragment {
 
     void hideSearchList();
 
-    void showLanguageButton(List<String> languages);
+    void setAccessibleLanguages(List<String> languages);
 
-    void showUniverseButton(List<Universe> universes);
+    void setAccessibleUniverses(List<Universe> universes);
 
     void showActiveFloors(List<Floor> floors);
 

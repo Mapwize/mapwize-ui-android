@@ -147,25 +147,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
-        if (state == UIState.DIRECTION) {
-            return;
-        }
         this.venue = venue;
         this.venueLanguages = venue.getSupportedLanguages();
         this.venueLanguage = mapwizeMap.getLanguage();
+        fragment.setAccessibleLanguages(venueLanguages);
         fragment.showVenueEntered(venue, language);
-        fragment.showLanguageButton(venueLanguages);
         fragment.showDirectionButton();
+        if (state == UIState.DIRECTION) {
+            return;
+        }
         fragment.hideLoading();
     }
 
     @Override
     public void onVenueWillEnter(@NonNull Venue venue) {
-        if (state == UIState.DIRECTION) {
-            return;
-        }
-        fragment.showVenueEntering(venue, language);
-        fragment.showLoading();
         api.getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
             @Override
             public void onSuccess(@NonNull List<MapwizeObject> object) {
@@ -188,6 +183,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             }
         });
+        if (state == UIState.DIRECTION) {
+            return;
+        }
+        fragment.showVenueEntering(venue, language);
+        fragment.showLoading();
     }
 
     @Override
@@ -199,7 +199,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             mainSearches = new ArrayList<>();
             unselectContent();
             fragment.hideDirectionButton();
-            fragment.showLanguageButton(new ArrayList<>());
+            fragment.setAccessibleLanguages(new ArrayList<>());
         }
     }
 
@@ -214,6 +214,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         if (!directionModes.isEmpty() && !directionModes.contains(directionMode)) {
             directionMode = directionModes.get(0);
         }
+        fragment.showDirectionModes(directionModes);
+        fragment.showDirectionMode(directionMode);
     }
 
     @Override
@@ -247,7 +249,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onUniversesChange(@NonNull List<Universe> universes) {
         this.universes = universes;
-        fragment.showUniverseButton(universes);
+        fragment.setAccessibleUniverses(universes);
     }
 
     @Override
@@ -323,6 +325,17 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showDirectionModes(directionModes);
         fragment.showDirectionMode(directionMode);
         startDirection();
+    }
+
+    @Override
+    public void selectPlace(Place place, boolean centerOn) {
+        mapwizeMap.removeMarkers();
+        mapwizeMap.removePromotedPlaces();
+        selectedContent = place;
+        mapwizeMap.centerOnPlace(place, 0);
+        mapwizeMap.addMarker(place);
+        mapwizeMap.addPromotedPlace(place);
+        fragment.showPlaceInfo(place, venueLanguage);
     }
 
     @Override

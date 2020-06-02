@@ -32,7 +32,6 @@ import io.mapwize.mapwizesdk.map.PlacePreview;
 public class BottomCardView extends CardView {
 
     private BottomCardListener listener;
-    private MapwizeFragment.OnFragmentInteractionListener interactionListener;
 
     private FrameLayout objectInfoFrameLayout;
     private FrameLayout directionFrameLayout;
@@ -117,23 +116,6 @@ public class BottomCardView extends CardView {
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.GONE);
         listener.onDetailsClose();
-    }
-
-    /**
-     * Get the display components functions object that determine if an UI Component should be
-     * displayed or not
-     * @return the DisplayComponentsFunctions
-     */
-    public MapwizeFragment.OnFragmentInteractionListener getInteractionListener() {
-        return interactionListener;
-    }
-
-    /**
-     * Set the display components functions object that determine if an UI Component should be
-     * displayed or not
-     */
-    public void setInteractionListener(MapwizeFragment.OnFragmentInteractionListener listener) {
-        this.interactionListener = listener;
     }
 
     /**

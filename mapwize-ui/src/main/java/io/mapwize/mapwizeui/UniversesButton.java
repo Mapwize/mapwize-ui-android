@@ -74,7 +74,6 @@ public class UniversesButton extends AppCompatImageButton {
 
     public void setUniverses(List<Universe> universes) {
         this.universes = universes;
-        showIfNeeded();
     }
 
     public void setListener(OnUniverseClickListener listener) {

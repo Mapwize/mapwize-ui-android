@@ -1,21 +1,20 @@
 package io.mapwize.mapwizeui;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
@@ -27,38 +26,28 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
-import io.mapwize.mapwizesdk.api.LatLngFloor;
-import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
-import io.mapwize.mapwizesdk.map.ClickEvent;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
-import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
+import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
-import io.mapwize.mapwizesdk.map.PreviewCallback;
-import io.mapwize.mapwizesdk.map.VenuePreview;
-import io.mapwize.mapwizeui.events.Channel;
-import io.mapwize.mapwizeui.events.EventManager;
 
-/**
- * Mapwize Fragment allow you to integrate Mapwize in a simplest way.
- */
-@SuppressWarnings({"WeakerAccess", "unused"})
-public class MapwizeFragment extends Fragment {
+public class MapwizeFragment extends Fragment implements BaseFragment, SearchBarView.SearchBarListener,
+        SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
+        BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener,
+        FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener {
 
+    // Options
     private static String ARG_OPTIONS = "param_options";
     private static String ARG_UI_SETTINGS = "param_ui_settings";
     private static String ARG_MAPWIZE_CONFIGURATION = "param_mapwize_configuration";
-
-    // Component listener
-    private OnFragmentInteractionListener listener;
 
     // Component initialization params
     private MapOptions initializeOptions = null;
@@ -70,22 +59,22 @@ public class MapwizeFragment extends Fragment {
     private MapwizeView mapwizeView;
     private MapwizeConfiguration mapwizeConfiguration;
 
-    // Component views
-    private ConstraintLayout mainLayout;
-    private CompassView compassView;
-    private FollowUserButton followUserButton;
-    private FloorControllerView floorControllerView;
-    private SearchBarView searchBarView;
-    private SearchDirectionView searchDirectionView;
-    private LanguagesButton languagesButton;
-    private UniversesButton universesButton;
+    private BasePresenter presenter;
+
     private BottomCardView bottomCardView;
+    private FloorControllerView floorControllerView;
+    private UniversesButton universesButton;
+    private LanguagesButton languagesButton;
+    private SearchBarView searchBarView;
     private SearchResultList searchResultList;
+    private SearchDirectionView searchDirectionView;
+    private FollowUserButton followUserButton;
+    private CompassView compassView;
+    private ConstraintLayout mainLayout;
     private FrameLayout headerLayout;
 
-    // Component state
-    private MapwizeObject selectedContent;
-    private boolean isInDirection = false;
+    // Component listener
+    private MapwizeFragment.OnFragmentInteractionListener listener;
 
     /**
      * Create a instance of MapwizeFragment
@@ -200,70 +189,58 @@ public class MapwizeFragment extends Fragment {
             initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
             mapwizeConfiguration = bundle.getParcelable(ARG_MAPWIZE_CONFIGURATION);
         }
+        if (initializeOptions == null) {
+            initializeOptions = new MapOptions.Builder().build();
+        }
+        if (initializeUiSettings == null) {
+            initializeUiSettings = new MapwizeFragmentUISettings.Builder().build();
+        }
+        if (mapwizeConfiguration == null) {
+            mapwizeConfiguration = MapwizeConfiguration.getInstance();
+        }
+        presenter = new MapPresenter(this, mapwizeConfiguration, initializeOptions);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Mapbox.getInstance(getContext(), "pk.mapwize");
+        Mapbox.getInstance(container.getContext(), "pk.mapwize");
         return inflater.inflate(R.layout.mapwize_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (initializeOptions == null) {
-            initializeOptions = new MapOptions.Builder().build();
-        }
-        mapwizeView = new MapwizeView(getContext(), mapwizeConfiguration, initializeOptions);
-
-        headerLayout = view.findViewById(R.id.headerFrameLayout);
+        mapwizeView = new MapwizeView(view.getContext(), mapwizeConfiguration, initializeOptions);
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapwizeView);
         mapwizeView.onCreate(savedInstanceState);
-        loadViews(view);
-        if (initializeUiSettings.isFloorControllerHidden()) {
-            floorControllerView.setVisibility(View.GONE);
-        }
-        if (initializeUiSettings.isFollowUserButtonHidden()) {
-            followUserButton.setVisibility(View.GONE);
-        }
-        if (initializeUiSettings.isCompassHidden()) {
-            compassView.setVisibility(View.GONE);
-        }
 
         // Instantiate Mapwize sdk
         mapwizeView.getMapAsync(mMap -> {
             mapwizeMap = mMap;
             mapwizeMap.getMapboxMap().getUiSettings().setCompassEnabled(false);
-            initMapwizeListeners(mapwizeMap);
-            initCompass(compassView, initializeUiSettings);
-            initFollowUserModeButton(followUserButton, initializeUiSettings);
-            initFloorController(floorControllerView, initializeUiSettings, listener);
-            initSearchBar(searchBarView, initializeUiSettings);
-            initDirectionBar(searchDirectionView);
-            initUniversesButton(universesButton);
-            initLanguagesButton(languagesButton);
-            initBottomCardView(bottomCardView, listener);
-            listener.onFragmentReady(mapwizeMap);
-            if (mapwizeMap.getMapOptions().getCenterOnPlaceId() != null) {
-                MapwizeApiFactory.getApi().getPlace(mapwizeMap.getMapOptions().getCenterOnPlaceId(), new ApiCallback<Place>() {
-                    @Override
-                    public void onSuccess(@NonNull Place place) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            selectPlace(place, false);
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Throwable throwable) {
-
-                    }
-                });
-            }
+            presenter.onMapLoaded(mapwizeMap);
         });
 
-        mainLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        bottomCardView = view.findViewById(R.id.mapwizeBottomCardView);
+        bottomCardView.setListener(this);
+        floorControllerView = view.findViewById(R.id.mapwizeFloorController);
+        floorControllerView.setListener(this);
+        universesButton = view.findViewById(R.id.mapwizeUniversesButton);
+        languagesButton = view.findViewById(R.id.mapwizeLanguagessButton);
+        searchBarView = view.findViewById(R.id.mapwizeSearchBar);
+        searchBarView.setListener(this);
+        searchBarView.setMenuHidden(initializeUiSettings.isMenuButtonHidden());
+        searchResultList = view.findViewById(R.id.mapwizeSearchResultList);
+        searchResultList.setListener(this);
+        searchDirectionView = view.findViewById(R.id.mapwizeDirectionSearchBar);
+        searchDirectionView.setListener(this);
+        followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
+        followUserButton.setListener(this);
+        followUserButton.setVisibility(initializeUiSettings.isFollowUserButtonHidden() ? View.GONE : View.VISIBLE);
+        compassView = view.findViewById(R.id.mapwizeCompassView);
+        mainLayout = view.findViewById(R.id.mapwizeFragmentLayout);
+        headerLayout = view.findViewById(R.id.headerFrameLayout);
     }
 
     @Override
@@ -344,289 +321,377 @@ public class MapwizeFragment extends Fragment {
         }
     }
 
-    private void loadViews(View view) {
-        mainLayout = view.findViewById(R.id.mapwizeFragmentLayout);
-        compassView = view.findViewById(R.id.mapwizeCompassView);
-        followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
-        floorControllerView = view.findViewById(R.id.mapwizeFloorController);
-        searchBarView = view.findViewById(R.id.mapwizeSearchBar);
-        searchDirectionView = view.findViewById(R.id.mapwizeDirectionSearchBar);
-        universesButton = view.findViewById(R.id.mapwizeUniversesButton);
-        languagesButton = view.findViewById(R.id.mapwizeLanguagessButton);
-        bottomCardView = view.findViewById(R.id.mapwizeBottomCardView);
-        searchResultList = view.findViewById(R.id.mapwizeSearchResultList);
-    }
-
-    private void initBottomCardView(BottomCardView bottomCardView, OnFragmentInteractionListener listener) {
-        //bottomCardView.setListener(this);
-        bottomCardView.setInteractionListener(listener);
-    }
-
-    private void initFloorController(FloorControllerView floorControllerView, MapwizeFragmentUISettings uiSettings, OnFragmentInteractionListener listener) {
-        /*if (uiSettings.isFloorControllerHidden()) {
-            floorControllerView.setVisibility(View.GONE);
-        }
-        else {
-            floorControllerView.setMapwizeMap(mapwizeMap);
-            floorControllerView.setUiBehaviour(listener);
-        }*/
-    }
-
-    private void initFollowUserModeButton(FollowUserButton followUserButton, MapwizeFragmentUISettings uiSettings) {
-        if (uiSettings.isFollowUserButtonHidden()) {
-            followUserButton.setVisibility(View.GONE);
-        }
-        else {
-            //followUserButton.setMapwizeMap(mapwizeMap);
-            //followUserButton.setListener(this);
-        }
-    }
-
-    private void initCompass(CompassView compassView, MapwizeFragmentUISettings uiSettings) {
-        if (!uiSettings.isCompassHidden()) {
-            compassView.setMapboxMap(mapwizeMap.getMapboxMap());
-            compassView.fadeCompassViewFacingNorth(true);
-            //compassView.setOnCompassClickListener(this);
-        }
-    }
-
-    private void initSearchBar(SearchBarView searchBarView, MapwizeFragmentUISettings uiSettings) {
-        /*searchBarView.setMenuHidden(uiSettings.isMenuButtonHidden());
-        searchBarView.setMapwizeMap(mapwizeMap);
-        searchBarView.setListener(this);
-        searchBarView.setResultList(searchResultList);
-        searchBarView.setVisibility(View.VISIBLE);*/
-    }
-
-    private void initDirectionBar(SearchDirectionView searchDirectionView) {
-        /*searchDirectionView.setMapwizeMap(mapwizeMap);
-        searchDirectionView.setListener(this);
-        searchDirectionView.setDirectionInfoView(bottomCardView);*/
-    }
-
-    private void initUniversesButton(UniversesButton universesButton) {
-        //universesButton.setMapwizeMap(mapwizeMap);
-    }
-
-    private void initLanguagesButton(LanguagesButton languagesButton) {
-        //languagesButton.setMapwizeMap(mapwizeMap);
-    }
-
-    private void initMapwizeListeners(MapwizeMap mapwizeMap) {
-        mapwizeMap.addOnClickListener(event -> {
-            switch (event.getEventType()) {
-                case ClickEvent.MAP_CLICK:
-                    onMapClick(event.getLatLngFloor());
-                    break;
-                case ClickEvent.PLACE_CLICK:
-                    onPlaceClick(event.getPlacePreview());
-                    break;
-                case ClickEvent.VENUE_CLICK:
-                    onVenueClick(event.getVenuePreview());
-                    break;
-            }
-        });
-        /*mapwizeMap.addOnVenueEnterListener(this);
-        mapwizeMap.addOnVenueExitListener(this);*/
-    }
-
-    /**
-     * Method called when the user click on the map
-     * @param coordinate the coordinate of the click
-     */
-    private void onMapClick(LatLngFloor coordinate) {
-        if (!isInDirection) {
-            if (selectedContent != null) {
-                unselectContent();
-            }
-        }
-    }
-
-    /**
-     * Method called when the user click on a place
-     * @param placePreview the clicked place
-     */
-    private void onPlaceClick(PlacePreview placePreview) {
-        if (!isInDirection) {
-            selectPlacePreview(placePreview, false);
-        }
-    }
-
-    /**
-     * Method called when the user click on a venue
-     * @param venuePreview the clicked venue
-     */
-    private void onVenueClick(VenuePreview venuePreview) {
-        if (!isInDirection) {
-            selectVenuePreview(venuePreview);
-        }
-    }
-
-    /**
-     * Setup the UI to display information about the selected place
-     * @param placePreview the selected place
-     * @param centerOn if true, center on the place
-     */
-    public void selectPlacePreview(PlacePreview placePreview, boolean centerOn) {
-        mapwizeMap.removeMarkers();
-        mapwizeMap.addMarker(placePreview);
-        mapwizeMap.addPromotedPlace(placePreview);
-        if (centerOn) {
-            mapwizeMap.centerOnPlace(placePreview, 300);
-        }
-        bottomCardView.setContent(placePreview);
-        placePreview.getFullObjectAsync(new PreviewCallback<Place>() {
-            @Override
-            public void getObjectAsync(Place place) {
-                selectedContent = place;
-                //bottomCardView.setContentFromPreview(place, mapwizeMap.getLanguage());
-                EventManager.getInstance().triggerOnContentSelect(
-                        place, mapwizeMap.getUniverse(),
-                        mapwizeMap.getUniverse(),
-                        Channel.MAP_CLICK,
-                        null);
-            }
-
-            @Override
-            public void error(Throwable throwable) {
-                // TODO Handle error
-            }
-        });
-    }
-
-    /**
-     * Setup the UI to display information about the selected place
-     * @param place the selected place
-     * @param centerOn if true, center on the place
-     */
     public void selectPlace(Place place, boolean centerOn) {
-        mapwizeMap.removeMarkers();
-        mapwizeMap.addMarker(place);
-        if (centerOn) {
-            mapwizeMap.centerOnPlace(place, 300);
-        }
-        selectedContent = place;
-        //bottomCardView.setContent(place, mapwizeMap.getLanguage());
-        mapwizeMap.addPromotedPlace(place);
+        presenter.selectPlace(place, centerOn);
     }
 
-    /**
-     * Setup the UI to display information about the selected venue
-     * @param venuePreview the venue to select
-     */
-    public void selectVenuePreview(VenuePreview venuePreview) {
-        mapwizeMap.centerOnVenue(venuePreview, 300);
+
+    @Override
+    public void showLoading() {
+        searchBarView.showLoading();
     }
 
-    /**
-     * Setup the UI to display information about the selected venue
-     * @param venue the venue to select
-     */
-    public void selectVenue(Venue venue) {
-        mapwizeMap.centerOnVenue(venue, 300);
+    @Override
+    public void hideLoading() {
+        searchBarView.hideLoading();
     }
 
-    /**
-     * Setup the UI to display information about the selected placelist
-     * @param placelist the selected placelist
-     */
-    public void selectPlacelist(Placelist placelist) {
-        selectedContent = placelist;
-        //bottomCardView.setContent(placelist, mapwizeMap.getLanguage());
-        mapwizeMap.addMarkers(placelist, markers -> {
-
-        });
-
-        mapwizeMap.addPromotedPlaces(placelist, places -> {
-            if (places.size() == 0) {
-                return;
-            }
-            mapwizeMap.getMapwizeApi().getVenue(places.get(0).getVenueId(), new ApiCallback<Venue>() {
-                @Override
-                public void onSuccess(@NonNull Venue object) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        mapwizeMap.centerOnVenue(object, 300);
-                        boolean shouldSetFloor = true;
-                        if (mapwizeMap.getFloor() != null) {
-                            for (Place p : places) {
-                                if (p.getFloor().equals(mapwizeMap.getFloorNumber())) {
-                                    shouldSetFloor = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (shouldSetFloor) {
-                            mapwizeMap.setFloor(places.get(0).getFloor());
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(@NonNull Throwable t) {
-
-                }
-            });
-        });
-
-
+    @Override
+    public void showSearchDirectionLoading() {
+        searchDirectionView.showLoading();
     }
 
-    /**
-     * Hide the UI component, remove markers and unpromote place if needed
-     * If we are in a venue, displayed the venue information
-     */
-    public void unselectContent() {
+    @Override
+    public void hideSearchDirectionLoading() {
+        searchDirectionView.hideLoading();
+    }
+
+    // Scene management
+    public void showDefaultScene() {
+        searchBarView.showOutOfVenue();
+        searchBarView.setVisibility(View.VISIBLE);
+        universesButton.setVisibility(View.GONE);
+        languagesButton.setVisibility(View.GONE);
+        searchDirectionView.setVisibility(View.GONE);
+    }
+
+    public void showVenueEntering(Venue venue, String language) {
+        searchBarView.showVenueEntering(venue, language);
+    }
+
+    @Override
+    public void showPlacePreviewInfo(PlacePreview preview, String language) {
+        bottomCardView.setContent(preview);
+    }
+
+    @Override
+    public void showPlaceInfoFromPreview(Place place, String language) {
+        bottomCardView.setContentFromPreview(place, language, listener.shouldDisplayInformationButton(place));
+    }
+
+    @Override
+    public void showPlaceInfo(Place place, String language) {
+        bottomCardView.setContent(place, language, listener.shouldDisplayInformationButton(place));
+    }
+
+    @Override
+    public void showPlacelistInfo(Placelist placelist, String language) {
+        bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
+    }
+
+    @Override
+    public void hidePlaceInfo() {
         bottomCardView.removeContent();
-        mapwizeMap.removeMarkers();
-        mapwizeMap.removePromotedPlaces();
-        /*if (selectedContent instanceof Place) {
-            mapwizeMap.removePromotedPlace((Place) selectedContent);
-        }*/
-        selectedContent = null;
-        if (mapwizeMap.getVenue() != null) {
-            bottomCardView.setContent(mapwizeMap.getVenue(), mapwizeMap.getLanguage());
-        }
     }
 
-    /**
-     * Setup the UI to display direction module
-     * If a place or a placelist is selected, to field will be set
-     * If we have a user indoor location, from field will be set
-     * If both field are set, the direction start
-     */
-    private void showDirectionUI() {
-        isInDirection = true;
+    @Override
+    public void showSearchScene() {
+        searchBarView.setupInSearch();
+        searchResultList.hideCurrentLocationCard();
+        searchResultList.show();
+    }
+
+    @Override
+    public void hideSearchScene() {
+        searchBarView.setupDefault();
+        searchResultList.hide();
+    }
+
+    @Override
+    public void showSearchDirectionScene() {
         searchBarView.setVisibility(View.GONE);
         searchDirectionView.setVisibility(View.VISIBLE);
-        searchDirectionView.centerOnActiveMode();
-        boolean showFrom = false;
-        boolean showTo = false;
-        if (selectedContent != null) {
-            //searchDirectionView.setToDirectionPoint(selectedContent);
-            unselectContent();
-        }
-        else {
-            showTo = true;
-        }
-        if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-            //searchDirectionView.setFromDirectionPoint(new MapwizeIndoorLocation(mapwizeMap.getUserLocation()));
-        }
-        else {
-            showFrom = true;
-        }
-        if (showFrom) {
-            //searchDirectionView.fromEditText.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-        }
-        else if (showTo) {
-            //searchDirectionView.toEditText.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-        }
-        bottomCardView.removeContent();
-        universesButton.hide();
+        searchResultList.hideCurrentLocationCard();
+        searchResultList.show();
     }
+
+    @Override
+    public void showDirectionLoadingScene() {
+        universesButton.setVisibility(View.GONE);
+        languagesButton.setVisibility(View.GONE);
+        searchDirectionView.setVisibility(View.VISIBLE);
+        searchResultList.hide();
+        searchDirectionView.showSwapButton();
+        bottomCardView.showDirectionLoading();
+    }
+
+    @Override
+    public void showDirectionScene(Direction direction) {
+        searchResultList.hide();
+        bottomCardView.setContent(direction);
+    }
+
+    @Override
+    public void showNavigationInfo(NavigationInfo navigationInfo) {
+        bottomCardView.setContent(navigationInfo);
+    }
+
+    @Override
+    public void hideSearchDirectionScene() {
+        searchBarView.setVisibility(View.VISIBLE);
+        searchDirectionView.setVisibility(View.GONE);
+        universesButton.showIfNeeded();
+        languagesButton.showIfNeeded();
+        searchResultList.hide();
+        bottomCardView.removeContent();
+        showFromDirection(null, null);
+        showToDirection(null, null);
+    }
+
+    @Override
+    public void showFromDirection(DirectionPoint from, String language) {
+        searchDirectionView.setFromTitle(from, language);
+    }
+
+    @Override
+    public void showToDirection(DirectionPoint to, String language) {
+        searchDirectionView.setToTitle(to, language);
+    }
+
+    @Override
+    public void showDirectionModes(List<DirectionMode> modes) {
+        searchDirectionView.setModes(modes);
+    }
+
+    @Override
+    public void showDirectionMode(DirectionMode mode) {
+        searchDirectionView.setMode(mode);
+    }
+
+    @Override
+    public void openSearchDirectionFrom(boolean showCurrentLocation) {
+        searchResultList.show();
+        if (showCurrentLocation) {
+            searchResultList.showCurrentLocationCard();
+        }
+        searchDirectionView.openFromSearch();
+    }
+
+    @Override
+    public void openSearchDirectionTo() {
+        searchResultList.show();
+        searchResultList.hideCurrentLocationCard();
+        searchDirectionView.openToSearch();
+    }
+
+    @Override
+    public void hideSearchList() {
+        searchResultList.hide();
+    }
+
+    @Override
+    public void setAccessibleLanguages(List<String> languages) {
+        languagesButton.setLanguages(languages);
+        languagesButton.setListener(language -> presenter.onLanguageClick(language));
+    }
+
+    @Override
+    public void setAccessibleUniverses(List<Universe> universes) {
+        universesButton.setUniverses(universes);
+        universesButton.setListener(universe -> presenter.onUniverseClick(universe));
+    }
+
+    public void showVenueEntered(Venue venue, String language) {
+        searchBarView.showVenueEntered(venue, language);
+    }
+
+    public void showActiveFloors(List<Floor> floors) {
+        if (initializeUiSettings.isFloorControllerHidden()) {
+            floorControllerView.setVisibility(View.GONE);
+            return;
+        }
+        if (listener.shouldDisplayFloorController(floors)) {
+            floorControllerView.setFloors(floors);
+        }
+    }
+
+
+
+    @Override
+    public void showLoadingFloor(Floor floor) {
+        floorControllerView.setLoadingFloor(floor);
+    }
+
+    public void showActiveFloor(Floor floor) {
+        floorControllerView.setFloor(floor);
+    }
+
+    @Override
+    public void showDirectionButton() {
+        searchBarView.setDirectionButtonHidden(false);
+    }
+
+    @Override
+    public void hideDirectionButton() {
+        searchBarView.setDirectionButtonHidden(true);
+    }
+
+    @Override
+    public void showSearchResults(List<? extends MapwizeObject> results) {
+        searchResultList.showData(results);
+    }
+
+    @Override
+    public void showSearchResults(List<? extends MapwizeObject> results, List<Universe> universes, Universe universe) {
+        searchResultList.showData(results, universes, universe);
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(getContext(), "Error to display", Toast.LENGTH_LONG).show();
+        });
+    }
+
+    @Override
+    public void showFollowUserMode(FollowUserMode mode) {
+        followUserButton.onFollowUserModeChange(mode);
+    }
+
+    @Override
+    public void showFollowUserModeWithoutLocation() {
+        listener.onFollowUserButtonClickWithoutLocation();
+    }
+
+    @Override
+    public void showInformationButtonClick(MapwizeObject object) {
+        listener.onInformationButtonClick(object);
+    }
+
+    @Override
+    public void showMapwizeReady(MapwizeMap mapwizeMap) {
+        if (!initializeUiSettings.isCompassHidden()) {
+            compassView.setMapboxMap(mapwizeMap.getMapboxMap());
+            compassView.setOnCompassClickListener(this);
+            listener.onFragmentReady(mapwizeMap);
+        }
+        else {
+            compassView.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public void showDirectionError() {
+        bottomCardView.showDirectionError();
+    }
+
+    @Override
+    public void onSearchStart() {
+        presenter.onQueryClick();
+    }
+
+    @Override
+    public void onSearchBarMenuClick() {
+        listener.onMenuButtonClick();
+    }
+
+    @Override
+    public void onSearchBarQueryChange(String query) {
+        presenter.onSearchQueryChange(query);
+    }
+
+    @Override
+    public void onSearchBarDirectionButtonClick() {
+        presenter.onDirectionButtonClick();
+    }
+
+    @Override
+    public void onSearchBarBackButtonClick() {
+        presenter.onSearchBackButtonClick();
+    }
+
+    @Override
+    public void onCurrentLocationClick() {
+        presenter.onSearchResultCurrentLocationClick();
+    }
+
+    @Override
+    public void onSearchResult(Place place, Universe universe) {
+        presenter.onSearchResultPlaceClick(place, universe);
+    }
+
+    @Override
+    public void onSearchResult(Placelist placelist) {
+        presenter.onSearchResultPlacelistClick(placelist);
+    }
+
+    @Override
+    public void onSearchResult(Venue venue) {
+        presenter.onSearchResultVenueClick(venue);
+    }
+
+    @Override
+    public void onFloorClick(Floor floor) {
+        presenter.onFloorClick(floor);
+    }
+
+    @Override
+    public void onDirectionClick() {
+        presenter.onDirectionButtonClick();
+    }
+
+    @Override
+    public void onInformationClick() {
+        presenter.onInformationClick();
+    }
+
+    @Override
+    public void onDetailsOpen() {
+
+    }
+
+    @Override
+    public void onDetailsClose() {
+
+    }
+
+    @Override
+    public void onDirectionBackClick() {
+        presenter.onDirectionBackClick();
+    }
+
+    @Override
+    public void onDirectionSwapClick() {
+        presenter.onDirectionSwapClick();
+    }
+
+    @Override
+    public void onDirectionFromQueryChange(String query) {
+        presenter.onDirectionFromQueryChange(query);
+    }
+
+    @Override
+    public void onDirectionToQueryChange(String query) {
+        presenter.onDirectionToQueryChange(query);
+    }
+
+    @Override
+    public void onDirectionModeChange(DirectionMode mode) {
+        presenter.onDirectionModeChange(mode);
+    }
+
+    @Override
+    public void onDirectionFromFieldGetFocus() {
+        presenter.onDirectionFromFieldGetFocus();
+    }
+
+    @Override
+    public void onDirectionToFieldGetFocus() {
+        presenter.onDirectionToFieldGetFocus();
+    }
+
+    @Override
+    public void onFollowUserClick() {
+        presenter.onFollowUserModeButtonClick();
+    }
+
+    @Override
+    public void onClick(CompassView compassView) {
+
+    }
+
+
 
     /**
      * Set a direction on Mapwize UI will display the direction and the user interface
@@ -636,26 +701,7 @@ public class MapwizeFragment extends Fragment {
      * @param directionMode used to find the direction
      */
     public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
-        isInDirection = true;
-        searchBarView.setVisibility(View.GONE);
-        searchDirectionView.setVisibility(View.VISIBLE);
-        searchDirectionView.setDirectionMode(directionMode);
-        //searchDirectionView.setToDirectionPoint(to);
-        //searchDirectionView.setFromDirectionPoint(from);
-    }
-
-    /**
-     * Setup the default UI
-     */
-    private void showDefaultUi() {
-        isInDirection = false;
-        searchBarView.setVisibility(View.VISIBLE);
-        searchDirectionView.setVisibility(View.GONE);
-        //searchBarView.setResultList(searchResultList);
-        if (mapwizeMap.getVenue() != null) {
-            bottomCardView.setContent(mapwizeMap.getVenue(), mapwizeMap.getLanguage());
-        }
-        universesButton.showIfNeeded();
+        presenter.setDirection(direction, from, to, directionMode);
     }
 
     /**
@@ -668,9 +714,6 @@ public class MapwizeFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable Boolean object) {
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (mapwizeMap.getVenue() != null) {
-                        //universesButton.refreshVenue(mapwizeMap.getVenue());
-                    }
                     callback.onSuccess(object);
                 });
             }
@@ -680,84 +723,6 @@ public class MapwizeFragment extends Fragment {
                 callback.onFailure(t);
             }
         });
-    }
-
-    // Bottom view listener
-    public void onDirectionClick() {
-        showDirectionUI();
-    }
-
-    public void onInformationClick() {
-        listener.onInformationButtonClick(selectedContent);
-    }
-
-    public void onDetailsOpen() {
-        searchBarView.setVisibility(View.GONE);
-    }
-
-    public void onDetailsClose() {
-        searchBarView.setVisibility(View.VISIBLE);
-    }
-
-    // Compass listener
-    public void onClick(CompassView compassView) {
-        mapwizeMap.setFollowUserMode(FollowUserMode.NONE);
-    }
-
-    // Search bar listener
-    public void onSearchResult(Place place, Universe universe) {
-        if (universe != null && (mapwizeMap.getUniverse() == null || !universe.getId().equals(mapwizeMap.getUniverse().getId()))) {
-            mapwizeMap.setUniverse(universe);
-        }
-        selectPlace(place, true);
-    }
-
-    public void onSearchResult(Placelist placelist) {
-        selectPlacelist(placelist);
-    }
-
-    public void onSearchResult(Venue venue) {
-        selectVenue(venue);
-    }
-
-    public void onLeftButtonClick(View view) {
-        listener.onMenuButtonClick();
-    }
-
-    public void onRightButtonClick(View view) {
-        showDirectionUI();
-    }
-
-    // Direction bar listener
-    public void onBackClick() {
-        showDefaultUi();
-    }
-
-    // Mapwize listener
-    public void onVenueExit(@NonNull Venue venue) {
-        if (mapwizeMap.getDirection() == null) {
-            unselectContent();
-        }
-    }
-
-    public void onVenueEnter(@NonNull Venue venue) {
-        bottomCardView.setContent(venue, mapwizeMap.getLanguage());
-        if (initializePlace != null) {
-            selectPlace(initializePlace, false);
-            initializePlace = null;
-        }
-    }
-
-    public void onVenueWillEnter(@NonNull Venue venue) {
-
-    }
-
-    public void onVenueEnterError(@NonNull Venue venue, @NonNull Throwable error) {
-        Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
-    }
-
-    public void onFollowUserClickWithoutLocation() {
-        listener.onFollowUserButtonClickWithoutLocation();
     }
 
     /**
@@ -805,14 +770,17 @@ public class MapwizeFragment extends Fragment {
 
     public FrameLayout getHeaderLayout() { return headerLayout; }
 
-    /**
-     * The activity that embed this fragment must implement this interface
-     */
     public interface OnFragmentInteractionListener {
         void onMenuButtonClick();
-        void onInformationButtonClick(MapwizeObject mapwizeObject);
-        void onFragmentReady(MapwizeMap mapwizeMap);
-        void onFollowUserButtonClickWithoutLocation();
+        default void onInformationButtonClick(MapwizeObject mapwizeObject) {
+
+        }
+        default void onFragmentReady(MapwizeMap mapwizeMap) {
+
+        }
+        default void onFollowUserButtonClickWithoutLocation() {
+
+        }
         default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
             return false;
         }

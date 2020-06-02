@@ -179,6 +179,7 @@ public class SearchBarView extends ConstraintLayout {
 
     public void showOutOfVenue() {
         searchEditText.setHint(getResources().getString(R.string.search_venue));
+        rightImageView.setVisibility(GONE);
     }
 
     public void showVenueEntering(Venue venue, String language) {

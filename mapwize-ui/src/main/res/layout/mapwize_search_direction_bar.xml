@@ -7,7 +7,6 @@
     android:focusable="true"
     android:clickable="true"
     android:animateLayoutChanges="true"
-    android:paddingTop="@dimen/mapwize_ui_padding_top"
     android:id="@+id/mapwizeDirectionMainLayout">
 
     <androidx.cardview.widget.CardView
@@ -22,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:paddingTop="@dimen/mapwize_ui_padding_top">
 
             <ImageView
                 android:id="@+id/mapwizeDirectionBarBackButton"

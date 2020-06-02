@@ -79,12 +79,6 @@ public class LanguagesButton extends AppCompatImageButton {
 
     public void setLanguages(List<String> languages) {
         this.languages = languages;
-        if (languages.size() > 1) {
-            setVisibility(View.VISIBLE);
-        }
-        else {
-            setVisibility(View.GONE);
-        }
     }
 
     public void setListener(OnLanguageClickListener listener) {
