@@ -36,60 +36,43 @@ interface BaseFragment {
     void showPlaceInfo(Place place, String language);
     void showPlacelistInfo(Placelist placelist, String language);
     void hideInfo();
-
-    void showLoading();
-
-    void hideLoading();
+    void showSearchLoading();
+    void hideSearchLoading();
+    void showVenueLoading();
+    void hideVenueLoading();
+    void showSearch();
+    void hideSearch();
+    void showAccessibleFloors(List<Floor> floors);
+    void showLoadingFloor(Floor floor);
+    void showActiveFloor(Floor floor);
+    void showSearchResultsList();
+    void hideSearchResultsList();
+    void showCurrentLocationInResult();
+    void hideCurrentLocationInResult();
+    void showSearchResults(List<? extends MapwizeObject> results);
+    void showSearchResults(List<? extends MapwizeObject> results, List<Universe> universes, Universe universe);
+    void showSearchDirectionFrom();
+    void showSearchDirectionTo();
+    void showSelectedDirectionFrom(DirectionPoint from, String language);
+    void showSelectedDirectionTo(DirectionPoint to, String language);
+    void showAccessibleDirectionModes(List<DirectionMode> modes);
+    void showSelectedDirectionMode(DirectionMode mode);
+    void showSwapButton();
+    void hideSwapButton();
+    void showDirectionLoading();
+    void showDirectionInfo(Direction direction);
+    void showNavigationInfo(NavigationInfo navigationInfo);
 
     void showSearchDirectionLoading();
-
     void hideSearchDirectionLoading();
 
 
-    void hidePlaceInfo();
-
-    void showSearchScene();
-
-    void hideSearchScene();
-
-    void showSearchDirectionScene();
-
-    void showDirectionLoadingScene();
-
-    void showDirectionScene(Direction direction);
-
-    void showNavigationInfo(NavigationInfo navigationInfo);
-
     void hideSearchDirectionScene();
-
-    void showFromDirection(DirectionPoint from, String language);
-
-    void showToDirection(DirectionPoint to, String language);
-
-    void showDirectionModes(List<DirectionMode> modes);
-
-    void showDirectionMode(DirectionMode mode);
-
-    void openSearchDirectionFrom(boolean showCurrentLocation);
-
-    void openSearchDirectionTo();
-
-    void hideSearchList();
 
     void setAccessibleLanguages(List<String> languages);
 
     void setAccessibleUniverses(List<Universe> universes);
-
-    void showActiveFloors(List<Floor> floors);
-
-    void showLoadingFloor(Floor floor);
-
-    void showActiveFloor(Floor floor);
-
-    void showSearchResults(List<? extends MapwizeObject> results);
-
-    void showSearchResults(List<? extends MapwizeObject> results, List<Universe> universes, Universe universe);
-
+    
     void showErrorMessage(String message);
 
     void showFollowUserMode(FollowUserMode mode);

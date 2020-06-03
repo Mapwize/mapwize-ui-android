@@ -361,16 +361,6 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
-    public void showLoading() {
-        searchBarView.showLoading();
-    }
-
-    @Override
-    public void hideLoading() {
-        searchBarView.hideLoading();
-    }
-
-    @Override
     public void showUniversesSelector() {
         universesButton.showIfNeeded();
     }
@@ -417,45 +407,45 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
-    public void hidePlaceInfo() {
-        bottomCardView.removeContent();
+    public void showVenueLoading() {
+        searchBarView.showLoading();
     }
 
     @Override
-    public void showSearchScene() {
+    public void hideVenueLoading() {
+        searchBarView.hideLoading();
+    }
+
+    @Override
+    public void showSearchLoading() {
+        searchBarView.showLoading();
+    }
+
+    @Override
+    public void hideSearchLoading() {
+        searchBarView.hideLoading();
+    }
+
+    @Override
+    public void showSearch() {
         searchBarView.setupInSearch();
         searchResultList.hideCurrentLocationCard();
         searchResultList.show();
     }
 
     @Override
-    public void hideSearchScene() {
+    public void hideSearch() {
         searchBarView.setupDefault();
         searchResultList.hide();
     }
 
-    @Override
-    public void showSearchDirectionScene() {
-        searchBarView.setVisibility(View.GONE);
-        searchDirectionView.setVisibility(View.VISIBLE);
-        searchResultList.hideCurrentLocationCard();
-        searchResultList.show();
-    }
-
-    @Override
-    public void showDirectionLoadingScene() {
-        searchDirectionView.setVisibility(View.VISIBLE);
-        searchResultList.hide();
-        searchDirectionView.showSwapButton();
+    public void showDirectionLoading() {
         bottomCardView.showDirectionLoading();
     }
 
     @Override
-    public void showDirectionScene(Direction direction) {
-        searchResultList.hide();
+    public void showDirectionInfo(Direction direction) {
         bottomCardView.setContent(direction);
-        universesButton.setVisibility(View.GONE);
-        languagesButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -471,49 +461,48 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
         languagesButton.showIfNeeded();
         searchResultList.hide();
         bottomCardView.removeContent();
-        showFromDirection(null, null);
-        showToDirection(null, null);
+        showSelectedDirectionFrom(null, null);
+        showSelectedDirectionTo(null, null);
     }
 
     @Override
-    public void showFromDirection(DirectionPoint from, String language) {
+    public void showSelectedDirectionFrom(DirectionPoint from, String language) {
         searchDirectionView.setFromTitle(from, language);
     }
 
     @Override
-    public void showToDirection(DirectionPoint to, String language) {
+    public void showSelectedDirectionTo(DirectionPoint to, String language) {
         searchDirectionView.setToTitle(to, language);
     }
 
     @Override
-    public void showDirectionModes(List<DirectionMode> modes) {
+    public void showAccessibleDirectionModes(List<DirectionMode> modes) {
         searchDirectionView.setModes(modes);
     }
 
     @Override
-    public void showDirectionMode(DirectionMode mode) {
+    public void showSelectedDirectionMode(DirectionMode mode) {
         searchDirectionView.setMode(mode);
     }
 
     @Override
-    public void openSearchDirectionFrom(boolean showCurrentLocation) {
-        searchResultList.show();
-        if (showCurrentLocation) {
-            searchResultList.showCurrentLocationCard();
-        }
+    public void showSwapButton() {
+        searchDirectionView.showSwapButton();
+    }
+
+    @Override
+    public void hideSwapButton() {
+        searchDirectionView.hideSwapButton();
+    }
+
+    @Override
+    public void showSearchDirectionFrom() {
         searchDirectionView.openFromSearch();
     }
 
     @Override
-    public void openSearchDirectionTo() {
-        searchResultList.show();
-        searchResultList.hideCurrentLocationCard();
+    public void showSearchDirectionTo() {
         searchDirectionView.openToSearch();
-    }
-
-    @Override
-    public void hideSearchList() {
-        searchResultList.hide();
     }
 
     @Override
@@ -534,7 +523,7 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
         universesButton.showIfNeeded();
     }
 
-    public void showActiveFloors(List<Floor> floors) {
+    public void showAccessibleFloors(List<Floor> floors) {
         if (initializeUiSettings.isFloorControllerHidden()) {
             floorControllerView.setVisibility(View.GONE);
             return;
@@ -553,6 +542,26 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
 
     public void showActiveFloor(Floor floor) {
         floorControllerView.setFloor(floor);
+    }
+
+    @Override
+    public void showSearchResultsList() {
+        searchResultList.show();
+    }
+
+    @Override
+    public void hideSearchResultsList() {
+        searchResultList.hide();
+    }
+
+    @Override
+    public void showCurrentLocationInResult() {
+        searchResultList.showCurrentLocationCard();
+    }
+
+    @Override
+    public void hideCurrentLocationInResult() {
+        searchResultList.hideCurrentLocationCard();
     }
 
     @Override
