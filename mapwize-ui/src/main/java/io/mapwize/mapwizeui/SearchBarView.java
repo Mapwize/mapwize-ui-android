@@ -166,9 +166,10 @@ public class SearchBarView extends ConstraintLayout {
     public void setupInSearch() {
         leftImageView.setVisibility(View.GONE);
         backImageView.setVisibility(View.VISIBLE);
-        mainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
+        //mainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
+        //setElevation(0);
         this.setBackgroundColor(Color.argb(255, 238, 238, 238));
-        this.setTranslationZ(2);
+//        this.setTranslationZ(2);
         this.rightImageView.setVisibility(View.GONE);
     }
 

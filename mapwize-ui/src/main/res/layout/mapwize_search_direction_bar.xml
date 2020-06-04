@@ -107,15 +107,4 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ProgressBar
-        android:id="@+id/mapwizeDirectionProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapwizeDirectionBarCardView"
-        android:indeterminate="true"
-        android:visibility="invisible"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

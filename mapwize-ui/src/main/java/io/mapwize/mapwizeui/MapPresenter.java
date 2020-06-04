@@ -114,7 +114,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onMapLoaded(MapwizeMap mapwizeMap) {
-        fragment.showMapwizeReady(mapwizeMap);
+        fragment.dispatchMapwizeReady(mapwizeMap);
         if (mapOptions.getCenterOnPlaceId() != null) {
             api.getPlace(mapOptions.getCenterOnPlaceId(), new ApiCallback<Place>() {
                 @Override
@@ -154,15 +154,13 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         this.venue = venue;
         this.venueLanguages = venue.getSupportedLanguages();
         this.venueLanguage = mapwizeMap.getLanguage();
-        fragment.setAccessibleLanguages(venueLanguages);
         fragment.showDirectionButton();
         fragment.showVenueTitle(venue.getTranslation(language).getTitle());
         fragment.hideVenueLoading();
         if (state == UIState.DIRECTION) {
             return;
         }
-        fragment.showLanguagesSelector();
-        fragment.showUniversesSelector();
+        fragment.showLanguagesSelector(venueLanguages);
     }
 
     @Override
@@ -209,7 +207,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             mainSearches = new ArrayList<>();
             unselectContent();
             fragment.hideDirectionButton();
-            fragment.setAccessibleLanguages(new ArrayList<>());
         }
     }
 
@@ -259,9 +256,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onUniversesChange(@NonNull List<Universe> universes) {
         this.universes = universes;
-        fragment.setAccessibleUniverses(universes);
         if (state != UIState.DIRECTION) {
-            fragment.showUniversesSelector();
+            fragment.showUniversesSelector(universes);
         }
     }
 
@@ -309,7 +305,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     public void onFollowUserModeButtonClick() {
         if (mapwizeMap.getUserLocation() == null) {
-            fragment.showFollowUserModeWithoutLocation();
+            fragment.dispatchFollowUserModeWithoutLocation();
         }
         switch (mapwizeMap.getFollowUserMode()) {
             case NONE:
@@ -324,7 +320,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onInformationClick() {
-        fragment.showInformationButtonClick(selectedContent);
+        fragment.dispatchInformationButtonClick(selectedContent);
     }
 
     @Override
@@ -336,6 +332,10 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showSelectedDirectionTo(to, venueLanguage);
         fragment.showAccessibleDirectionModes(directionModes);
         fragment.showSelectedDirectionMode(directionMode);
+        fragment.hideSearchBar();
+        fragment.showDirectionSearchBar();
+        fragment.hideUniversesSelector();
+        fragment.hideLanguagesSelector();
         startDirection();
     }
 
@@ -719,6 +719,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         state = UIState.DIRECTION;
         fragment.hideLanguagesSelector();
         fragment.hideUniversesSelector();
+        fragment.hideSearchResultsList();
         if (from instanceof MapwizeIndoorLocation) {
             fragment.showDirectionLoading();
             try {
@@ -742,7 +743,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                     public void navigationDidStart() {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             fragment.showDirectionInfo(mapwizeMap.getDirection());
-                            fragment.hideSearchResultsList();
                             fragment.showSwapButton();
                             promoteDirectionPoint();
                             EventManager.getInstance().triggerOnDirectionStart(venue, universe, from, to, directionMode.getId(), true);
@@ -753,7 +753,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                     public void navigationDidFail(Throwable throwable) {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             fragment.showDirectionError();
-                            fragment.hideSearchResultsList();
                             fragment.showSwapButton();
                             mapwizeMap.removeMarkers();
                             mapwizeMap.removePromotedPlaces();
@@ -777,7 +776,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                         new Handler(Looper.getMainLooper()).post(() -> {
                             promoteDirectionPoint();
                             fragment.showDirectionInfo(direction);
-                            fragment.hideSearchResultsList();
                             fragment.showSwapButton();
                         });
                         promoteDirectionPoint();
@@ -789,7 +787,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 public void onFailure(@NonNull Throwable t) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         fragment.showDirectionError();
-                        fragment.hideSearchResultsList();
                         fragment.showSwapButton();
                         mapwizeMap.removeMarkers();
                         mapwizeMap.removePromotedPlaces();
@@ -880,7 +877,16 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
         from = null;
         to = null;
-        fragment.hideSearchDirectionScene();
+
+        fragment.showSearchBar();
+        fragment.hideDirectionSearchBar();
+        fragment.showUniversesSelector(universes);
+        fragment.showLanguagesSelector(venueLanguages);
+        fragment.hideSearchResultsList();
+        fragment.hideInfo();
+        fragment.showSelectedDirectionFrom(null, null);
+        fragment.showSelectedDirectionTo(null, null);
+
         state = UIState.DEFAULT;
         if (selectedContent != null) {
             if (selectedContent instanceof Place) {

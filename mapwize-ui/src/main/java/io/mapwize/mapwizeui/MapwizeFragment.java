@@ -361,8 +361,10 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
-    public void showUniversesSelector() {
+    public void showUniversesSelector(List<Universe> universes) {
+        universesButton.setUniverses(universes);
         universesButton.showIfNeeded();
+        universesButton.setListener(universe -> presenter.onUniverseClick(universe));
     }
 
     @Override
@@ -372,12 +374,12 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
 
     @Override
     public void showSearchDirectionLoading() {
-        searchDirectionView.showLoading();
+        searchResultList.showLoading();
     }
 
     @Override
     public void hideSearchDirectionLoading() {
-        searchDirectionView.hideLoading();
+        searchResultList.hideLoading();
     }
 
 
@@ -408,22 +410,22 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
 
     @Override
     public void showVenueLoading() {
-        searchBarView.showLoading();
+        searchResultList.showLoading();
     }
 
     @Override
     public void hideVenueLoading() {
-        searchBarView.hideLoading();
+        searchResultList.hideLoading();
     }
 
     @Override
     public void showSearchLoading() {
-        searchBarView.showLoading();
+        searchResultList.showLoading();
     }
 
     @Override
     public void hideSearchLoading() {
-        searchBarView.hideLoading();
+        searchResultList.hideLoading();
     }
 
     @Override
@@ -451,18 +453,6 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     @Override
     public void showNavigationInfo(NavigationInfo navigationInfo) {
         bottomCardView.setContent(navigationInfo);
-    }
-
-    @Override
-    public void hideSearchDirectionScene() {
-        searchBarView.setVisibility(View.VISIBLE);
-        searchDirectionView.setVisibility(View.GONE);
-        universesButton.showIfNeeded();
-        languagesButton.showIfNeeded();
-        searchResultList.hide();
-        bottomCardView.removeContent();
-        showSelectedDirectionFrom(null, null);
-        showSelectedDirectionTo(null, null);
     }
 
     @Override
@@ -503,18 +493,6 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     @Override
     public void showSearchDirectionTo() {
         searchDirectionView.openToSearch();
-    }
-
-    @Override
-    public void setAccessibleLanguages(List<String> languages) {
-        languagesButton.setLanguages(languages);
-        languagesButton.setListener(language -> presenter.onLanguageClick(language));
-    }
-
-    @Override
-    public void setAccessibleUniverses(List<Universe> universes) {
-        universesButton.setUniverses(universes);
-        universesButton.setListener(universe -> presenter.onUniverseClick(universe));
     }
 
     public void showVenueEntered(Venue venue, String language) {
@@ -575,7 +553,9 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
-    public void showLanguagesSelector() {
+    public void showLanguagesSelector(List<String> languages) {
+        languagesButton.setLanguages(languages);
+        languagesButton.setListener(language -> presenter.onLanguageClick(language));
         languagesButton.showIfNeeded();
     }
 
@@ -607,17 +587,17 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
-    public void showFollowUserModeWithoutLocation() {
+    public void dispatchFollowUserModeWithoutLocation() {
         listener.onFollowUserButtonClickWithoutLocation();
     }
 
     @Override
-    public void showInformationButtonClick(MapwizeObject object) {
+    public void dispatchInformationButtonClick(MapwizeObject object) {
         listener.onInformationButtonClick(object);
     }
 
     @Override
-    public void showMapwizeReady(MapwizeMap mapwizeMap) {
+    public void dispatchMapwizeReady(MapwizeMap mapwizeMap) {
         if (!initializeUiSettings.isCompassHidden()) {
             compassView.setMapboxMap(mapwizeMap.getMapboxMap());
             compassView.setOnCompassClickListener(this);

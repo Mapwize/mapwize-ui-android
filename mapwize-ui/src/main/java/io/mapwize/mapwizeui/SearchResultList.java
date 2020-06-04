@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
     private SearchResultAdapter searchResultAdapter;
     private CardView currentLocationCardView;
     private CardView noResultCardView;
+    private ProgressBar progressBar;
 
     public SearchResultList(@NonNull Context context) {
         super(context);
@@ -60,6 +62,15 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
             }
         });
         noResultCardView = findViewById(R.id.mapwize_no_result_card);
+        progressBar = findViewById(R.id.mapwizeResultListProgressBar);
+    }
+
+    public void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+    }
+
+    public void hideLoading() {
+        progressBar.setVisibility(INVISIBLE);
     }
 
     /**

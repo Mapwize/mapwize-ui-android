@@ -36,7 +36,6 @@ public class SearchDirectionView extends ConstraintLayout implements
     private ConstraintLayout mapwizeDirectionMainLayout;
     private EditText fromEditText;
     private EditText toEditText;
-    private ProgressBar progressBar;
     private ImageView backButton;
     private ImageView swapButton;
     private boolean isSearching = false;
@@ -66,7 +65,6 @@ public class SearchDirectionView extends ConstraintLayout implements
         mapwizeDirectionMainLayout = findViewById(R.id.mapwizeDirectionMainLayout);
         fromEditText = findViewById(R.id.mapwizeDirectionFromEditText);
         toEditText = findViewById(R.id.mapwizeDirectionToEditText);
-        progressBar = findViewById(R.id.mapwizeDirectionProgressBar);
         backButton = findViewById(R.id.mapwizeDirectionBarBackButton);
         swapButton = findViewById(R.id.mapwizeDirectionBarSwapButton);
         swapButton.setOnClickListener(v -> listener.onDirectionSwapClick());
@@ -208,14 +206,6 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     public void hideSwapButton() {
         swapButton.setVisibility(View.GONE);
-    }
-
-    public void showLoading() {
-        progressBar.setVisibility(VISIBLE);
-    }
-
-    public void hideLoading() {
-        progressBar.setVisibility(INVISIBLE);
     }
 
     /**

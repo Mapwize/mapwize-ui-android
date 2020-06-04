@@ -27,9 +27,9 @@ interface BaseFragment {
     void showVenueTitleLoading(String title);
     void showDirectionButton();
     void hideDirectionButton();
-    void showLanguagesSelector();
+    void showLanguagesSelector(List<String> languages);
     void hideLanguagesSelector();
-    void showUniversesSelector();
+    void showUniversesSelector(List<Universe> universes);
     void hideUniversesSelector();
     void showPlacePreviewInfo(PlacePreview preview, String language);
     void showPlaceInfoFromPreview(Place place, String language);
@@ -62,26 +62,13 @@ interface BaseFragment {
     void showDirectionLoading();
     void showDirectionInfo(Direction direction);
     void showNavigationInfo(NavigationInfo navigationInfo);
-
     void showSearchDirectionLoading();
     void hideSearchDirectionLoading();
-
-
-    void hideSearchDirectionScene();
-
-    void setAccessibleLanguages(List<String> languages);
-
-    void setAccessibleUniverses(List<Universe> universes);
-    
     void showErrorMessage(String message);
-
     void showFollowUserMode(FollowUserMode mode);
-
-    void showFollowUserModeWithoutLocation();
-
-    void showInformationButtonClick(MapwizeObject object);
-
-    void showMapwizeReady(MapwizeMap mapwizeMap);
-
     void showDirectionError();
+
+    void dispatchFollowUserModeWithoutLocation();
+    void dispatchInformationButtonClick(MapwizeObject object);
+    void dispatchMapwizeReady(MapwizeMap mapwizeMap);
 }
