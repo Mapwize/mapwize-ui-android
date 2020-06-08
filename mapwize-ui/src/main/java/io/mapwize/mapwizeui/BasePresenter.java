@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
@@ -42,4 +43,5 @@ interface BasePresenter {
     void onInformationClick();
     void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode);
     void selectPlace(Place place, boolean centerOn);
+    void grantAccess(String accessKey, ApiCallback<Boolean> callback);
 }

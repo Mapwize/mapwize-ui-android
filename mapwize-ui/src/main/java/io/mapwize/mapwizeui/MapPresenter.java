@@ -351,6 +351,24 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
+    public void grantAccess(String accessKey, ApiCallback<Boolean> callback) {
+        mapwizeMap.grantAccess(accessKey, new ApiCallback<Boolean>() {
+            @Override
+            public void onSuccess(@Nullable Boolean object) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    callback.onSuccess(object);
+                    preloadVenueSearchResults();
+                });
+            }
+
+            @Override
+            public void onFailure(@Nullable Throwable t) {
+                callback.onFailure(t);
+            }
+        });
+    }
+
+    @Override
     public void onDirectionButtonClick() {
         fragment.showDirectionSearchBar();
         fragment.hideSearchBar();

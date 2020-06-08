@@ -748,19 +748,7 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
      * @param callback called when the method is ended
      */
     public void grantAccess(String accesskey, ApiCallback<Boolean> callback) {
-        mapwizeMap.grantAccess(accesskey, new ApiCallback<Boolean>() {
-            @Override
-            public void onSuccess(@Nullable Boolean object) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    callback.onSuccess(object);
-                });
-            }
-
-            @Override
-            public void onFailure(@Nullable Throwable t) {
-                callback.onFailure(t);
-            }
-        });
+        presenter.grantAccess(accesskey, callback);
     }
 
     /**
