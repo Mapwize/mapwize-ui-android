@@ -615,6 +615,11 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     }
 
     @Override
+    public void refreshSearchData() {
+        presenter.refreshSearchData();
+    }
+
+    @Override
     public void onSearchStart() {
         presenter.onQueryClick();
     }

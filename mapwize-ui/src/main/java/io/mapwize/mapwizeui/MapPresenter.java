@@ -369,6 +369,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
+    public void refreshSearchData() {
+        preloadVenueSearchResults();
+    }
+
+    @Override
     public void onDirectionButtonClick() {
         fragment.showDirectionSearchBar();
         fragment.hideSearchBar();

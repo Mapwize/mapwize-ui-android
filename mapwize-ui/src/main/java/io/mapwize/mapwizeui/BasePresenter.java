@@ -44,4 +44,5 @@ interface BasePresenter {
     void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode);
     void selectPlace(Place place, boolean centerOn);
     void grantAccess(String accessKey, ApiCallback<Boolean> callback);
+    void refreshSearchData();
 }

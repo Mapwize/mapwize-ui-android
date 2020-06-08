@@ -68,6 +68,7 @@ interface BaseFragment {
     void showFollowUserMode(FollowUserMode mode);
     void showDirectionError();
 
+    void refreshSearchData();
     void dispatchFollowUserModeWithoutLocation();
     void dispatchInformationButtonClick(MapwizeObject object);
     void dispatchMapwizeReady(MapwizeMap mapwizeMap);
