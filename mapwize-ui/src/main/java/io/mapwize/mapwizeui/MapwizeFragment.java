@@ -577,7 +577,7 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     @Override
     public void showErrorMessage(String message) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            Toast.makeText(getContext(), "Error to display", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
         });
     }
 

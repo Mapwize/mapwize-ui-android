@@ -69,8 +69,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     private List<String> venueLanguages;
     private DirectionMode directionMode;
     private List<DirectionMode> directionModes;
-    private List<? extends MapwizeObject> mainFroms;
-    private List<? extends MapwizeObject> mainSearches;
+    private List<? extends MapwizeObject> mainFroms = new ArrayList<>();
+    private List<? extends MapwizeObject> mainSearches = new ArrayList<>();
     private DirectionPoint from;
     private DirectionPoint to;
     private Direction direction;
@@ -108,6 +108,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             @Override
             public void onFailure(@NonNull Throwable throwable) {
+                preloadedSearchResults = new ArrayList<>();
             }
         });
     }
@@ -173,7 +174,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             @Override
             public void onFailure(@NonNull Throwable t) {
-
+                mainSearches = new ArrayList<>();
             }
         });
         api.getMainFromsForVenue(venue.getId(), new ApiCallback<List<Place>>() {
@@ -184,7 +185,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             @Override
             public void onFailure(@NonNull Throwable t) {
-
+                mainFroms = new ArrayList<>();
             }
         });
         if (state == UIState.DIRECTION) {
@@ -363,7 +364,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             @Override
             public void onFailure(@Nullable Throwable t) {
-                callback.onFailure(t);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    callback.onFailure(t);
+                });
             }
         });
     }
@@ -391,9 +394,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
         else if (to == null) {
             requestDirectionTo();
-        }
-        else {
-            //tryToStartDirection();
         }
     }
 
@@ -446,7 +446,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
                 @Override
                 public void onFailure(@NonNull Throwable throwable) {
-                    fragment.hideSearchLoading();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        fragment.hideSearchLoading();
+                    });
                 }
             });
         }
@@ -475,7 +477,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
                 @Override
                 public void onFailure(@NonNull Throwable throwable) {
-                    fragment.hideSearchLoading();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        fragment.hideSearchLoading();
+                    });
                 }
             });
         }
@@ -920,7 +924,4 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
         }
     }
-
-
-
 }

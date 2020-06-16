@@ -18,6 +18,7 @@ import io.mapwize.mapwizesdk.map.PlacePreview;
 
 interface BaseFragment {
 
+
     void showSearchBar();
     void hideSearchBar();
     void showDirectionSearchBar();
