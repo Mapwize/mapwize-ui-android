@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="MapwizeFragment">
+    <declare-styleable name="MapwizeUIView">
     <!-- Not used at the moment-->
     </declare-styleable>
 </resources>

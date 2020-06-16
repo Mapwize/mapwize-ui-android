@@ -14,9 +14,10 @@ import io.mapwize.mapwizeui.events.Channel
 import io.mapwize.mapwizeui.events.EventManager
 import io.mapwize.mapwizeui.events.OnEventListener
 import io.mapwize.mapwizeui.MapFragment
+import io.mapwize.mapwizeui.MapwizeUIView
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListener, OnEventListener {
+class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListener, OnEventListener {
     override fun onMenuButtonClick() {
         Toast.makeText(applicationContext, "Menu click", Toast.LENGTH_LONG).show()
     }

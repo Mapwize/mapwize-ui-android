@@ -7,17 +7,10 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
 import java.util.List;
 
@@ -39,7 +32,9 @@ import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 
-public class MapwizeFragment extends Fragment implements BaseFragment, SearchBarView.SearchBarListener,
+import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
+
+public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
         BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener,
         FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener {
@@ -74,146 +69,43 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
     private FrameLayout headerLayout;
 
     // Component listener
-    private MapwizeFragment.OnFragmentInteractionListener listener;
+    private OnViewInteractionListener listener;
 
-    /**
-     * Create a instance of MapwizeFragment
-     * @param mapOptions used to setup the map
-     * @return a new instance of MapwizeFragment
-     */
-    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions) {
-        MapwizeFragment mf = new MapwizeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_OPTIONS, mapOptions);
-        MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
-        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        MapwizeConfiguration mapwizeConfiguration = MapwizeConfiguration.getInstance();
-        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
-        mf.setArguments(bundle);
-        return mf;
+    public MapwizeUIView(Context context) {
+        super(context);
     }
 
-    /**
-     * Create a instance of MapwizeFragment
-     * @param mapwizeConfiguration use to setup de sdk configuration
-     * @param mapOptions used to setup the map
-     * @return a new instance of MapwizeFragment
-     */
-    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions) {
-        MapwizeFragment mf = new MapwizeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_OPTIONS, mapOptions);
-        MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
-        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
-        mf.setArguments(bundle);
-        return mf;
+    public MapwizeUIView(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    /**
-     * Create a instance of MapwizeFragment
-     * @param mapOptions used to setup the map
-     * @param uiSettings used to display/hide UI elements
-     * @return a new instance of MapwizeFragment
-     */
-    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
-        MapwizeFragment mf = new MapwizeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_OPTIONS, mapOptions);
-        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        MapwizeConfiguration mapwizeConfiguration = MapwizeConfiguration.getInstance();
-        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
-        mf.setArguments(bundle);
-        return mf;
+    public MapwizeUIView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
-    /**
-     * Create a instance of MapwizeFragment
-     * @param mapwizeConfiguration use to setup de sdk configuration
-     * @param mapOptions used to setup the map
-     * @param uiSettings used to display/hide UI elements
-     * @return a new instance of MapwizeFragment
-     */
-    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
-        MapwizeFragment mf = new MapwizeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_OPTIONS, mapOptions);
-        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
-        mf.setArguments(bundle);
-        return mf;
+    public MapwizeUIView(Context context,
+                         MapOptions mapOptions,
+                         MapwizeFragmentUISettings settings,
+                         MapwizeConfiguration mapwizeConfiguration) {
+        super(context);
+        setupView(context, mapOptions, settings, mapwizeConfiguration);
     }
 
-    /**
-     * Create a instance of MapwizeFragment
-     * @param mapOptions used to setup the map
-     * @param uiSettings used to display/hide UI elements
-     * @param mapboxMapOptions used to pass Mapbox options at start
-     * @return a new instance of MapwizeFragment
-     */
-    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
-        MapwizeFragment mf = new MapwizeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_OPTIONS, mapOptions);
-        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        MapwizeConfiguration mapwizeConfiguration = MapwizeConfiguration.getInstance();
-        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
-        mf.setArguments(bundle);
-        return mf;
-    }
-
-    /**
-     * Create a instance of MapwizeFragment
-     * @param mapwizeConfiguration use to setup de sdk configuration
-     * @param mapOptions used to setup the map
-     * @param uiSettings used to display/hide UI elements
-     * @param mapboxMapOptions used to pass Mapbox options at start
-     * @return a new instance of MapwizeFragment
-     */
-    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
-        MapwizeFragment mf = new MapwizeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_OPTIONS, mapOptions);
-        bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
-        bundle.putParcelable(ARG_MAPWIZE_CONFIGURATION, mapwizeConfiguration);
-        mf.setArguments(bundle);
-        return mf;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            initializeOptions = bundle.getParcelable(ARG_OPTIONS);
-            initializeUiSettings = bundle.getParcelable(ARG_UI_SETTINGS);
-            mapwizeConfiguration = bundle.getParcelable(ARG_MAPWIZE_CONFIGURATION);
-        }
-        if (initializeOptions == null) {
-            initializeOptions = new MapOptions.Builder().build();
-        }
-        if (initializeUiSettings == null) {
-            initializeUiSettings = new MapwizeFragmentUISettings.Builder().build();
-        }
-        if (mapwizeConfiguration == null) {
-            mapwizeConfiguration = MapwizeConfiguration.getInstance();
-        }
+    private void setupView(Context context,
+                           MapOptions mapOptions,
+                           MapwizeFragmentUISettings settings,
+                           MapwizeConfiguration mapwizeConfiguration) {
+        this.initializeOptions = mapOptions;
+        this.initializeUiSettings = settings;
+        this.mapwizeConfiguration = mapwizeConfiguration;
+        LayoutInflater li = LayoutInflater.from(getApplicationContext());
+        View cv = li.inflate(R.layout.mapwize_ui_view, null);
+        this.addView(cv);
         presenter = new MapPresenter(this, mapwizeConfiguration, initializeOptions);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Mapbox.getInstance(container.getContext(), "pk.mapwize");
-        return inflater.inflate(R.layout.mapwize_fragment, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mapwizeView = new MapwizeView(view.getContext(), mapwizeConfiguration, initializeOptions);
-        FrameLayout layout = view.findViewById(R.id.mapViewContainer);
-        layout.addView(mapwizeView);
-        mapwizeView.onCreate(savedInstanceState);
+        mapwizeView = new MapwizeView(context, mapwizeConfiguration, initializeOptions);
+        FrameLayout container = cv.findViewById(R.id.mapViewContainer);
+        container.addView(mapwizeView);
+        //mapwizeView.onCreate(savedInstanceState);
 
         // Instantiate Mapwize sdk
         mapwizeView.getMapAsync(mMap -> {
@@ -222,103 +114,29 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
             presenter.onMapLoaded(mapwizeMap);
         });
 
-        bottomCardView = view.findViewById(R.id.mapwizeBottomCardView);
+        bottomCardView = cv.findViewById(R.id.mapwizeBottomCardView);
         bottomCardView.setListener(this);
-        floorControllerView = view.findViewById(R.id.mapwizeFloorController);
+        floorControllerView = cv.findViewById(R.id.mapwizeFloorController);
         floorControllerView.setListener(this);
-        universesButton = view.findViewById(R.id.mapwizeUniversesButton);
-        languagesButton = view.findViewById(R.id.mapwizeLanguagessButton);
-        searchBarView = view.findViewById(R.id.mapwizeSearchBar);
+        universesButton = cv.findViewById(R.id.mapwizeUniversesButton);
+        languagesButton = cv.findViewById(R.id.mapwizeLanguagessButton);
+        searchBarView = cv.findViewById(R.id.mapwizeSearchBar);
         searchBarView.setListener(this);
         searchBarView.setMenuHidden(initializeUiSettings.isMenuButtonHidden());
-        searchResultList = view.findViewById(R.id.mapwizeSearchResultList);
+        searchResultList = cv.findViewById(R.id.mapwizeSearchResultList);
         searchResultList.setListener(this);
-        searchDirectionView = view.findViewById(R.id.mapwizeDirectionSearchBar);
+        searchDirectionView = cv.findViewById(R.id.mapwizeDirectionSearchBar);
         searchDirectionView.setListener(this);
-        followUserButton = view.findViewById(R.id.mapwizeFollowUserButton);
+        followUserButton = cv.findViewById(R.id.mapwizeFollowUserButton);
         followUserButton.setListener(this);
         followUserButton.setVisibility(initializeUiSettings.isFollowUserButtonHidden() ? View.GONE : View.VISIBLE);
-        compassView = view.findViewById(R.id.mapwizeCompassView);
-        mainLayout = view.findViewById(R.id.mapwizeFragmentLayout);
-        headerLayout = view.findViewById(R.id.headerFrameLayout);
+        compassView = cv.findViewById(R.id.mapwizeCompassView);
+        mainLayout = cv.findViewById(R.id.mapwizeFragmentLayout);
+        headerLayout = cv.findViewById(R.id.headerFrameLayout);
     }
 
-    @Override
-    public void onInflate(@Nullable Context context, @Nullable AttributeSet attrs, @Nullable Bundle savedInstanceState) {
-        super.onInflate(context, attrs, savedInstanceState);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
-        }
-        else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mapwizeView != null) {
-            mapwizeView.onStart();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mapwizeView != null) {
-            mapwizeView.onResume();
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mapwizeView != null) {
-            mapwizeView.onSaveInstanceState(outState);
-        }
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        if (mapwizeView != null) {
-            mapwizeView.onLowMemory();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if (mapwizeView != null) {
-            mapwizeView.onPause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        if (mapwizeView != null) {
-            mapwizeView.onStop();
-        }
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mapwizeView != null) {
-            mapwizeView.onDestroy();
-        }
+    public void setListener(OnViewInteractionListener listener) {
+        this.listener = listener;
     }
 
     public void selectPlace(Place place, boolean centerOn) {
@@ -801,8 +619,59 @@ public class MapwizeFragment extends Fragment implements BaseFragment, SearchBar
 
     public FrameLayout getHeaderLayout() { return headerLayout; }
 
-    public interface OnFragmentInteractionListener {
-        void onMenuButtonClick();
+
+    public void onCreate(Bundle savedInstanceState) {
+        if (mapwizeView != null) {
+            mapwizeView.onCreate(savedInstanceState);
+        }
+    }
+
+    public void onStart() {
+        if (mapwizeView != null) {
+            mapwizeView.onStart();
+        }
+    }
+
+    public void onResume() {
+        if (mapwizeView != null) {
+            mapwizeView.onResume();
+        }
+    }
+
+    public void onPause() {
+        if (mapwizeView != null) {
+            mapwizeView.onPause();
+        }
+    }
+
+    public void onStop() {
+        if (mapwizeView != null) {
+            mapwizeView.onStop();
+        }
+    }
+
+    public void onSaveInstanceState(Bundle saveInstanceState) {
+        if (mapwizeView != null) {
+            mapwizeView.onSaveInstanceState(saveInstanceState);
+        }
+    }
+
+    public void onLowMemory() {
+        if (mapwizeView != null) {
+            mapwizeView.onLowMemory();
+        }
+    }
+
+    public void onDestroy() {
+        if (mapwizeView != null) {
+            mapwizeView.onDestroy();
+        }
+    }
+
+    public interface OnViewInteractionListener {
+        default void onMenuButtonClick() {
+
+        }
         default void onInformationButtonClick(MapwizeObject mapwizeObject) {
 
         }

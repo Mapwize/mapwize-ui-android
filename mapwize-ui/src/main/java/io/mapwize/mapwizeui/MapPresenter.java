@@ -47,7 +47,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         DEFAULT, SEARCH, SEARCH_FROM, SEARCH_TO, DIRECTION
     }
 
-    private BaseFragment fragment;
+    private BaseUIView fragment;
     private MapwizeConfiguration mapwizeConfiguration;
     private MapOptions mapOptions;
     private MapwizeApi api;
@@ -77,7 +77,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     private List<MapwizeObject> preloadedSearchResults;
 
-    MapPresenter(BaseFragment fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
+    MapPresenter(BaseUIView fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
         this.fragment = fragment;
         this.mapwizeConfiguration = mapwizeConfiguration;
         this.mapOptions = mapOptions;

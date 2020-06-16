@@ -16,7 +16,7 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 
-interface BaseFragment {
+interface BaseUIView {
 
 
     void showSearchBar();
