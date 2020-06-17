@@ -344,6 +344,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void selectPlace(Place place, boolean centerOn) {
         mapwizeMap.removeMarkers();
         mapwizeMap.removePromotedPlaces();
+        if (!place.getUniverses().contains(this.universe)) {
+            mapwizeMap.setUniverse(place.getUniverses().get(0));
+        }
         selectedContent = place;
         mapwizeMap.centerOnPlace(place, 0);
         mapwizeMap.addMarker(place);
@@ -725,6 +728,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.centerOnPlace(place, 0);
         if (universe != null && !universe.equals(this.universe)) {
             mapwizeMap.setUniverse(universe);
+        }
+        else if (!place.getUniverses().contains(this.universe)) {
+            mapwizeMap.setUniverse(place.getUniverses().get(0));
         }
         mapwizeMap.addMarker(place);
         mapwizeMap.addPromotedPlace(place);

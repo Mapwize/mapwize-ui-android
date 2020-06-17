@@ -98,7 +98,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         this.initializeOptions = mapOptions;
         this.initializeUiSettings = settings;
         this.mapwizeConfiguration = mapwizeConfiguration;
-        LayoutInflater li = LayoutInflater.from(getApplicationContext());
+        LayoutInflater li = LayoutInflater.from(context);
         View cv = li.inflate(R.layout.mapwize_ui_view, null);
         this.addView(cv);
         presenter = new MapPresenter(this, mapwizeConfiguration, initializeOptions);
