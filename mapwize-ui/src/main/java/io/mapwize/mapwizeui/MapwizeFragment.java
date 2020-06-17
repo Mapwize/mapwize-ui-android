@@ -3,7 +3,6 @@ package io.mapwize.mapwizeui;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +10,21 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
+import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.Direction;
+import io.mapwize.mapwizesdk.api.DirectionMode;
+import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.MapOptions;
 
-public class MapFragment extends Fragment {
+public class MapwizeFragment extends Fragment {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -40,8 +44,8 @@ public class MapFragment extends Fragment {
      * @param mapOptions used to setup the map
      * @return a new instance of MapwizeUIView
      */
-    public static MapFragment newInstance(@NonNull MapOptions mapOptions) {
-        MapFragment mf = new MapFragment();
+    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions) {
+        MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
@@ -58,8 +62,8 @@ public class MapFragment extends Fragment {
      * @param mapOptions used to setup the map
      * @return a new instance of MapwizeUIView
      */
-    public static MapFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions) {
-        MapFragment mf = new MapFragment();
+    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions) {
+        MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         MapwizeFragmentUISettings uiSettings = new MapwizeFragmentUISettings.Builder().build();
@@ -75,8 +79,8 @@ public class MapFragment extends Fragment {
      * @param uiSettings used to display/hide UI elements
      * @return a new instance of MapwizeUIView
      */
-    public static MapFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
-        MapFragment mf = new MapFragment();
+    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
+        MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
@@ -93,8 +97,8 @@ public class MapFragment extends Fragment {
      * @param uiSettings used to display/hide UI elements
      * @return a new instance of MapwizeUIView
      */
-    public static MapFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
-        MapFragment mf = new MapFragment();
+    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings) {
+        MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
@@ -110,8 +114,8 @@ public class MapFragment extends Fragment {
      * @param mapboxMapOptions used to pass Mapbox options at start
      * @return a new instance of MapwizeUIView
      */
-    public static MapFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
-        MapFragment mf = new MapFragment();
+    public static MapwizeFragment newInstance(@NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
+        MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
@@ -129,8 +133,8 @@ public class MapFragment extends Fragment {
      * @param mapboxMapOptions used to pass Mapbox options at start
      * @return a new instance of MapwizeUIView
      */
-    public static MapFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
-        MapFragment mf = new MapFragment();
+    public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeConfiguration, @NonNull MapOptions mapOptions, @NonNull MapwizeFragmentUISettings uiSettings, @NonNull MapboxMapOptions mapboxMapOptions) {
+        MapwizeFragment mf = new MapwizeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_OPTIONS, mapOptions);
         bundle.putParcelable(ARG_UI_SETTINGS, uiSettings);
@@ -192,6 +196,75 @@ public class MapFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    public void selectPlace(Place place, boolean centerOn) {
+        mapwizeUIView.selectPlace(place, centerOn);
+    }
+
+    /**
+     * Set a direction on Mapwize UI will display the direction and the user interface
+     * @param direction to display
+     * @param from the starting point
+     * @param to the destination point
+     * @param directionMode used to find the direction
+     */
+    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
+        mapwizeUIView.setDirection(direction, from, to, directionMode);
+    }
+
+    /**
+     * Helper method to get access and refresh the UI
+     * @param accesskey
+     * @param callback called when the method is ended
+     */
+    public void grantAccess(String accesskey, ApiCallback<Boolean> callback) {
+        mapwizeUIView.grantAccess(accesskey, callback);
+    }
+
+    /**
+     * Getter for UI Component
+     */
+    public ConstraintLayout getMainLayout() {
+        return mapwizeUIView.getMainLayout();
+    }
+
+    public CompassView getCompassView() {
+        return mapwizeUIView.getCompassView();
+    }
+
+    public FollowUserButton getFollowUserButton() {
+        return mapwizeUIView.getFollowUserButton();
+    }
+
+    public FloorControllerView getFloorControllerView() {
+        return mapwizeUIView.getFloorControllerView();
+    }
+
+    public SearchBarView getSearchBarView() {
+        return mapwizeUIView.getSearchBarView();
+    }
+
+    public SearchDirectionView getSearchDirectionView() {
+        return mapwizeUIView.getSearchDirectionView();
+    }
+
+    public LanguagesButton getLanguagesButton() {
+        return mapwizeUIView.getLanguagesButton();
+    }
+
+    public UniversesButton getUniversesButton() {
+        return mapwizeUIView.getUniversesButton();
+    }
+
+    public BottomCardView getBottomCardView() {
+        return mapwizeUIView.getBottomCardView();
+    }
+
+    public SearchResultList getSearchResultList() {
+        return mapwizeUIView.getSearchResultList();
+    }
+
+    public FrameLayout getHeaderLayout() { return mapwizeUIView.getHeaderLayout(); }
 
     @Override
     public void onStart() {
