@@ -52,15 +52,6 @@
                     android:paddingTop="12dp"
                     android:paddingEnd="4dp"
                     android:visibility="gone"/>
-                <ProgressBar
-                    android:id="@+id/mapwizeSearchBarProgressBar"
-                    android:layout_width="40dp"
-                    android:layout_height="48dp"
-                    android:paddingBottom="12dp"
-                    android:paddingStart="12dp"
-                    android:paddingTop="12dp"
-                    android:paddingEnd="4dp"
-                    android:visibility="gone"/>
             </FrameLayout>
 
             <EditText
@@ -79,20 +70,25 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <FrameLayout
-                android:id="@+id/mapwizeSearchBarRightFrame"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:visibility="gone">
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:id="@+id/mapwizeSearchBarRightButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_directions_black_24dp"
-                    android:padding="12dp"/>
+                    android:padding="12dp"
+                    android:visibility="gone"/>
+
+                <ProgressBar
+                    android:id="@+id/mapwizeSearchBarProgressBar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:visibility="gone"/>
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import android.media.Image;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -26,7 +28,7 @@ public class SearchBarView extends ConstraintLayout {
     private SearchBarListener listener;
     private ImageView leftImageView;
     private ImageView backImageView;
-    private FrameLayout rightImageView;
+    private ImageView rightImageView;
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
     private ProgressBar progressBar;
@@ -60,7 +62,7 @@ public class SearchBarView extends ConstraintLayout {
         leftImageView.setOnClickListener(v -> {
             listener.onSearchBarMenuClick();
         });
-        rightImageView = findViewById(R.id.mapwizeSearchBarRightFrame);
+        rightImageView = findViewById(R.id.mapwizeSearchBarRightButton);
         rightImageView.setOnClickListener(v -> {
             listener.onSearchBarDirectionButtonClick();
         });
@@ -102,6 +104,7 @@ public class SearchBarView extends ConstraintLayout {
         String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
         searchEditText.setHint(String.format(loadingPlaceHolder, title));
         searchEditText.setEnabled(false);
+        progressBar.setVisibility(VISIBLE);
     }
 
     public void showVenueTitle(String title) {
@@ -109,6 +112,7 @@ public class SearchBarView extends ConstraintLayout {
         searchEditText.setHint(String.format(searchPlaceHolder, title));
         searchEditText.setEnabled(true);
         rightImageView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(GONE);
     }
 
     public void setDirectionButtonHidden(boolean isHidden) {
