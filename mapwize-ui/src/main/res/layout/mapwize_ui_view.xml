@@ -134,7 +134,7 @@
         app:layout_constraintTop_toTopOf="@+id/headerFrameLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         android:elevation="4dp"
-        android:translationZ="10dp"
+        android:translationZ="8dp"
         app:cardPreventCornerOverlap="true"
         app:cardCornerRadius="8dp"
         app:layout_constraintVertical_bias="1.0"
