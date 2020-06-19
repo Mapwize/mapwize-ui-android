@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
     private SearchResultAdapter searchResultAdapter;
     private CardView currentLocationCardView;
     private CardView noResultCardView;
+    private ProgressBar progressBar;
 
     public SearchResultList(@NonNull Context context) {
         super(context);
@@ -54,10 +58,19 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
         currentLocationCardView = findViewById(R.id.mapwizeCurrentLocationCard);
         currentLocationCardView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onSearchResultNull();
+                listener.onCurrentLocationClick();
             }
         });
         noResultCardView = findViewById(R.id.mapwize_no_result_card);
+        progressBar = findViewById(R.id.mapwizeResultListProgressBar);
+    }
+
+    public void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+    }
+
+    public void hideLoading() {
+        progressBar.setVisibility(INVISIBLE);
     }
 
     /**
@@ -125,6 +138,37 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
         }
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == getVisibility()) {
+            return;
+        }
+        if (visibility == View.INVISIBLE || visibility == View.GONE) {
+            this.animate()
+                    .translationY(this.getHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            SearchResultList.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+        else {
+            this.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            SearchResultList.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
+        }
+    }
+
     /**
      * Show empty
      */
@@ -161,7 +205,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
 
 
     public interface SearchResultListListener {
-        void onSearchResultNull();
+        void onCurrentLocationClick();
         void onSearchResult(Place place, Universe universe);
         void onSearchResult(Placelist placelist);
         void onSearchResult(Venue venue);

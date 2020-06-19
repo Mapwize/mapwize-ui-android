@@ -35,8 +35,14 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.github.indoorlocation:manual-indoor-location-provider-android:1.0.0'
+    implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
     implementation project(path: ':mapwize-ui')
-    implementation 'io.mapwize.sdk:mapwize-sdk:3.1.11'
+    implementation 'io.mapwize.sdk:mapwize-sdk:3.3.1'
+    /*implementation project(path: ':mapwize-sdk')
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
+    implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
+        transitive = true
+    }*/
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

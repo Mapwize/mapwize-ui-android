@@ -1,11 +1,7 @@
 package io.mapwize.mapwizeui.modeview;
 
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +25,7 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
 
     void swapData(List<DirectionMode> modes) {
         this.modes = modes;
-        if (selectedMode == null || !modes.contains(selectedMode)) {
+        if (modes != null && modes.size() > 0 && (selectedMode == null || !modes.contains(selectedMode))) {
             setSelectedMode(modes.get(0), true);
         }
         else {
@@ -55,15 +51,12 @@ public class ModeViewAdapter extends RecyclerView.Adapter<ModeViewAdapter.ModeIt
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.mapwize_mode_item, parent, false);
         ViewTreeObserver vto = parent.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int width  = parent.getMeasuredWidth();
-                ViewGroup.LayoutParams params = view.getLayoutParams();
-                int divider = modes.size() < 5 ? modes.size() : 4;
-                params.width = (width / divider);
-                view.setLayoutParams(params);
-            }
+        vto.addOnGlobalLayoutListener(() -> {
+            int width  = parent.getMeasuredWidth();
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            int divider = modes.size() < 5 ? modes.size() : 4;
+            params.width = (width / divider);
+            view.setLayoutParams(params);
         });
         return new ModeItemViewHolder(view);
     }

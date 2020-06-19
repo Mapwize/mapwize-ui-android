@@ -64,6 +64,7 @@ public final class CompassView extends AppCompatImageView implements
             this.mapboxMap.animateCamera(CameraUpdateFactory.bearingTo(0.0), 300);
             this.postDelayed(this, 300);
         });
+        this.onCameraMove();
     }
 
     public OnCompassClickListener getOnCompassClickListener() {

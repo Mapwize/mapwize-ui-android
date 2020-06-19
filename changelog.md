@@ -1,5 +1,10 @@
 # UI Components Changelog
 
+## 2.3.0
+
+- Refactoring code base
+- Allowing MapwizeUI to be instantiate as a View and a Fragment
+
 ## 2.2.0
 
 - Integrating Mapwize SDK 3.2.0

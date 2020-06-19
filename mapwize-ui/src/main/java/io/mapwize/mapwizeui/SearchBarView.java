@@ -1,11 +1,12 @@
 package io.mapwize.mapwizeui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import android.media.Image;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -16,41 +17,23 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.mapwize.mapwizesdk.api.ApiCallback;
-import io.mapwize.mapwizesdk.api.MapwizeObject;
-import io.mapwize.mapwizesdk.api.Place;
-import io.mapwize.mapwizesdk.api.Placelist;
-import io.mapwize.mapwizesdk.api.SearchParams;
-import io.mapwize.mapwizesdk.api.Universe;
 import io.mapwize.mapwizesdk.api.Venue;
-import io.mapwize.mapwizesdk.map.MapOptions;
-import io.mapwize.mapwizesdk.map.MapwizeMap;
-import io.mapwize.mapwizeui.events.Channel;
-import io.mapwize.mapwizeui.events.EventManager;
 
 /**
  * Floating search bar.
  * Include a left button for menu, a direction button and search text field.
  */
-public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenueEnterListener,
-        SearchResultList.SearchResultListListener, MapwizeMap.OnVenueExitListener {
+public class SearchBarView extends ConstraintLayout {
 
     private SearchBarListener listener;
-    private MapwizeMap mapwizeMap;
     private ImageView leftImageView;
     private ImageView backImageView;
-    private FrameLayout rightImageView;
+    private ImageView rightImageView;
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
-    private SearchResultList resultList;
-    private ProgressBar resultProgressBar;
-    private SearchDataManager searchDataManager;
+    private ProgressBar progressBar;
+    private boolean directionButtonHidden;
     private boolean menuHidden;
-
-    private boolean isSearching = false;
 
     public SearchBarView(Context context) {
         super(context);
@@ -69,31 +52,27 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
 
     private void initialize(Context context) {
         inflate(context, R.layout.mapwize_search_bar, this);
-        searchDataManager = new SearchDataManager();
         mainLayout = findViewById(R.id.mapwizeSearchMainLayout);
-        backImageView= findViewById(R.id.mapwizeSearchBarBackButton);
+        backImageView = findViewById(R.id.mapwizeSearchBarBackButton);
+        backImageView.setOnClickListener(v -> {
+            setupDefault();
+            listener.onSearchBarBackButtonClick();
+        });
         leftImageView = findViewById(R.id.mapwizeSearchBarLeftButton);
         leftImageView.setOnClickListener(v -> {
-            setupDefault();
-            if (listener != null) {
-                listener.onLeftButtonClick(v);
-            }
+            listener.onSearchBarMenuClick();
         });
-        resultProgressBar = findViewById(R.id.mapwizeResultListProgress);
-        rightImageView = findViewById(R.id.mapwizeSearchBarRightFrame);
+        rightImageView = findViewById(R.id.mapwizeSearchBarRightButton);
         rightImageView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onRightButtonClick(v);
-            }
+            listener.onSearchBarDirectionButtonClick();
         });
         searchEditText = findViewById(R.id.mapwizeSearchBarEditText);
-        backImageView.setOnClickListener(v -> setupDefault());
         searchEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (this.resultList == null || this.mapwizeMap == null) {
-                return;
-            }
             if (hasFocus) {
-                setupInSearch();
+                InputMethodManager imm =(InputMethodManager)
+                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+                listener.onSearchStart();
             }
             else {
                 InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -102,40 +81,6 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
                 }
             }
         });
-    }
-
-    private void initSearchDataManager() {
-        if (mapwizeMap == null) {
-            return;
-        }
-        MapOptions options = mapwizeMap.getMapOptions();
-        searchDataManager = new SearchDataManager();
-        SearchParams.Builder paramsBuilder = new SearchParams.Builder()
-                .setObjectClass(new String[]{"venue"})
-                .setOrganizationId(options.getRestrictContentToOrganizationId());
-        if (options.getRestrictContentToVenueIds() != null) {
-            paramsBuilder.setVenueIds(options.getRestrictContentToVenueIds());
-        }
-        mapwizeMap.getMapwizeApi().search(paramsBuilder.build(), new ApiCallback<List<MapwizeObject>>() {
-            @Override
-            public void onSuccess(@NonNull List<MapwizeObject> mapwizeObjects) {
-                searchDataManager.setVenuesList(mapwizeObjects);
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable throwable) {
-            }
-        });
-    }
-
-    public void setListener(SearchBarListener listener) {
-        this.listener = listener;
-    }
-
-    public void setResultList(SearchResultList resultList) {
-        this.resultList = resultList;
-        this.resultList.setListener(this);
-        this.resultList.setLanguage(mapwizeMap.getLanguage());
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,7 +89,7 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                performSearch(s.toString());
+                listener.onSearchBarQueryChange(s.toString());
             }
 
             @Override
@@ -152,102 +97,68 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
 
             }
         });
-
+        progressBar = findViewById(R.id.mapwizeSearchBarProgressBar);
     }
 
-    /**
-     * Perform search and display result
-     * @param query the search query
-     */
-    private void performSearch(String query) {
-        if (mapwizeMap == null) {
-            return;
-        }
-        if (!isSearching) {
-            return;
-        }
-        resultProgressBar.setVisibility(View.VISIBLE);
-
-        if (query.length() == 0) {
-            performEmptySearch();
-            return;
-        }
-
-        SearchParams.Builder builder = new SearchParams.Builder();
-        builder.setQuery(query);
-
-        // If we are in a venue, search for venue content
-        if (mapwizeMap.getVenue() != null) {
-            // Filter object by type
-            builder.setObjectClass(new String[]{"place", "placeList"});
-            // Filter object for the current venue
-            builder.setVenueId(mapwizeMap.getVenue().getId());
-
-            SearchParams params = builder.build();
-            // Api Call
-            mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
-                @Override
-                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
-                    // Display the result
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        resultList.showData(mapwizeObjects, mapwizeMap.getUniverses(), mapwizeMap.getUniverse());
-                        resultProgressBar.setVisibility(View.INVISIBLE);
-                    });
-                }
-
-                @Override
-                public void onFailure(@NonNull Throwable throwable) {
-                }
-            });
-        }
-        // If we are not in a venue, search for venue
-        else {
-            // Filter by object type
-            builder.setObjectClass(new String[]{"venue"});
-            // Filter by organization if present in map options
-            builder.setOrganizationId(mapwizeMap.getMapOptions().getRestrictContentToOrganizationId());
-            // Filter by venue if present in map options
-            if (mapwizeMap.getMapOptions().getRestrictContentToVenueIds() != null) {
-                builder.setVenueIds(mapwizeMap.getMapOptions().getRestrictContentToVenueIds());
-            }
-            SearchParams params = builder.build();
-            // Api call
-            mapwizeMap.getMapwizeApi().search(params, new ApiCallback<List<MapwizeObject>>() {
-                @Override
-                public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
-                    // Display the result
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        resultList.showData(mapwizeObjects);
-                        resultProgressBar.setVisibility(View.INVISIBLE);
-                    });
-                }
-
-                @Override
-                public void onFailure(@NonNull Throwable throwable) {
-                }
-            });
-        }
+    public void showVenueTitleLoading(String title) {
+        String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
+        searchEditText.setHint(String.format(loadingPlaceHolder, title));
+        searchEditText.setEnabled(false);
+        progressBar.setVisibility(VISIBLE);
     }
 
-    public void setMenuHidden(boolean isDisplayed) {
-        this.menuHidden = isDisplayed;
+    public void showVenueTitle(String title) {
+        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
+        searchEditText.setHint(String.format(searchPlaceHolder, title));
+        searchEditText.setEnabled(true);
+        rightImageView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(GONE);
+    }
+
+    public void setDirectionButtonHidden(boolean isHidden) {
+        directionButtonHidden = isHidden;
+        this.rightImageView.setVisibility(isHidden ? View.GONE : View.VISIBLE);
+    }
+
+    public void setListener(SearchBarListener listener) {
+        this.listener = listener;
+    }
+
+    public void setMenuHidden(boolean isHidden) {
+        this.menuHidden = isHidden;
         if (this.menuHidden) {
             this.leftImageView.setVisibility(View.GONE);
         }
     }
 
-    /**
-     * Call if the search query is empty.
-     * Get data from searchDataManager
-     */
-    private void performEmptySearch() {
-        if (mapwizeMap.getVenue() == null) {
-            resultList.showData(searchDataManager.venuesList);
-            resultProgressBar.setVisibility(View.INVISIBLE);
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == getVisibility()) {
+            return;
+        }
+        if (visibility == View.INVISIBLE || visibility == View.GONE) {
+            this.animate()
+                    .translationY(-this.getHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            SearchBarView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
         }
         else {
-            resultList.showData(searchDataManager.mainSearch, mapwizeMap.getUniverses(), mapwizeMap.getUniverse());
-            resultProgressBar.setVisibility(View.INVISIBLE);
+            this.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            SearchBarView.super.setVisibility(visibility);
+                        }
+                    })
+                    .start();
         }
     }
 
@@ -256,18 +167,14 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
      * Hide useless component
      * Show result list
      */
-    private void setupInSearch() {
-        isSearching = true;
+    public void setupInSearch() {
         leftImageView.setVisibility(View.GONE);
         backImageView.setVisibility(View.VISIBLE);
-        rightImageView.setVisibility(View.GONE);
-        mainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
+        //mainLayout.setBackgroundColor(Color.argb(255, 238, 238, 238));
+        //setElevation(0);
         this.setBackgroundColor(Color.argb(255, 238, 238, 238));
-        resultList.hideCurrentLocationCard();
-        resultList.show();
-        performSearch("");
-
-        this.setTranslationZ(2);
+//        this.setTranslationZ(2);
+        this.rightImageView.setVisibility(View.GONE);
     }
 
     /**
@@ -275,135 +182,63 @@ public class SearchBarView extends ConstraintLayout implements MapwizeMap.OnVenu
      * Hide search result list
      * Show search bar button
      */
-    private void setupDefault() {
-        isSearching = false;
+    public void setupDefault() {
         if (!menuHidden) {
             leftImageView.setVisibility(View.VISIBLE);
         }
         backImageView.setVisibility(View.GONE);
-        if (mapwizeMap.getVenue() != null) {
-            rightImageView.setVisibility(View.VISIBLE);
-        }
         searchEditText.setText("");
         searchEditText.clearFocus();
         mainLayout.setBackgroundColor(Color.TRANSPARENT);
         this.setBackgroundColor(Color.TRANSPARENT);
-        resultList.hide();
         this.setTranslationZ(0);
+        this.rightImageView.setVisibility(directionButtonHidden ? View.GONE : View.VISIBLE);
     }
 
-    /**
-     * Set mapwize plugin
-     * @param mapwizeMap used to listen enter and exit venue events
-     */
-    public void setMapwizeMap(MapwizeMap mapwizeMap) {
-        this.mapwizeMap = mapwizeMap;
-        this.mapwizeMap.addOnVenueEnterListener(this);
-        this.mapwizeMap.addOnVenueExitListener(this);
-        initSearchDataManager();
+    public void showOutOfVenue() {
+        searchEditText.setHint(getResources().getString(R.string.search_venue));
+        rightImageView.setVisibility(GONE);
     }
 
-    /**
-     * On venue enter is called by mapwize sdk
-     * Change search bar UI to display direction button and place holder
-     * @param venue the current venue
-     */
-    @Override
-    public void onVenueEnter(@NonNull Venue venue) {
+    public void showVenueEntering(Venue venue, String language) {
+        String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
+        searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(language).getTitle()));
+        searchEditText.setEnabled(false);
+    }
+
+    public void showVenueEntered(Venue venue, String language) {
         String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
-        searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
+        searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
         searchEditText.setEnabled(true);
-        resultProgressBar.setVisibility(View.INVISIBLE);
         rightImageView.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * Will enter venue is called by mapwize sdk
-     * Show loading progress
-     * Load data in search data manager
-     * @param venue
-     */
-    @Override
-    public void onVenueWillEnter(@NonNull Venue venue) {
-        String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
-        searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(mapwizeMap.getLanguage()).getTitle()));
-        searchEditText.setEnabled(false);
-        resultProgressBar.setVisibility(View.VISIBLE);
-
-        searchDataManager.setMainSearch(new ArrayList<>());
-        searchDataManager.setMainFrom(new ArrayList<>());
-        mapwizeMap.getMapwizeApi().getMainSearchesForVenue(venue.getId(), new ApiCallback<List<MapwizeObject>>() {
-            @Override
-            public void onSuccess(@NonNull List<MapwizeObject> mapwizeObjects) {
-                searchDataManager.setMainSearch(mapwizeObjects);
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable throwable) {
-
-            }
-        });
-        mapwizeMap.getMapwizeApi().getMainFromsForVenue(venue.getId(), new ApiCallback<List<Place>>() {
-            @Override
-            public void onSuccess(@NonNull List<Place> mapwizeObjects) {
-                searchDataManager.setMainFrom(mapwizeObjects);
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable throwable) {
-
-            }
-        });
+    public void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+        if (backImageView.getVisibility() == VISIBLE) {
+            backImageView.setVisibility(INVISIBLE);
+        }
+        if (leftImageView.getVisibility() == VISIBLE) {
+            leftImageView.setVisibility(INVISIBLE);
+        }
     }
 
-    /**
-     * On venue exit is called by mapwize sdk.
-     * Hide direction button and change placeholder
-     * @param venue
-     */
-    @Override
-    public void onVenueExit(@NonNull Venue venue) {
-        searchEditText.setHint(getResources().getString(R.string.search_venue));
-        rightImageView.setVisibility(View.GONE);
-        resultProgressBar.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void onSearchResultNull() {
-        // Nothing
-    }
-
-    @Override
-    public void onSearchResult(Place place, Universe universe) {
-        String query = searchEditText.getText().toString().length() > 0 ? searchEditText.getText().toString() : null;
-        Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
-        Universe sentUniverse = universe == null ? mapwizeMap.getUniverse() : universe;
-        EventManager.getInstance().triggerOnContentSelect(place, mapwizeMap.getUniverse(), sentUniverse, channel, query);
-        setupDefault();
-        listener.onSearchResult(place, universe);
-    }
-
-    @Override
-    public void onSearchResult(Placelist placelist) {
-        String query = searchEditText.getText().toString().length() > 0 ? searchEditText.getText().toString() : null;
-        Channel channel = query != null ? Channel.SEARCH : Channel.MAIN_SEARCHES;
-        EventManager.getInstance().triggerOnContentSelect(placelist, mapwizeMap.getUniverse(),mapwizeMap.getUniverse(),channel, query);
-        setupDefault();
-        listener.onSearchResult(placelist);
-    }
-
-    @Override
-    public void onSearchResult(Venue venue) {
-        setupDefault();
-        listener.onSearchResult(venue);
+    public void hideLoading() {
+        progressBar.setVisibility(GONE);
+        if (backImageView.getVisibility() == INVISIBLE) {
+            backImageView.setVisibility(VISIBLE);
+        }
+        if (leftImageView.getVisibility() == INVISIBLE) {
+            leftImageView.setVisibility(VISIBLE);
+        }
     }
 
     public interface SearchBarListener {
-        void onSearchResult(Place place, Universe universe);
-        void onSearchResult(Placelist placelist);
-        void onSearchResult(Venue venue);
-        void onLeftButtonClick(View view);
-        void onRightButtonClick(View view);
+        void onSearchStart();
+        void onSearchBarMenuClick();
+        void onSearchBarQueryChange(String query);
+        void onSearchBarDirectionButtonClick();
+        void onSearchBarBackButtonClick();
     }
 
 }

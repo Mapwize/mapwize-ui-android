@@ -1,6 +1,5 @@
 package io.mapwize.mapwizeui;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
@@ -16,19 +15,15 @@ import java.util.Collections;
 import java.util.List;
 
 import io.mapwize.mapwizesdk.api.Floor;
-import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Floor controller
  */
-public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloorChangeListener,
-        MapwizeMap.OnFloorsChangeListener {
+public class FloorControllerView extends ScrollView {
 
-    private List<Double> directionFloors = new ArrayList<>();
     private LinearLayout linearLayout;
     private int viewSize = 0;
-    private MapwizeMap mapwizeMap;
-    private MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener;
+    private OnFloorClickListener listener;
 
     public FloorControllerView(@NonNull Context context) {
         super(context);
@@ -45,12 +40,8 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
         initLayout();
     }
 
-    public MapwizeFragment.OnFragmentInteractionListener getFragmentInteractionListener() {
-        return fragmentInteractionListener;
-    }
-
-    public void setUiBehaviour(MapwizeFragment.OnFragmentInteractionListener fragmentInteractionListener) {
-        this.fragmentInteractionListener = fragmentInteractionListener;
+    public void setListener(OnFloorClickListener listener) {
+        this.listener = listener;
     }
 
     private void initLayout() {
@@ -64,61 +55,37 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
         linearLayout.setVerticalGravity(Gravity.BOTTOM);
-        linearLayout.setLayoutTransition(new LayoutTransition());
+        /*linearLayout.setLayoutTransition(new LayoutTransition());
         setLayoutTransition(new LayoutTransition());
         getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        linearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        linearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);*/
         this.addView(linearLayout);
     }
 
-    /**
-     * Set mapwize plugin
-     * @param mapwizeMap used to listener floor and floors changed event
-     */
-    public void setMapwizeMap(@NonNull MapwizeMap mapwizeMap) {
-        this.mapwizeMap = mapwizeMap;
-        this.mapwizeMap.addOnFloorsChangeListener(this);
-        this.mapwizeMap.addOnFloorChangeListener(this);
-    }
 
-
-    /**
-     * Called by mapwize when the list of available floors changed
-     * @param floors the new available floors
-     */
-    @Override
-    public void onFloorsChange(@NonNull List<Floor> floors) {
+    public void setFloors(@NonNull List<Floor> floors) {
         linearLayout.removeAllViews();
-        if (!fragmentInteractionListener.shouldDisplayFloorController(floors)) {
-            return;
-        }
         List<Floor> reversedFloor = new ArrayList<>(floors);
         Collections.reverse(reversedFloor);
         for (Floor floor : reversedFloor) {
             FloorView floorView = new FloorView(getContext(), floor);
-            //TextView b = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     viewSize,viewSize
             );
             params.setMargins(0,5,0,5);
             floorView.setElevation(4);
             floorView.setLayoutParams(params);
-            //b.setText(floor.getName());
-            //b.setGravity(Gravity.CENTER);
             floorView.setBackgroundResource(R.drawable.rounded_button);
             floorView.setOnClickListener(v -> {
                 FloorView tv = (FloorView) v;
-                Double selectedFloor = tv.getFloor().getNumber();
-                mapwizeMap.setFloor(selectedFloor);
+                Floor selectedFloor = tv.getFloor();
+                this.listener.onFloorClick(selectedFloor);
             });
             linearLayout.addView(floorView);
         }
-
-        this.onFloorChange(mapwizeMap.getFloor());
     }
 
-    @Override
-    public void onFloorWillChange(@Nullable Floor floor) {
+    public void setLoadingFloor(@Nullable Floor floor) {
         for (int i = 0; i< linearLayout.getChildCount(); i++) {
             FloorView tv  = (FloorView) linearLayout.getChildAt(i);
             Double tvValue = tv.getFloor().getNumber();
@@ -131,8 +98,7 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
         }
     }
 
-    @Override
-    public void onFloorChange(@Nullable Floor floor) {
+    public void setFloor(@Nullable Floor floor) {
         for (int i = 0; i< linearLayout.getChildCount(); i++) {
             FloorView tv  = (FloorView) linearLayout.getChildAt(i);
             Double tvValue = tv.getFloor().getNumber();
@@ -143,5 +109,9 @@ public class FloorControllerView extends ScrollView implements MapwizeMap.OnFloo
                 tv.setSelected(false);
             }
         }
+    }
+
+    public interface OnFloorClickListener {
+        void onFloorClick(Floor floor);
     }
 }
