@@ -13,7 +13,7 @@ import io.mapwize.mapwizeui.MapwizeFragmentUISettings
 import io.mapwize.mapwizeui.events.Channel
 import io.mapwize.mapwizeui.events.EventManager
 import io.mapwize.mapwizeui.events.OnEventListener
-import io.mapwize.mapwizeui.MapFragment
+import io.mapwize.mapwizeui.MapwizeFragment
 import io.mapwize.mapwizeui.MapwizeUIView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         Toast.makeText(applicationContext, "Menu click", Toast.LENGTH_LONG).show()
     }
 
-    private var mapwizeFragment: MapFragment? = null
+    private var mapwizeFragment: MapwizeFragment? = null
     private var mapwizeMap: MapwizeMap? = null
     private var provider: ManualIndoorLocationProvider? = null
 
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
                 .floorControllerHidden(true)
                 .compassHidden(true)*/
                 .build()
-        mapwizeFragment = MapFragment.newInstance(opts, uiSettings)
+        mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
         ft.add(fragmentContainer.id, mapwizeFragment!!)
