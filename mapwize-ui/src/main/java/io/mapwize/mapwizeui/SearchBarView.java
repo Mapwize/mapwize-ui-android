@@ -32,7 +32,7 @@ public class SearchBarView extends ConstraintLayout {
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
     private ProgressBar progressBar;
-    private boolean directionButtonHidden;
+    private boolean directionButtonHidden = true;
     private boolean menuHidden;
 
     public SearchBarView(Context context) {
