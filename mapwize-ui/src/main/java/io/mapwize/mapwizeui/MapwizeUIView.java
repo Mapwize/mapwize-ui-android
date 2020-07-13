@@ -32,8 +32,6 @@ import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 
-import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
-
 public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
         BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener,
@@ -395,7 +393,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     @Override
     public void showErrorMessage(String message) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string.display_content_error), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getContext().getResources().getString(R.string.mapwize_display_content_error), Toast.LENGTH_LONG).show();
         });
     }
 

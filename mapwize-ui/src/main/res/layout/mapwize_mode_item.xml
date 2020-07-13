@@ -12,7 +12,7 @@
         android:id="@+id/mode_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_access_time_black_24dp"
+        android:src="@drawable/mapwize_ic_access_time_black_24dp"
         android:padding="8dp"/>
 
 </RelativeLayout>

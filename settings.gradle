@@ -1,2 +1,1 @@
-include ':app', ':mapwize-ui', ':mapwize-sdk'
-project(":mapwize-sdk").projectDir = new File("../mapwize-sdk-android/mapwize-sdk/")
+include ':app', ':mapwize-ui'

@@ -75,7 +75,7 @@ public class FloorControllerView extends ScrollView {
             params.setMargins(0,5,0,5);
             floorView.setElevation(4);
             floorView.setLayoutParams(params);
-            floorView.setBackgroundResource(R.drawable.rounded_button);
+            floorView.setBackgroundResource(R.drawable.mapwize_circle_view);
             floorView.setOnClickListener(v -> {
                 FloorView tv = (FloorView) v;
                 Floor selectedFloor = tv.getFloor();

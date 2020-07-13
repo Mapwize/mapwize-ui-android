@@ -131,7 +131,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             Translation translation = venue.getTranslation(language);
             holder.titleView.setText(translation.getTitle());
             holder.subtitleView.setVisibility(View.GONE);
-            holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_domain_black_24dp));
+            holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.mapwize_ic_domain_black_24dp));
             holder.floorView.setVisibility(View.GONE);
             holder.leftIcon.setVisibility(View.VISIBLE);
             holder.itemView.setClickable(true);
@@ -141,12 +141,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             Place place = (Place) suggestionItem;
             Translation translation = place.getTranslation(language);
             holder.titleView.setText(translation.getTitle());
-            holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
+            holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.mapwize_ic_location_on_black_24dp));
             holder.floorView.setVisibility(View.VISIBLE);
             holder.leftIcon.setVisibility(View.VISIBLE);
             if (place.getFloor() != null) {
                 NumberFormat nf = new DecimalFormat("###.###");
-                holder.floorView.setText(String.format(context.getResources().getString(R.string.floor_placeholder), nf.format(place.getFloor())));
+                holder.floorView.setText(String.format(context.getResources().getString(R.string.mapwize_floor_placeholder), nf.format(place.getFloor())));
                 holder.floorView.setVisibility(View.VISIBLE);
             }
             else {
@@ -166,7 +166,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             Placelist placeList = (Placelist) suggestionItem;
             Translation translation = placeList.getTranslation(language);
             holder.titleView.setText(translation.getTitle());
-            holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.ic_menu_black_24dp));
+            holder.leftIcon.setImageDrawable(holder.itemView.getContext().getDrawable(R.drawable.mapwize_ic_menu_black_24dp));
             holder.floorView.setVisibility(View.GONE);
             holder.leftIcon.setVisibility(View.VISIBLE);
             if (placeList.getTranslation(language).getSubtitle() != null && placeList.getTranslation(language).getSubtitle().length() > 0) {

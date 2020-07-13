@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.util.List;
 
@@ -267,7 +266,7 @@ public class SearchDirectionView extends ConstraintLayout implements
             textView.setText(mapwizeObject.getTranslation(language).getTitle());
         }
         else if (directionPoint instanceof MapwizeIndoorLocation) {
-            textView.setText(getResources().getString(R.string.current_location));
+            textView.setText(getResources().getString(R.string.mapwize_current_location));
         }
     }
 

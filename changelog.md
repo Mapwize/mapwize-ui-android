@@ -4,6 +4,7 @@
 
 - Refactoring code base
 - Allowing MapwizeUI to be instantiate as a View and a Fragment
+- Adding prefixes to xml resources to avoid conflicts
 
 ## 2.2.0
 

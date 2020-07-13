@@ -4,16 +4,16 @@
     <!-- Strings used by Mapwize Fragment. You can use them to translate the Fragment
     text or change them.
     Those values override the default strings value found in mapwizecomponent project-->
-    <string name="time_placeholder">%1$d min</string>
-    <string name="floor_placeholder">Floor %1$s</string>
-    <string name="search_in_placeholder">Search in %1$s…</string>
-    <string name="search_venue">Search a venue…</string>
-    <string name="loading_venue_placeholder">Loading %1$s…</string>
-    <string name="current_location">Current location</string>
-    <string name="choose_language">Choose your language</string>
-    <string name="choose_universe">Choose your universe</string>
-    <string name="direction">Direction</string>
-    <string name="information">Information</string>
-    <string name="starting_point">Starting point</string>
-    <string name="destination">Destination</string>
+    <string name="mapwize_time_placeholder">%1$d min</string>
+    <string name="mapwize_floor_placeholder">Floor %1$s</string>
+    <string name="mapwize_search_in_placeholder">Search in %1$s…</string>
+    <string name="mapwize_search_venue">Search a venue…</string>
+    <string name="mapwize_loading_venue_placeholder">Loading %1$s…</string>
+    <string name="mapwize_current_location">Current location</string>
+    <string name="mapwize_choose_language">Choose your language</string>
+    <string name="mapwize_choose_universe">Choose your universe</string>
+    <string name="mapwize_direction">Direction</string>
+    <string name="mapwize_information">Information</string>
+    <string name="mapwize_starting_point">Starting point</string>
+    <string name="mapwize_destination">Destination</string>
 </resources>
