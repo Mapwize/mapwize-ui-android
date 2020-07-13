@@ -152,7 +152,7 @@ public class BottomCardView extends CardView {
         }
         titleImageView.setVisibility(View.VISIBLE);
 
-        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
+        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.mapwize_ic_location_on_black_24dp));
 
         if (showInfoButton) {
             informationsButton.setVisibility(View.VISIBLE);
@@ -196,7 +196,7 @@ public class BottomCardView extends CardView {
         titleImageView.setVisibility(View.VISIBLE);
         detailsWebView.loadData("", null, null);
         detailsWebView.setVisibility(GONE);
-        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_on_black_24dp));
+        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.mapwize_ic_location_on_black_24dp));
 
         informationsButton.setVisibility(View.INVISIBLE);
         //detailsWebView.setVisibility(View.INVISIBLE);
@@ -265,7 +265,7 @@ public class BottomCardView extends CardView {
             informationsButton.setVisibility(View.GONE);
         }
 
-        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.ic_menu_black_24dp));
+        titleImageView.setImageDrawable(getContext().getDrawable(R.drawable.mapwize_ic_menu_black_24dp));
 
         if (translation.getDetails() != null && translation.getDetails().length() > 0) {
             hasDetails = true;
@@ -311,7 +311,7 @@ public class BottomCardView extends CardView {
         directionLoadingLayout.setVisibility(View.GONE);
         directionNotFoundLayout.setVisibility(View.GONE);
         long time = Math.round(direction.getTraveltime() / 60);
-        String timPlaceHolder = getResources().getString(R.string.time_placeholder);
+        String timPlaceHolder = getResources().getString(R.string.mapwize_time_placeholder);
         directionTimeTextView.setText(String.format(timPlaceHolder,time));
         directionDistanceTextView.setText(UnitLocale.distanceAsString(direction.getDistance()));
         setVisibility(View.VISIBLE);
@@ -328,7 +328,7 @@ public class BottomCardView extends CardView {
             directionLoadingLayout.setVisibility(View.GONE);
             directionNotFoundLayout.setVisibility(View.GONE);
             long time = Math.round(navigationInfo.getDuration() / 60);
-            String timPlaceHolder = getResources().getString(R.string.time_placeholder);
+            String timPlaceHolder = getResources().getString(R.string.mapwize_time_placeholder);
             directionTimeTextView.setText(String.format(timPlaceHolder,time));
             directionDistanceTextView.setText(UnitLocale.distanceAsString(navigationInfo.getDistance()));
             setVisibility(View.VISIBLE);

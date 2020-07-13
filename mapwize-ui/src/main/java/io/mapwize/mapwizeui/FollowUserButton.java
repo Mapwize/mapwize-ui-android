@@ -7,9 +7,7 @@ import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatImageButton;
 
-import io.mapwize.mapwizeui.R;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
-import io.mapwize.mapwizesdk.map.MapwizeMap;
 
 /**
  * Follow user button allows user to change the follow user mode
@@ -17,8 +15,8 @@ import io.mapwize.mapwizesdk.map.MapwizeMap;
 public class FollowUserButton extends AppCompatImageButton {
 
     private FollowUserButtonListener listener;
-    private int followImageResource = R.drawable.ic_my_location_black_24dp;
-    private int followHeadingImageResource = R.drawable.ic_explore_black_24dp;
+    private int followImageResource = R.drawable.mapwize_ic_my_location_black_24dp;
+    private int followHeadingImageResource = R.drawable.mapwize_ic_explore_black_24dp;
     private int defaultColor = Color.BLACK;
     private int activeColor = R.color.mapwize_main_color;
 

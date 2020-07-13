@@ -85,7 +85,7 @@
         android:layout_marginStart="16dp"
         android:padding="12dp"
         android:elevation="6dp"
-        android:src="@drawable/ic_language_black_24dp"
+        android:src="@drawable/mapwize_ic_language_black_24dp"
         android:background="@drawable/mapwize_circle_view"
         app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -101,7 +101,7 @@
         app:layout_goneMarginStart="16dp"
         android:padding="12dp"
         android:elevation="6dp"
-        android:src="@drawable/ic_apps_black_24dp"
+        android:src="@drawable/mapwize_ic_apps_black_24dp"
         android:background="@drawable/mapwize_circle_view"
         app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
         app:layout_constraintStart_toEndOf="@+id/mapwizeLanguagessButton"/>
@@ -134,7 +134,7 @@
         app:layout_constraintTop_toTopOf="@+id/headerFrameLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         android:elevation="4dp"
-        android:translationZ="10dp"
+        android:translationZ="8dp"
         app:cardPreventCornerOverlap="true"
         app:cardCornerRadius="8dp"
         app:layout_constraintVertical_bias="1.0"

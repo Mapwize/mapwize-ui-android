@@ -237,19 +237,19 @@ The fragment contains some strings that you may want to translate or change.
 You can override them in your `strings.xml` file.
 
 ```xml
-<string name="time_placeholder">%1$d min</string>
-<string name="floor_placeholder">Floor %1$s</string>
-<string name="search_in_placeholder">Search in %1$s…</string>
-<string name="search_venue">Search a venue…</string>
-<string name="loading_venue_placeholder">Loading %1$s…</string>
-<string name="current_location">Current location</string>
-<string name="no_result">No result found</string>
-<string name="choose_language">Choose your language</string>
-<string name="choose_universe">Choose your universe</string>
-<string name="direction">Direction</string>
-<string name="information">Information</string>
-<string name="starting_point">Starting point</string>
-<string name="destination">Destination</string>
+<string name="mapwize_time_placeholder">%1$d min</string>
+<string name="mapwize_floor_placeholder">Floor %1$s</string>
+<string name="mapwize_search_in_placeholder">Search in %1$s…</string>
+<string name="mapwize_search_venue">Search a venue…</string>
+<string name="mapwize_loading_venue_placeholder">Loading %1$s…</string>
+<string name="mapwize_current_location">Current location</string>
+<string name="mapwize_no_result">No result found</string>
+<string name="mapwize_choose_language">Choose your language</string>
+<string name="mapwize_choose_universe">Choose your universe</string>
+<string name="mapwize_direction">Direction</string>
+<string name="mapwize_information">Information</string>
+<string name="mapwize_starting_point">Starting point</string>
+<string name="mapwize_destination">Destination</string>
 ```
 
 Be careful with strings containing placeholders. Please ensure that the exact placeholders are kept!

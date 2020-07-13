@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="mapwize-ui-android/app" />
       <module fileurl="file://$PROJECT_DIR$/../mapwize-sdk-android/mapwize-sdk/mapwize-sdk.iml" filepath="$PROJECT_DIR$/../mapwize-sdk-android/mapwize-sdk/mapwize-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/mapwize-ui/mapwize-ui.iml" filepath="$PROJECT_DIR$/mapwize-ui/mapwize-ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mapwize-ui-android.iml" filepath="$PROJECT_DIR$/mapwize-ui-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapwize-ui-android.iml" filepath="$PROJECT_DIR$/mapwize-ui-android.iml" group="mapwize-ui-android" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mapwize-ui/mapwize-ui-android-mapwize-ui.iml" filepath="$PROJECT_DIR$/.idea/modules/mapwize-ui/mapwize-ui-android-mapwize-ui.iml" group="mapwize-ui-android/mapwize-ui" />
     </modules>
   </component>
 </project>

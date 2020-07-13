@@ -6,14 +6,12 @@ import android.content.Context;
 import android.graphics.Color;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.media.Image;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -32,7 +30,7 @@ public class SearchBarView extends ConstraintLayout {
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
     private ProgressBar progressBar;
-    private boolean directionButtonHidden;
+    private boolean directionButtonHidden = true;
     private boolean menuHidden;
 
     public SearchBarView(Context context) {
@@ -101,14 +99,14 @@ public class SearchBarView extends ConstraintLayout {
     }
 
     public void showVenueTitleLoading(String title) {
-        String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
+        String loadingPlaceHolder = getResources().getString(R.string.mapwize_loading_venue_placeholder);
         searchEditText.setHint(String.format(loadingPlaceHolder, title));
         searchEditText.setEnabled(false);
         progressBar.setVisibility(VISIBLE);
     }
 
     public void showVenueTitle(String title) {
-        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
+        String searchPlaceHolder = getResources().getString(R.string.mapwize_search_in_placeholder);
         searchEditText.setHint(String.format(searchPlaceHolder, title));
         searchEditText.setEnabled(true);
         rightImageView.setVisibility(View.VISIBLE);
@@ -196,18 +194,18 @@ public class SearchBarView extends ConstraintLayout {
     }
 
     public void showOutOfVenue() {
-        searchEditText.setHint(getResources().getString(R.string.search_venue));
+        searchEditText.setHint(getResources().getString(R.string.mapwize_search_venue));
         rightImageView.setVisibility(GONE);
     }
 
     public void showVenueEntering(Venue venue, String language) {
-        String loadingPlaceHolder = getResources().getString(R.string.loading_venue_placeholder);
+        String loadingPlaceHolder = getResources().getString(R.string.mapwize_loading_venue_placeholder);
         searchEditText.setHint(String.format(loadingPlaceHolder, venue.getTranslation(language).getTitle()));
         searchEditText.setEnabled(false);
     }
 
     public void showVenueEntered(Venue venue, String language) {
-        String searchPlaceHolder = getResources().getString(R.string.search_in_placeholder);
+        String searchPlaceHolder = getResources().getString(R.string.mapwize_search_in_placeholder);
         searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
         searchEditText.setEnabled(true);
         rightImageView.setVisibility(View.VISIBLE);
