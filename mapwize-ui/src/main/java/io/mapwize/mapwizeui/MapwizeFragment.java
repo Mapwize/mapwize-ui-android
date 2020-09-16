@@ -161,6 +161,15 @@ public class MapwizeFragment extends Fragment {
         if (mapwizeConfiguration == null) {
             mapwizeConfiguration = MapwizeConfiguration.getInstance();
         }
+        if (mapwizeConfiguration.getContext() == null) {
+            if (getActivity() != null && getActivity().getApplicationContext() != null) {
+                mapwizeConfiguration = new MapwizeConfiguration.Builder(getActivity().getApplicationContext(), mapwizeConfiguration.getApiKey())
+                        .build();
+            } else {
+                mapwizeConfiguration = new MapwizeConfiguration.Builder(getContext(), mapwizeConfiguration.getApiKey())
+                        .build();
+            }
+        }
     }
 
     @Override
