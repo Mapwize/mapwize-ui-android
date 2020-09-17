@@ -37,12 +37,16 @@ dependencies {
     implementation 'com.github.indoorlocation:manual-indoor-location-provider-android:1.0.0'
     implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
     implementation project(path: ':mapwize-ui')
-    implementation 'io.mapwize.sdk:mapwize-sdk:3.4.0'
-    /*implementation project(path: ':mapwize-sdk')
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
-    implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
-        transitive = true
-    }*/
+    if (local_sdk) {
+        implementation project(path: ':mapwize-sdk')
+        implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
+        implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
+            transitive = true
+        }
+    } else {
+        implementation ("io.mapwize.sdk:mapwize-sdk:$mapwize_sdk_version")
+    }
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

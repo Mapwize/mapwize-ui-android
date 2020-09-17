@@ -31,12 +31,15 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'io.mapwize.sdk:mapwize-sdk:3.4.0'
-    /*implementation project(path: ':mapwize-sdk')
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
-    implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
-        transitive = true
-    }*/
+    if (local_sdk) {
+        implementation project(path: ':mapwize-sdk')
+        implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
+        implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
+            transitive = true
+        }
+    } else {
+        implementation ("io.mapwize.sdk:mapwize-sdk:$mapwize_sdk_version")
+    }
     implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
 }
 
@@ -74,4 +77,9 @@ task javadoc(type: Javadoc) {
     options.links("https://docs.mapwize.io/developers/android/sdk/latest/javadoc/")
 
     exclude '**/R.java', '**/BuildConfig.java', '**/**.java.ejs', '**/**.html'
+}
+task printVersionName {
+    doLast {
+        println android.defaultConfig.versionName
+    }
 }
