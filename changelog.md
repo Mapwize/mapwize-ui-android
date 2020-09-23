@@ -1,5 +1,21 @@
 # UI Components Changelog
 
+## 2.3.3
+
+- Fixing SearchResultList showData objects are null for the first time
+- Updating sdk version to 3.4.2
+
+## 2.3.2
+
+- Updating the sdk to version 3.4.1.
+
+## 2.3.1
+
+- Fixing zTranslation on bottomCard
+- Fixing direction button is showing when getting back from venue search
+- Fixing mapwizeConfiguration.getContext() is null
+- Updating Mapwize sdk to version 3.4.0
+
 ## 2.3.0
 
 - Refactoring code base
