@@ -379,6 +379,18 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
+    public boolean onBackButtonPressed() {
+        if (state == UIState.SEARCH_FROM || state == UIState.SEARCH_TO || state == UIState.DIRECTION) {
+            onDirectionBackClick();
+            return true;
+        } else if (state == UIState.SEARCH) {
+            onSearchBackButtonClick();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onDirectionButtonClick() {
         fragment.showDirectionSearchBar();
         fragment.hideSearchBar();
@@ -493,6 +505,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             EventManager.getInstance().triggerOnContentSelect(place, this.universe, universe, lastQuery.length() == 0 ? Channel.MAIN_SEARCHES : Channel.SEARCH, lastQuery);
             fragment.hideSearch();
             selectPlace(place, universe);
+            state = UIState.DEFAULT;
         }
         if (state == UIState.SEARCH_FROM) {
             from = place;
@@ -524,6 +537,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         if (state == UIState.SEARCH) {
             fragment.hideSearch();
             mapwizeMap.centerOnVenue(venue, 300);
+            state = UIState.DEFAULT;
         }
     }
 
@@ -533,6 +547,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             EventManager.getInstance().triggerOnContentSelect(placelist, universe, universe, lastQuery.length() == 0 ? Channel.MAIN_SEARCHES : Channel.SEARCH, lastQuery);
             fragment.hideSearch();
             selectPlacelist(placelist);
+            state = UIState.DEFAULT;
         }
         if (state == UIState.SEARCH_TO) {
             to = placelist;

@@ -68,6 +68,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     // Component listener
     private OnViewInteractionListener listener;
+    private boolean infoVisible;
 
     public MapwizeUIView(Context context) {
         super(context);
@@ -202,26 +203,31 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
         bottomCardView.setContent(preview);
+        infoVisible = true;
     }
 
     @Override
     public void showPlaceInfoFromPreview(Place place, String language) {
         bottomCardView.setContentFromPreview(place, language, listener.shouldDisplayInformationButton(place));
+        infoVisible = true;
     }
 
     @Override
     public void showPlaceInfo(Place place, String language) {
         bottomCardView.setContent(place, language, listener.shouldDisplayInformationButton(place));
+        infoVisible = true;
     }
 
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
         bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
+        infoVisible = true;
     }
 
     @Override
     public void hideInfo() {
         bottomCardView.removeContent();
+        infoVisible = false;
     }
 
     @Override
@@ -664,6 +670,17 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         if (mapwizeView != null) {
             mapwizeView.onDestroy();
         }
+    }
+
+    public boolean backButtonClick() {
+        if (presenter.onBackButtonPressed()) {
+            return true;
+        }
+        if (infoVisible) {
+            hideInfo();
+            return true;
+        }
+        return false;
     }
 
     public interface OnViewInteractionListener {
