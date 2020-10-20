@@ -1,5 +1,9 @@
 # UI Components Changelog
 
+## 2.3.4
+
+- Updating sdk version to 3.4.3
+
 ## 2.3.3
 
 - Fixing SearchResultList showData objects are null for the first time
