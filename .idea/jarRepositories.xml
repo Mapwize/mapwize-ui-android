@@ -41,5 +41,10 @@
       <option name="name" value="MavenRepo" />
       <option name="url" value="https://repo.maven.apache.org/maven2/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="artifactory-maven-resolver" />
+      <option name="name" value="artifactory-maven-resolver" />
+      <option name="url" value="http://mz-artifactory.northeurope.cloudapp.azure.com/artifactory/jcenter" />
+    </remote-repository>
   </component>
 </project>

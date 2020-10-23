@@ -3,7 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.3.50'
     ext.mapwize_sdk_version = '3.4.3'
-    ext.local_sdk = false
+    ext.local_sdk = true
     repositories {
         google()
         jcenter()

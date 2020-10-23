@@ -33,6 +33,7 @@ import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 import io.mapwize.mapwizesdk.map.PreviewCallback;
+import io.mapwize.mapwizesdk.map.VenuePreview;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
 
@@ -41,6 +42,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener,
         MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener {
 
+
+    private String lastPlacePreviewId = "";
 
     private enum UIState {
         DEFAULT, SEARCH, SEARCH_FROM, SEARCH_TO, DIRECTION
@@ -286,10 +289,21 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             return;
         }
         if (clickEvent.getEventType() == ClickEvent.VENUE_CLICK) {
-            mapwizeMap.centerOnVenue(clickEvent.getVenuePreview(), 300);
+            VenuePreview venuePreview = clickEvent.getVenuePreview();
+            if (venuePreview != null) {
+                mapwizeMap.centerOnVenue(venuePreview, 300);
+            }
         }
         if (clickEvent.getEventType() == ClickEvent.PLACE_CLICK) {
-            selectPlace(clickEvent.getPlacePreview());
+            PlacePreview placePreview = clickEvent.getPlacePreview();
+            if (placePreview != null) {
+                String newId = placePreview.getId();
+                if (selectedContent == null || !lastPlacePreviewId.equals(newId)) {
+                    lastPlacePreviewId = placePreview.getId();
+                    selectPlace(placePreview);
+                }
+            }
+
         }
         if (clickEvent.getEventType() == ClickEvent.MAP_CLICK) {
             if (selectedContent != null) {
@@ -688,11 +702,26 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    private void unselectContent() {
+    @Override
+    public void unselectContent() {
         mapwizeMap.removeMarkers();
         mapwizeMap.removePromotedPlaces();
         selectedContent = null;
         fragment.hideInfo();
+    }
+
+    @Override
+    public String getFloor() {
+        if (mapwizeMap != null && mapwizeMap.getFloor() != null) {
+            return mapwizeMap.getFloor().getName();
+        }
+        return "";
+    }
+
+    @Override
+    public MapwizeMap getMapwizeMap() {
+
+        return mapwizeMap;
     }
 
     private void selectPlace(PlacePreview preview) {

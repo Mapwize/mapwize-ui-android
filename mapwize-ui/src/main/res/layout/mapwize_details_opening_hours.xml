@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/mapwize_details_just_ripple"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:paddingVertical="16dp">
+
+        <LinearLayout
+            android:id="@+id/openingHoursButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/rowIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/mapwize_details_ic_baseline_access_time_24"
+                app:tint="@color/mapwize_main_color" />
+
+            <TextView
+                android:id="@+id/rowLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="32dp"
+                android:text="Open - Closes 20:00"
+                android:textColor="@color/mapwize_details_row_text_color"
+                android:textSize="@dimen/mapwize_details_row_text_size" />
+
+            <ImageView
+                android:id="@+id/arrowDownOpeningHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/mapwize_details_ic_baseline_keyboard_arrow_down_24"
+                app:tint="@color/mapwize_main_color" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/daysRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#FFF"
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:itemCount="7"
+            tools:listitem="@layout/mapwize_details_day_recycler_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee" />
+</LinearLayout>

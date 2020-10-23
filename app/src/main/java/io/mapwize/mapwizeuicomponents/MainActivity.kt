@@ -15,6 +15,9 @@ import io.mapwize.mapwizeui.events.EventManager
 import io.mapwize.mapwizeui.events.OnEventListener
 import io.mapwize.mapwizeui.MapwizeFragment
 import io.mapwize.mapwizeui.MapwizeUIView
+import io.mapwize.mapwizeui.details.ButtonBig
+import io.mapwize.mapwizeui.details.ButtonSmall
+import io.mapwize.mapwizeui.details.Row
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListener, OnEventListener {
@@ -67,7 +70,6 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
             val il = IndoorLocation("manual", it.latLngFloor.latitude, it.latLngFloor.longitude, it.latLngFloor.floor, System.currentTimeMillis())
             provider!!.setIndoorLocation(il)
         }
-        Toast.makeText(this, "onFragmentReady", Toast.LENGTH_LONG).show()
     }
 
     override fun onInformationButtonClick(mapwizeObject: MapwizeObject?) {
@@ -79,7 +81,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
     }
 
     override fun shouldDisplayInformationButton(mapwizeObject: MapwizeObject?): Boolean {
-        return true
+        return mapwizeObject?.name?.startsWith("I")!!
     }
 
     override fun onContentSelect(place: Place,
@@ -96,6 +98,15 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
 
     override fun onContentSelect(placelist: Placelist, currentUniverse: Universe, searchResultUniverse: Universe, channel: Channel, searchQuery: String?) {
         Log.i("Debug", "" + placelist.name + " " + currentUniverse.name +  " " + channel + " " + searchQuery)
+    }
+
+    override fun onPlaceSelected(place: Place?, buttonBigs: MutableList<ButtonBig>?, rows: MutableList<Row>?, smallButtons: MutableList<ButtonSmall>?): Boolean {
+        smallButtons?.forEach {
+            if (it.buttonType == ButtonSmall.CALL_BUTTON) {
+//                it.setOnClickListener({ Toast.makeText(this, "Calling from Kotlin", Toast.LENGTH_SHORT).show() })
+            }
+        }
+        return true
     }
 
 }

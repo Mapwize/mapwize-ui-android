@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="mapwize-ui-android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/834790582/mapwize-sdk.iml" filepath="$PROJECT_DIR$/.idea/modules/834790582/mapwize-sdk.iml" group="mapwize-ui-android/mapwize-sdk" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/mapwize-ui/mapwize-ui.iml" filepath="$PROJECT_DIR$/.idea/modules/mapwize-ui/mapwize-ui.iml" group="mapwize-ui-android/mapwize-ui" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/mapwize-ui-android.iml" filepath="$PROJECT_DIR$/.idea/modules/mapwize-ui-android.iml" group="mapwize-ui-android" />
     </modules>

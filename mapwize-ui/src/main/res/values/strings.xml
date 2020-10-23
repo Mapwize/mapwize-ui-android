@@ -1,4 +1,6 @@
 <resources>
+    <string name="mapwize_api_key" translatable="false">Your Mapwize API Key goes here</string>
+    <string name="mapwize_server_url" translatable="false">https://api.mapwize.io/</string>
     <string name="mapwize_time_placeholder">%1$d min</string>
     <string name="mapwize_floor_placeholder">Floor %1$s</string>
     <string name="mapwize_search_in_placeholder">Search in %1$s…</string>
@@ -14,4 +16,26 @@
     <string name="mapwize_destination">Destination</string>
     <string name="mapwize_direction_not_found">No direction has been found</string>
     <string name="mapwize_display_content_error">Something went wrong. Make sure you are connected to any network and try again.</string>
+    <string name="mapwize_details_opens_today">opens at %1$s</string>
+    <string name="mapwize_details_closes_today">closes at %1$s</string>
+    <string name="mapwize_details_opens_tomorrow">opens tomorrow at %1$s</string>
+    <string name="mapwize_details_closes_tomorrow">closes tomorrow at %1$s</string>
+    <string name="mapwize_details_opens_weekday">opens %1$s at %2$s</string>
+    <string name="mapwize_details_closes_weekday">closes %1$s at %2$s</string>
+    <string name="mapwize_details_closes">closes</string>
+    <string name="mapwize_details_opens">opens</string>
+    <string name="mapwize_details_closed">Closed</string>
+    <string name="mapwize_details_open">Open</string>
+    <string name="mapwize_details_tomorrow">tomorrow</string>
+    <string name="mapwize_details_opening_soon">Opening soon</string>
+    <string name="mapwize_details_closing_soon">Closing soon</string>
+    <string name="mapwize_details_open24_7">Open 24/7</string>
+    <string name="mapwize_details_open24hours">Open 24 hours</string>
+    <string name="mapwize_details_midnight">Midnight</string>
+    <string name="mapwize_details_midday">Midday</string>
+    <string name="mapwize_details_call">Call</string>
+    <string name="mapwize_details_direction">Direction</string>
+    <string name="mapwize_details_website">Website</string>
+    <string name="mapwize_details_overview">Overview</string>
+    <string name="mapwize_details_details">Details</string>
 </resources>

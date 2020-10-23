@@ -3,4 +3,10 @@
     <style name="GreenText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#00FF00</item>
     </style>
+    <style name="tabStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
 </resources>
