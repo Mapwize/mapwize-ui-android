@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.github.indoorlocation:manual-indoor-location-provider-android:1.0.0'
     implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
     implementation project(path: ':mapwize-ui')
-    if (localProps.getProperty('local_sdk').toBoolean()) {
+    if (localProps.getProperty('local_sdk') != null && localProps.getProperty('local_sdk').toBoolean()) {
         implementation project(path: ':mapwize-sdk')
         implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
         implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar')
