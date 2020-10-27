@@ -27,7 +27,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
+Properties localProps = new Properties()
+localProps.load(new FileInputStream(new File('local.properties')))
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -37,12 +38,10 @@ dependencies {
     implementation 'com.github.indoorlocation:manual-indoor-location-provider-android:1.0.0'
     implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
     implementation project(path: ':mapwize-ui')
-    if (local_sdk) {
+    if (localProps.getProperty('local_sdk').toBoolean()) {
         implementation project(path: ':mapwize-sdk')
         implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'
-        implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar') {
-            transitive = true
-        }
+        implementation('com.mapbox.mapboxsdk:mapbox-android-services:2.2.9@aar')
     } else {
         implementation ("io.mapwize.sdk:mapwize-sdk:$mapwize_sdk_version")
     }
