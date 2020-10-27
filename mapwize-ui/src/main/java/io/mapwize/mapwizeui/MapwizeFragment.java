@@ -22,6 +22,7 @@ import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.MapOptions;
+import io.mapwize.mapwizeui.report.Report;
 
 public class MapwizeFragment extends Fragment {
 
@@ -37,6 +38,7 @@ public class MapwizeFragment extends Fragment {
     private MapwizeConfiguration mapwizeConfiguration;
 
     private MapwizeUIView mapwizeUIView;
+    private FrameLayout reportIssueViewContainer;
 
     /**
      * Create a instance of MapwizeUIView
@@ -184,7 +186,10 @@ public class MapwizeFragment extends Fragment {
         mapwizeUIView.setListener((MapwizeUIView.OnViewInteractionListener) view.getContext());
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapwizeUIView);
+        reportIssueViewContainer = view.findViewById(R.id.reportIssueViewContainer);
+        reportIssueViewContainer.addView(new Report(view.getContext()));
         mapwizeUIView.onCreate(savedInstanceState);
+        reportIssueViewContainer.setVisibility(View.VISIBLE);
         requireActivity().getOnBackPressedDispatcher().addCallback(this, mapwizeUIView.getOnBackPressedCallback());
     }
 
