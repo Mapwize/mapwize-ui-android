@@ -293,7 +293,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     private void showPlace(Place place, String language) {
         Translation translation = place.getTranslation(language);
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {//We post delayed it to wait for the bottom sheet animation
             String formatedPhoneNumber = PhoneNumberUtils.formatNumber(place.getPhone(), "fr");
             if (formatedPhoneNumber == null) {
                 formatedPhoneNumber = "";

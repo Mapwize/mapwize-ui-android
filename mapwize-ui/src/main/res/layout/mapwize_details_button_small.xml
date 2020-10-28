@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minHeight="40dp"
+    android:background="@drawable/mapwize_details_just_ripple_button"
     android:layout_marginHorizontal="8dp"
     android:orientation="vertical">
 

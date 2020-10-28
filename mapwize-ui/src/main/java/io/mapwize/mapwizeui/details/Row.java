@@ -36,13 +36,13 @@ public class Row extends LinearLayout {
 
     public Row(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initLayout(context, "03 59 08 32 30ic_baseline_call_24ic_baseline_call_24ic_baseline_call_24", R.drawable.mapwize_details_ic_baseline_call_24, true, OTHER, view -> {
+        initLayout(context, "Sample label", R.drawable.mapwize_details_ic_baseline_call_24, true, OTHER, view -> {
         });
     }
 
     public Row(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initLayout(context, "03 59 08 32 30ic_baseline_call_24ic_baselineic_baseline_call_24_call_24", R.drawable.mapwize_details_ic_baseline_call_24, true, OTHER, view -> {
+        initLayout(context, "Sample label", R.drawable.mapwize_details_ic_baseline_call_24, true, OTHER, view -> {
         });
     }
 
@@ -58,9 +58,7 @@ public class Row extends LinearLayout {
         this.iconId = iconId;
         rowLabel = findViewById(R.id.rowLabel);
         iconImageView = findViewById(R.id.rowIcon);
-        if (clickListener != null) {
-            setOnClickListener(clickListener);
-        }
+        setOnClickListener(clickListener);
         rowLabel.setText(label);
         iconImageView.setImageResource(iconId);
         setAvailability(available);
