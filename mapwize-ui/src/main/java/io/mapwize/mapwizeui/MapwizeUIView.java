@@ -422,10 +422,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                         @Override
                         public void onSuccess(@NonNull DistanceResponse object) {
                             List<DirectionPointWrapperAndDistance> list2 = object.getDistances();
-//                        List<DirectionPointWrapperAndDistance> listSorted = new ArrayList<>();
-//                        for (int i=0; i<5 && i< list2.size(); i++) {
-//                            listSorted.add(list2.get(i));
-//                        }
+                            Iterator<DirectionPointWrapperAndDistance> iterDistanceResponse = list2.iterator();
+                            while (iterDistanceResponse.hasNext()) {
+                                DirectionPointWrapperAndDistance directionPointWrapperAndDistance = iterDistanceResponse.next();
+                                if (directionPointWrapperAndDistance.getDistance() < 0) {
+                                    iterDistanceResponse.remove();
+                                }
+                            }
+
                             Collections.sort(list2, (o1, o2) -> (int) (o1.getTraveltime() - o2.getTraveltime()));
 
                             List<Map<String, Object>> distances = new ArrayList<>();
