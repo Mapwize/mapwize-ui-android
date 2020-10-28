@@ -154,6 +154,8 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
                 }
+                invalidate();
+                requestLayout();
             }
 
             float imageHeight(float x, float screenSize, float imageMaxHeight, float imageHeight) {
@@ -328,6 +330,8 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
         ) {
             this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
+        invalidate();
+        requestLayout();
     }
 
     public void setSubTitle(String subTitle) {
@@ -404,6 +408,8 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
         bottomSheetBehavior.setDraggable(false);
         placeListSelected = true;
         sheetContent.setDistancesVisibility(true);
+        invalidate();
+        requestLayout();
     }
 
     public void setSubTitleVisibility(boolean visible) {
@@ -421,6 +427,8 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
         setPhotos(photos);
         setOpeningLabel(openingHours);
         updateLayer(floor, photos, openingHours, phone, website, capacity, detailsReadyListener);
+        invalidate();
+        requestLayout();
     }
 
     private void setOpeningLabel(List<Map<String, Object>> openingHours) {
