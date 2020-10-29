@@ -2,610 +2,373 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#FFF"
-    android:orientation="vertical"
-    android:weightSum="1">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginStart="68dp"
-                android:columnCount="2"
-                android:gravity="center"
-                android:nestedScrollingEnabled="true"
-                android:padding="4dp"
-                android:paddingBottom="16dp"
-                android:useDefaultMargins="true">
-
-                <TextView
-                    android:id="@+id/mapwize_issue_issueType_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|fill"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/mapwize_details_ripple_button"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp"
-                    android:text="Edit Phone Number"
-                    android:textColor="#FFF"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_issueType_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|fill"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/mapwize_details_ripple_button_voided"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp"
-                    android:text="Suggest Opening hours"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_issueType_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|fill"
-                    android:background="@drawable/mapwize_details_ripple_button_voided"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp"
-                    android:text="Incident"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_issueType_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|fill"
-                    android:background="@drawable/mapwize_details_ripple_button_voided"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp"
-                    android:text="Place name is incorrect"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-            </GridLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="16dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_ownerIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_apartment_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_ownerLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:text="Euratechnologies"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="16dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_venueIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_domain_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_venueLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:text="Blanchemaille"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="16dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_placeIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_placeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Place Name"
-                    android:textColor="#777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp">
-
-                <EditText
-                    android:id="@+id/mapwize_issue_placeEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Mapwize"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <View
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-                    app:tint="@color/mapwize_main_color" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="16dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_userIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_person_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_userLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:text="Lakhdar Meftah"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="4dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_issueTypeIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_format_list_bulleted_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_issueTypeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Issue Type"
-                    android:textColor="#777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="4dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_statusIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_lock_open_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_statusLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Status"
-                    android:textColor="#777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="4dp"
-                android:paddingBottom="16dp">
-
-                <TextView
-                    android:id="@+id/mapwize_issue_status_openSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/mapwize_details_ripple_button"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:padding="8dp"
-                    android:text="Open"
-                    android:textColor="#FFF"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_status_closedSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="32dp"
-                    android:background="@drawable/mapwize_details_ripple_button_voided"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:padding="8dp"
-                    android:text="Closed"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <View
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-                    app:tint="@color/mapwize_main_color" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="4dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_priorityIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_priority_high_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_priorityLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Priority"
-                    android:textColor="#777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="4dp"
-                android:paddingBottom="16dp">
-
-                <TextView
-                    android:id="@+id/mapwize_issue_priority_lowSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/mapwize_details_ripple_button_voided"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:padding="8dp"
-                    android:text="Low"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_priority_mediumSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/mapwize_details_ripple_button"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:padding="8dp"
-                    android:text="Medium"
-                    android:textColor="#FFF"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_priority_highSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="32dp"
-                    android:background="@drawable/mapwize_details_ripple_button_voided"
-                    android:gravity="center"
-                    android:minWidth="72dp"
-                    android:padding="8dp"
-                    android:text="High"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <View
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-                    app:tint="@color/mapwize_main_color" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="16dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_summaryIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_details_ic_baseline_info_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_summaryLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Summary"
-                    android:textColor="#777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp">
-
-                <EditText
-                    android:id="@+id/mapwize_issue_summaryEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Phone number is missing"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <View
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-                    app:tint="@color/mapwize_main_color" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="16dp">
-
-                <ImageView
-                    android:id="@+id/mapwize_issue_descriptionIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_details_ic_baseline_info_24"
-                    app:tint="@color/mapwize_main_color" />
-
-                <TextView
-                    android:id="@+id/mapwize_issue_descriptionLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Description"
-                    android:textColor="#777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp">
-
-                <EditText
-                    android:id="@+id/mapwize_issue_descriptionEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="Here is the valid phone number\n +33 00 11 22 33\nPlease update it as soon as possible"
-                    android:textColor="@color/mapwize_details_row_text_color"
-                    android:textSize="@dimen/mapwize_details_row_text_size" />
-
-                <View
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-                    app:tint="@color/mapwize_main_color" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eee" />
-        </LinearLayout>
-    </ScrollView>
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="2dp"-->
-    <!--        android:background="#eee" />-->
+    android:weightSum="1"
+    android:orientation="vertical">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        android:focusable="false"
+        android:clickable="false"
+        >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp">
+
+        <ImageView
+            android:id="@+id/mapwize_issue_backIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_details_ic_baseline_arrow_back_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_titleLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Report an issue"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/mapwize_issue_sendIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/mapwize_issue_ic_baseline_send_24"
+            app:tint="@color/mapwize_main_color" />
+    </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+    <ScrollView
+        android:id="@+id/mapwize_reportScroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp">
+
+        <ImageView
+            android:id="@+id/mapwize_issue_venueIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_issue_ic_baseline_domain_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_venueLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:text="Blanchemaille"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingVertical="16dp"
-            android:weightSum="1">
+            android:paddingVertical="16dp">
 
             <ImageView
-                android:id="@+id/mapwize_issue_backIcon"
+                android:id="@+id/mapwize_issue_placeIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/mapwize_details_ic_baseline_arrow_back_24"
-                app:tint="@color/mapwize_main_color" />
-
-            <ImageView
-                android:id="@+id/mapwize_issue_sendIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/mapwize_issue_ic_baseline_send_24"
+                android:src="@drawable/mapwize_issue_ic_baseline_room_24"
                 app:tint="@color/mapwize_main_color" />
 
             <TextView
-                android:id="@+id/mapwize_issue_titleLabel"
-                android:layout_width="0dp"
+                android:id="@+id/mapwize_issue_placeLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Report an issue"
+                android:text="Mapwize"
                 android:textColor="@color/mapwize_details_row_text_color"
-                android:textSize="18sp" />
+                android:textSize="@dimen/mapwize_details_row_text_size" />
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eee" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp">
+
+        <ImageView
+            android:id="@+id/mapwize_issue_userIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_issue_ic_baseline_person_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_userLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:text="Lakhdar Meftah"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:id="@+id/mapwize_issue_issueTypeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_issue_ic_baseline_format_list_bulleted_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_issueTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Issue Type"
+            android:textColor="#777"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:padding="4dp"
+        android:nestedScrollingEnabled="true"
+        android:columnCount="2"
+        android:gravity="center"
+        android:useDefaultMargins="true"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/mapwize_issue_issueType_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="72dp"
+            android:gravity="center"
+            android:layout_gravity="start|fill"
+            android:layout_marginEnd="8dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp"
+            android:text="Propreté"
+            android:textColor="#FFF"
+            android:background="@drawable/mapwize_details_ripple_button"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_issueType_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="72dp"
+            android:gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="start|fill"
+            android:text="Problème"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:background="@drawable/mapwize_details_ripple_button_voided"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+        <TextView
+            android:id="@+id/mapwize_issue_issueType_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="72dp"
+            android:gravity="center"
+            android:text="Information Erronée"
+            android:layout_gravity="start|fill"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:background="@drawable/mapwize_details_ripple_button_voided"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+<!--        <TextView-->
+<!--            android:id="@+id/mapwize_issue_issueType_4"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:minWidth="72dp"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Place name is incorrect"-->
+<!--            android:layout_gravity="start|fill"-->
+<!--            android:paddingVertical="8dp"-->
+<!--            android:paddingHorizontal="16dp"-->
+<!--            android:textColor="@color/mapwize_details_row_text_color"-->
+<!--            android:background="@drawable/mapwize_details_ripple_button_voided"-->
+<!--            android:textSize="@dimen/mapwize_details_row_text_size" />-->
+    </GridLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:id="@+id/mapwize_issue_summaryIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_details_ic_baseline_info_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_summaryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Summary"
+            android:textColor="#777"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_issue_ic_baseline_room_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <EditText
+            android:id="@+id/mapwize_issue_summaryEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Phone number is missing"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:id="@+id/mapwize_issue_descriptionIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_details_ic_baseline_info_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_descriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Description"
+            android:textColor="#777"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/mapwize_issue_ic_baseline_room_24"
+            app:tint="@color/mapwize_main_color" />
+
+        <EditText
+            android:id="@+id/mapwize_issue_descriptionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Here is the valid phone number\n +33 00 11 22 33\nPlease update it as soon as possible"
+            android:textColor="@color/mapwize_details_row_text_color"
+            android:textSize="@dimen/mapwize_details_row_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#FFF" />
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

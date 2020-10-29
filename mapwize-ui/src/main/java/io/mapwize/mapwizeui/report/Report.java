@@ -2,6 +2,7 @@ package io.mapwize.mapwizeui.report;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -31,7 +32,7 @@ public class Report extends LinearLayout {
     void initLayout(final Context context) {
         inflate(context, R.layout.mapwize_report_issue, this);
         this.context = context;
-
+        EditText editText = findViewById(R.id.mapwize_issue_descriptionEditText);
     }
 
 }
