@@ -1,5 +1,10 @@
 # UI Components Changelog
 
+## 2.3.5
+
+- Fixing an issue to support Android 11.
+- Updating sdk version to 3.4.4
+
 ## 2.3.4
 
 - Updating sdk version to 3.4.3
