@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/mapwize_issue_issueType"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="72dp"
+    android:gravity="center"
+    android:layout_gravity="start|fill"
+    android:layout_marginEnd="8dp"
+    android:paddingVertical="8dp"
+    android:paddingHorizontal="16dp"
+    android:text="Propreté"
+    android:textColor="@color/mapwize_details_row_text_color"
+    android:background="@drawable/mapwize_details_ripple_button_voided"
+    android:textSize="@dimen/mapwize_details_row_text_size"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

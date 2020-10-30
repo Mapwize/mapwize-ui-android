@@ -180,6 +180,7 @@
             android:textSize="12sp" />
     </LinearLayout>
     <GridLayout
+        android:id="@+id/mapwize_issue_gridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="68dp"
@@ -190,48 +191,6 @@
         android:useDefaultMargins="true"
         android:paddingBottom="16dp">
 
-        <TextView
-            android:id="@+id/mapwize_issue_issueType_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="72dp"
-            android:gravity="center"
-            android:layout_gravity="start|fill"
-            android:layout_marginEnd="8dp"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="16dp"
-            android:text="Propreté"
-            android:textColor="#FFF"
-            android:background="@drawable/mapwize_details_ripple_button"
-            android:textSize="@dimen/mapwize_details_row_text_size" />
-
-        <TextView
-            android:id="@+id/mapwize_issue_issueType_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="72dp"
-            android:gravity="center"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="start|fill"
-            android:text="Problème"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="16dp"
-            android:textColor="@color/mapwize_details_row_text_color"
-            android:background="@drawable/mapwize_details_ripple_button_voided"
-            android:textSize="@dimen/mapwize_details_row_text_size" />
-        <TextView
-            android:id="@+id/mapwize_issue_issueType_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="72dp"
-            android:gravity="center"
-            android:text="Information Erronée"
-            android:layout_gravity="start|fill"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="16dp"
-            android:textColor="@color/mapwize_details_row_text_color"
-            android:background="@drawable/mapwize_details_ripple_button_voided"
-            android:textSize="@dimen/mapwize_details_row_text_size" />
 <!--        <TextView-->
 <!--            android:id="@+id/mapwize_issue_issueType_4"-->
 <!--            android:layout_width="wrap_content"-->

@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
+
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
@@ -38,7 +39,6 @@ public class MapwizeFragment extends Fragment {
     private MapwizeConfiguration mapwizeConfiguration;
 
     private MapwizeUIView mapwizeUIView;
-    private FrameLayout reportIssueViewContainer;
 
     /**
      * Create a instance of MapwizeUIView
@@ -186,10 +186,7 @@ public class MapwizeFragment extends Fragment {
         mapwizeUIView.setListener((MapwizeUIView.OnViewInteractionListener) view.getContext());
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapwizeUIView);
-        reportIssueViewContainer = view.findViewById(R.id.reportIssueViewContainer);
-        reportIssueViewContainer.addView(new Report(view.getContext()));
         mapwizeUIView.onCreate(savedInstanceState);
-        reportIssueViewContainer.setVisibility(View.VISIBLE);
         requireActivity().getOnBackPressedDispatcher().addCallback(this, mapwizeUIView.getOnBackPressedCallback());
     }
 

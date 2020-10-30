@@ -21,10 +21,12 @@ import java.util.TimeZone;
 import androidx.activity.OnBackPressedCallback;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.ApiFilter;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.PlaceDetails;
@@ -43,6 +45,7 @@ import io.mapwize.mapwizeui.details.ButtonBig;
 import io.mapwize.mapwizeui.details.ButtonSmall;
 import io.mapwize.mapwizeui.details.PlaceDetailsUI;
 import io.mapwize.mapwizeui.details.Row;
+import io.mapwize.mapwizeui.report.Report;
 
 public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
@@ -80,9 +83,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private FrameLayout headerLayout;
     private float marginBottom = 16;
     private float dp;
+    private FrameLayout reportIssueViewContainer;
 
     // Component listener
     private OnViewInteractionListener listener;
+    private Report report;
+
     private boolean infoVisible;
 
     public MapwizeUIView(Context context) {
@@ -148,6 +154,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         mainLayout = cv.findViewById(R.id.mapwizeFragmentLayout);
         headerLayout = cv.findViewById(R.id.headerFrameLayout);
         placeDetailsUI = cv.findViewById(R.id.placeDetails);
+
+        reportIssueViewContainer = cv.findViewById(R.id.reportIssueViewContainer);
+        report = new Report(getContext());
+        report.setVisibility(GONE);
+        reportIssueViewContainer.addView(report);
+
         dp = getResources().getDisplayMetrics().density;
         placeDetailsUI.setOnSlideListener((offset, halfExpandedOffset) -> {
             if (languagesButton != null && offset < halfExpandedOffset) {
@@ -432,6 +444,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                     }
                                 }
                             }
+                            ButtonSmall reportButton = new ButtonSmall(getContext(), "Report", R.drawable.ic_baseline_report_problem_24, false, ButtonSmall.OTHER, v -> {
+                                reportPlace(place, language);
+                            } );
+                            smallButtons.add(reportButton);
 
                             if (listener.shouldDisplayInformationButton(place)) {
                                 ButtonSmall buttonSmall = new ButtonSmall(
@@ -480,6 +496,23 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             placeDetailsUI.setLoading(false);
             floorControllerView.smoothScroll();
         }, 500);
+    }
+
+    private void reportPlace(Place place, String language) {
+        report.setVisibility(View.VISIBLE);
+        report.setPlaceName(place.getName());
+        ApiFilter apiFilter = new ApiFilter.Builder().organizationId("573ef6dd8aa2f00b002d4e39").build();
+        mapwizeMap.getMapwizeApi().getIssueTypes(apiFilter, new ApiCallback<List<IssueType>>() {
+            @Override
+            public void onSuccess(@NonNull List<IssueType> issuesList) {
+                new Handler(Looper.getMainLooper()).post(() -> report.setIssuesTypes(issuesList, language));
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                System.out.println("Failed");
+            }
+        });
     }
 
     @Override
