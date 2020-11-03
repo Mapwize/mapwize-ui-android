@@ -304,6 +304,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     public void onFollowUserModeButtonClick() {
+        if (mapwizeMap == null) {
+            return;
+        }
         if (mapwizeMap.getUserLocation() == null) {
             fragment.dispatchFollowUserModeWithoutLocation();
         }
