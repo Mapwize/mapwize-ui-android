@@ -424,6 +424,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onSearchBackButtonClick() {
         fragment.hideSearch();
+        state = UIState.DEFAULT;
     }
 
     @Override
