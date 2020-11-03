@@ -1,0 +1,17 @@
+<resources>
+    <string name="mapwize_time_placeholder">%1$d min</string>
+    <string name="mapwize_floor_placeholder">Stock %1$s</string>
+    <string name="mapwize_search_in_placeholder">In %1$s suchen…</string>
+    <string name="mapwize_search_venue">Einen Ort suchen…</string>
+    <string name="mapwize_loading_venue_placeholder">Laden %1$s…</string>
+    <string name="mapwize_current_location">Aktueller Standort</string>
+    <string name="mapwize_no_result">Kein Ergebnis</string>
+    <string name="mapwize_choose_language"> Wählen Sie Ihre Sprache</string>
+    <string name="mapwize_choose_universe">Wählen Sie Ihr Universum</string>
+    <string name="mapwize_direction">Richtung</string>
+    <string name="mapwize_information">Information</string>
+    <string name="mapwize_starting_point">Startpunkt</string>
+    <string name="mapwize_destination">Bestimmung</string>
+    <string name="mapwize_direction_not_found">Keine Richtung</string>
+    <string name="mapwize_display_content_error">Etwas ist schief gelaufen. Stellen Sie sicher, dass Sie mit einem Netzwerk verbunden sind, und versuchen Sie es erneut.</string>
+</resources>
