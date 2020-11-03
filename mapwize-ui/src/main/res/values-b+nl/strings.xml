@@ -1,0 +1,18 @@
+<resources>
+    <string name="mapwize_time_placeholder">%1$d min</string>
+    <string name="mapwize_floor_placeholder">Verdieping %1$s</string>
+    <string name="mapwize_search_in_placeholder">In %1$s zoeken…</string>
+    <string name="mapwize_search_venue">Een locatie zoeken…</string>
+    <string name="mapwize_loading_venue_placeholder">Laden %1$s…</string>
+    <string name="mapwize_current_location">Huidige Locatie</string>
+    <string name="mapwize_no_result">Geen Resultaat</string>
+    <string name="mapwize_choose_language">Selecteer een taal</string>
+    <string name="mapwize_choose_universe">Selecteer een universum</string>
+    <string name="mapwize_direction">Richting</string>
+    <string name="mapwize_information">Informatie</string>
+    <string name="mapwize_starting_point">Startpunt</string>
+    <string name="mapwize_destination">Bestemming</string>
+    <string name="mapwize_direction_not_found">Sorry! Geen richting gevonden.</string>
+    <string name="mapwize_display_content_error">Er is iets fout gegaan. Zorg ervoor dat u bent verbonden met een netwerk en probeer het opnieuw.</string>
+
+</resources>
