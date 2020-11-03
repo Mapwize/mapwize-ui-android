@@ -1,5 +1,12 @@
 # UI Components Changelog
 
+
+## 2.3.6
+
+- Fixing some issues
+- Adding translations for : `fr`, `de` and `nl` Locales
+- Managing back button press for the search and direction views
+
 ## 2.3.5
 
 - Fixing an issue to support Android 11.
@@ -16,7 +23,7 @@
 
 ## 2.3.2
 
-- Updating the sdk to version 3.4.1.
+- Updating the sdk to version 3.4.1
 
 ## 2.3.1
 
