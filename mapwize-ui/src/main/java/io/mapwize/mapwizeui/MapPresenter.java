@@ -614,8 +614,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         SearchParams.Builder builder = new SearchParams.Builder();
         builder.setQuery(query);
         builder.setObjectClass(new String[]{"place"});
-        builder.setVenueId(venue.getId());
-        builder.setUniverseId(universe.getId());
+        if (venue != null) {
+            builder.setVenueId(venue.getId());
+        }
+        if (universe != null) {
+            builder.setUniverseId(universe.getId());
+        }
         SearchParams params = builder.build();
         fragment.showSearchDirectionLoading();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
@@ -647,8 +651,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         SearchParams.Builder builder = new SearchParams.Builder();
         builder.setQuery(query);
         builder.setObjectClass(new String[]{"place", "placeList"});
-        builder.setVenueId(venue.getId());
-        builder.setUniverseId(universe.getId());
+        if (venue != null) {
+            builder.setVenueId(venue.getId());
+        }
+        if (universe != null) {
+            builder.setUniverseId(universe.getId());
+        }
         SearchParams params = builder.build();
         fragment.showSearchDirectionLoading();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
