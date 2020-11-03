@@ -180,7 +180,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     public void showUniversesSelector(List<Universe> universes) {
         universesButton.setUniverses(universes);
         universesButton.showIfNeeded();
-        universesButton.setListener(universe -> presenter.onUniverseClick(universe));
+        universesButton.setListener(universe -> {
+            searchBarView.showLoading();
+            presenter.onUniverseClick(universe);
+        });
     }
 
     @Override
@@ -232,6 +235,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     @Override
     public void hideVenueLoading() {
         searchResultList.hideLoading();
+        searchBarView.hideLoading();
     }
 
     @Override
