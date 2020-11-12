@@ -44,4 +44,5 @@ interface BasePresenter {
     String getFloor();
 
     MapwizeMap getMapwizeMap();
+    boolean onBackButtonPressed();
 }

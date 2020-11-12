@@ -318,6 +318,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     public void onFollowUserModeButtonClick() {
+        if (mapwizeMap == null) {
+            return;
+        }
         if (mapwizeMap.getUserLocation() == null) {
             fragment.dispatchFollowUserModeWithoutLocation();
         }
@@ -393,6 +396,18 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
+    public boolean onBackButtonPressed() {
+        if (state == UIState.SEARCH_FROM || state == UIState.SEARCH_TO || state == UIState.DIRECTION) {
+            onDirectionBackClick();
+            return true;
+        } else if (state == UIState.SEARCH) {
+            onSearchBackButtonClick();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onDirectionButtonClick() {
         fragment.showDirectionSearchBar();
         fragment.hideSearchBar();
@@ -423,6 +438,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onSearchBackButtonClick() {
         fragment.hideSearch();
+        state = UIState.DEFAULT;
     }
 
     @Override
@@ -507,6 +523,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             EventManager.getInstance().triggerOnContentSelect(place, this.universe, universe, lastQuery.length() == 0 ? Channel.MAIN_SEARCHES : Channel.SEARCH, lastQuery);
             fragment.hideSearch();
             selectPlace(place, universe);
+            state = UIState.DEFAULT;
         }
         if (state == UIState.SEARCH_FROM) {
             from = place;
@@ -538,6 +555,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         if (state == UIState.SEARCH) {
             fragment.hideSearch();
             mapwizeMap.centerOnVenue(venue, 300);
+            state = UIState.DEFAULT;
         }
     }
 
@@ -547,6 +565,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             EventManager.getInstance().triggerOnContentSelect(placelist, universe, universe, lastQuery.length() == 0 ? Channel.MAIN_SEARCHES : Channel.SEARCH, lastQuery);
             fragment.hideSearch();
             selectPlacelist(placelist);
+            state = UIState.DEFAULT;
         }
         if (state == UIState.SEARCH_TO) {
             to = placelist;
@@ -625,8 +644,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         SearchParams.Builder builder = new SearchParams.Builder();
         builder.setQuery(query);
         builder.setObjectClass(new String[]{"place"});
-        builder.setVenueId(venue.getId());
-        builder.setUniverseId(universe.getId());
+        if (venue != null) {
+            builder.setVenueId(venue.getId());
+        }
+        if (universe != null) {
+            builder.setUniverseId(universe.getId());
+        }
         SearchParams params = builder.build();
         fragment.showSearchDirectionLoading();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {
@@ -658,8 +681,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         SearchParams.Builder builder = new SearchParams.Builder();
         builder.setQuery(query);
         builder.setObjectClass(new String[]{"place", "placeList"});
-        builder.setVenueId(venue.getId());
-        builder.setUniverseId(universe.getId());
+        if (venue != null) {
+            builder.setVenueId(venue.getId());
+        }
+        if (universe != null) {
+            builder.setUniverseId(universe.getId());
+        }
         SearchParams params = builder.build();
         fragment.showSearchDirectionLoading();
         api.search(params, new ApiCallback<List<MapwizeObject>>() {

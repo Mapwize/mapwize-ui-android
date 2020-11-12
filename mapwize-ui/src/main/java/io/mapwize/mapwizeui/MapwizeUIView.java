@@ -87,6 +87,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     // Component listener
     private OnViewInteractionListener listener;
+    private boolean infoVisible;
 
     public MapwizeUIView(Context context) {
         super(context);
@@ -132,7 +133,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         });
 
         bottomCardView = cv.findViewById(R.id.mapwizeBottomCardView);
-
         bottomCardView.setListener(this);
         floorControllerView = cv.findViewById(R.id.mapwizeFloorController);
         floorControllerView.setListener(this);
@@ -254,7 +254,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     public void showUniversesSelector(List<Universe> universes) {
         universesButton.setUniverses(universes);
         universesButton.showIfNeeded();
-        universesButton.setListener(universe -> presenter.onUniverseClick(universe));
+        universesButton.setListener(universe -> {
+            searchBarView.showLoading();
+            presenter.onUniverseClick(universe);
+        });
     }
 
     @Override
@@ -275,6 +278,8 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
+        //bottomCardView.setContent(preview);
+        infoVisible = true;
         placeDetails.show();
         placeDetails.setLoading(true);
         placeDetails.setTitle(preview.getTitle());
@@ -288,6 +293,8 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     @Override
     public void showPlaceInfoFromPreview(Place place, String language) {
+        //bottomCardView.setContentFromPreview(place, language, listener.shouldDisplayInformationButton(place));
+        infoVisible = true;
         showPlace(place, language);
     }
 
@@ -398,12 +405,16 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     @Override
     public void showPlaceInfo(Place place, String language) {
+        //bottomCardView.setContent(place, language, listener.shouldDisplayInformationButton(place));
+        infoVisible = true;
         placeDetails.show();
         showPlace(place, language);
     }
 
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
+        //bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
+        infoVisible = true;
         placeDetails.show();
         placeDetails.setLoading(true);
         placeDetails.setTitle(placelist.getTranslation(language).getTitle());
@@ -486,6 +497,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     public void hideInfo() {
         bottomCardView.removeContent();
         placeDetails.hide();
+        infoVisible = false;
     }
 
     @Override
@@ -496,6 +508,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     @Override
     public void hideVenueLoading() {
         searchResultList.hideLoading();
+        searchBarView.hideLoading();
     }
 
     @Override
@@ -813,12 +826,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
 
+
     /**
      * Set a direction on Mapwize UI will display the direction and the user interface
-     *
-     * @param direction     to display
-     * @param from          the starting point
-     * @param to            the destination point
+     * @param direction to display
+     * @param from the starting point
+     * @param to the destination point
      * @param directionMode used to find the direction
      */
     public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
@@ -827,9 +840,8 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     /**
      * Helper method to get access and refresh the UI
-     *
      * @param accesskey
-     * @param callback  called when the method is ended
+     * @param callback called when the method is ended
      */
     public void grantAccess(String accesskey, ApiCallback<Boolean> callback) {
         presenter.grantAccess(accesskey, callback);
@@ -929,6 +941,17 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         if (mapwizeView != null) {
             mapwizeView.onDestroy();
         }
+    }
+
+    public boolean backButtonClick() {
+        if (presenter.onBackButtonPressed()) {
+            return true;
+        }
+        if (infoVisible) {
+            hideInfo();
+            return true;
+        }
+        return false;
     }
 
     public interface OnViewInteractionListener {

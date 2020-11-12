@@ -1,0 +1,17 @@
+<resources>
+    <string name="mapwize_time_placeholder">%1$d min</string>
+    <string name="mapwize_floor_placeholder">Etage %1$s</string>
+    <string name="mapwize_search_in_placeholder">Rechercher dans %1$s…</string>
+    <string name="mapwize_search_venue">Rechercher un lieu…</string>
+    <string name="mapwize_loading_venue_placeholder">Chargement %1$s…</string>
+    <string name="mapwize_current_location">Position actuelle</string>
+    <string name="mapwize_no_result">Aucun résultat trouvé</string>
+    <string name="mapwize_choose_language">Choisissez votre language</string>
+    <string name="mapwize_choose_universe">Choisissez un universe</string>
+    <string name="mapwize_direction">Itinéraire</string>
+    <string name="mapwize_information">Informations</string>
+    <string name="mapwize_starting_point">Départ</string>
+    <string name="mapwize_destination">Destination</string>
+    <string name="mapwize_direction_not_found">Désolé ! Aucun chemin trouvé.</string>
+    <string name="mapwize_display_content_error">Un problème est survenu. Assurez-vous que vous êtes connecté à Internet et réessayez.</string>
+</resources>

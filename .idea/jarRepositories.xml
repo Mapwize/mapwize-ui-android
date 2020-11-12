@@ -46,5 +46,10 @@
       <option name="name" value="artifactory-maven-resolver" />
       <option name="url" value="http://mz-artifactory.northeurope.cloudapp.azure.com/artifactory/jcenter" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="MavenLocal" />
+      <option name="name" value="MavenLocal" />
+      <option name="url" value="file:$USER_HOME$/.m2/repository/" />
+    </remote-repository>
   </component>
 </project>
