@@ -122,7 +122,7 @@ public class SheetContent extends ConstraintLayout {
         }
     }
 
-    public void showPlacelist(List<Map<String, Object>> distances, PlaceDetails.DistanceItemClickListener distanceItemClickListener) {
+    public void showPlacelist(List<Map<String, Object>> distances, PlaceDetailsUI.DistanceItemClickListener distanceItemClickListener) {
         if (distanceAdapter != null) {
             smallButtonContainer.setVisibility(GONE);
             setOpeningLabelVisiblity(false);

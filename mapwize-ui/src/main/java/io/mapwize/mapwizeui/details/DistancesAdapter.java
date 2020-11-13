@@ -20,13 +20,13 @@ public class DistancesAdapter extends BaseAdapter {
 
     private List<Map<String, Object>> distances = new ArrayList<>();
     private Context context;
-    private PlaceDetails.DistanceItemClickListener distanceItemClickListener;
+    private PlaceDetailsUI.DistanceItemClickListener distanceItemClickListener;
 
     public DistancesAdapter(@NonNull Context context) {
         this.context = context;
     }
 
-    public void showPlacelist(List<Map<String, Object>> distances, PlaceDetails.DistanceItemClickListener distanceItemClickListener) {
+    public void showPlacelist(List<Map<String, Object>> distances, PlaceDetailsUI.DistanceItemClickListener distanceItemClickListener) {
         this.distanceItemClickListener = distanceItemClickListener;
         this.distances = distances;
         notifyDataSetChanged();

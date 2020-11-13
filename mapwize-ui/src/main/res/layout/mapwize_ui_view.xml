@@ -140,7 +140,7 @@
         app:layout_constraintVertical_bias="1.0"
         android:clickable="true"/>
 
-    <io.mapwize.mapwizeui.details.PlaceDetails
+    <io.mapwize.mapwizeui.details.PlaceDetailsUI
         android:id="@+id/placeDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -36,6 +36,8 @@
     <string name="mapwize_details_call">Call</string>
     <string name="mapwize_details_direction">Direction</string>
     <string name="mapwize_details_website">Website</string>
+    <string name="mapwize_details_share">Share</string>
     <string name="mapwize_details_overview">Overview</string>
     <string name="mapwize_details_details">Details</string>
+    <string name="share_place_text">Hello, please check %1$s on Mapwize Map</string>
 </resources>

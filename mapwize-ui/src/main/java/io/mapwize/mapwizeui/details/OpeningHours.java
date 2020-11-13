@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,24 +28,21 @@ public class OpeningHours extends Row {
     ImageView arrowDownOpeningHours;
     private RecyclerView recyclerView;
 
-    public OpeningHours(Context context, List<Map<String, Object>> openingHours, OnClickListener clickListener) {
-        super(context, getLabel(context, openingHours), R.drawable.mapwize_details_ic_baseline_access_time_24, openingHours != null && openingHours.size() != 0, OPENING_TIME_ROW, clickListener);
+    public OpeningHours(Context context, List<Map<String, Object>> openingHours, TimeInWeek timeInWeek, OnClickListener clickListener) {
+        super(context, getLabel(context, openingHours, timeInWeek), R.drawable.mapwize_details_ic_baseline_access_time_24, openingHours != null && openingHours.size() != 0, OPENING_TIME_ROW, clickListener);
         showOpeningHours(openingHours);
     }
 
-    static String getLabel(Context context, List<Map<String, Object>> openingHours) {
+    static String getLabel(Context context, List<Map<String, Object>> openingHours, TimeInWeek timeInWeek) {
         if (openingHours == null) {
             return "";
         }
         String label = "";
-        Calendar calendar = Calendar.getInstance();
-        int day = (calendar.get(Calendar.DAY_OF_WEEK) + 6) % 7;
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        boolean isOpen = OpeningHoursFormat.isOpen(openingHours, day, hour, minute);
+
+        boolean isOpen = OpeningHoursFormat.isOpen(openingHours, timeInWeek);
         Map<String, Object> closingOrOpening = isOpen ?
-                OpeningHoursFormat.closesAt(openingHours, day, hour, minute) :
-                OpeningHoursFormat.opensAt(openingHours, day, hour, minute);
+                OpeningHoursFormat.closesAt(openingHours, timeInWeek) :
+                OpeningHoursFormat.opensAt(openingHours, timeInWeek);
         if (closingOrOpening != null) {
             label = closingOrOpening.containsKey("soon") ?
                     (isOpen ? context.getString(R.string.mapwize_details_closing_soon) : context.getString(R.string.mapwize_details_opening_soon)) :
@@ -125,5 +124,84 @@ public class OpeningHours extends Row {
         } else {
             arrowDownOpeningHours.setVisibility(GONE);
         }
+    }
+
+    protected static class TimeInWeek {
+        private int day;
+        private int hour;
+        private int minute;
+
+        public TimeInWeek(int day, int hour, int minute) {
+            this.day = day;
+            this.hour = hour;
+            this.minute = minute;
+        }
+
+        public int getDay() {
+            return day;
+        }
+
+        public int getHour() {
+            return hour;
+        }
+
+        public int getMinute() {
+            return minute;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TimeInWeek that = (TimeInWeek) o;
+            return day == that.day &&
+                    hour == that.hour &&
+                    minute == that.minute;
+        }
+
+        @Override
+        public String toString() {
+            return "MinuteInWeek{" +
+                    "day=" + day +
+                    ", hour=" + hour +
+                    ", minute=" + minute +
+                    '}';
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(day, hour, minute);
+        }
+    }
+
+    protected static Calendar changeTimezoneOfDate(Date date, TimeZone fromTZ, TimeZone toTZ) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        long millis = calendar.getTimeInMillis();
+        long fromOffset = fromTZ.getOffset(millis);
+        long toOffset = toTZ.getOffset(millis);
+        long convertedTime = millis - (fromOffset - toOffset);
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(convertedTime);
+        return c;
+    }
+
+    protected static Date getDate(TimeInWeek minuteInWeek) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, (minuteInWeek.getDay() + 2 ) % 7 );
+        calendar.set(Calendar.HOUR_OF_DAY, minuteInWeek.getHour());
+        calendar.set(Calendar.MINUTE, minuteInWeek.getMinute());
+        return calendar.getTime();
+    }
+    protected static TimeInWeek getTimeInWeek(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return getTimeInWeek(calendar);
+    }
+    protected static TimeInWeek getTimeInWeek(Calendar calendar) {
+        int day = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        return new TimeInWeek(day, hour, minute);
     }
 }

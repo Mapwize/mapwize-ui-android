@@ -17,6 +17,7 @@ import io.mapwize.mapwizesdk.api.MapwizeApi;
 import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.PlaceDetails;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.SearchParams;
 import io.mapwize.mapwizesdk.api.Universe;
@@ -367,7 +368,18 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.centerOnPlace(place, 0);
         mapwizeMap.addMarker(place);
         mapwizeMap.addPromotedPlace(place);
-        fragment.showPlaceInfo(place, venueLanguage);
+
+        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>(){
+            @Override
+            public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                new Handler(Looper.getMainLooper()).post(
+                        ()-> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
+            }
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -760,18 +772,28 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         preview.getFullObjectAsync(new PreviewCallback<Place>() {
             @Override
             public void getObjectAsync(Place object) {
-                selectedContent = object;
-                fragment.showPlaceInfoFromPreview(object, venueLanguage);
-                EventManager.getInstance().triggerOnContentSelect(
-                        object, mapwizeMap.getUniverse(),
-                        mapwizeMap.getUniverse(),
-                        Channel.MAP_CLICK,
-                        null);
+                api.getPlaceDetails(object.getId(), new ApiCallback<PlaceDetails>(){
+                    @Override
+                    public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                        fragment.showPlaceInfoFromPreview(object, placeDetails, venueLanguage);
+                        selectedContent = object;
+                        EventManager.getInstance().triggerOnContentSelect(
+                                object, mapwizeMap.getUniverse(),
+                                mapwizeMap.getUniverse(),
+                                Channel.MAP_CLICK,
+                                null);
+                    }
+                    @Override
+                    public void onFailure(@NonNull Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+
             }
 
             @Override
             public void error(Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -789,7 +811,18 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
         mapwizeMap.addMarker(place);
         mapwizeMap.addPromotedPlace(place);
-        fragment.showPlaceInfo(place, venueLanguage);
+
+        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>(){
+            @Override
+            public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                new Handler(Looper.getMainLooper()).post(
+                        ()-> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
+            }
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void selectPlacelist(Placelist placelist) {

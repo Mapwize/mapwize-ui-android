@@ -39,10 +39,10 @@ public class OpeningHoursFormat {
         return timeOfWeek;
     }
 
-    static boolean isOpen(List<Map<String, Object>> daysMock, int day, int hour, int minute) {
+    static boolean isOpen(List<Map<String, Object>> daysMock,  OpeningHours.TimeInWeek timeInWeek) {
         List<Integer> openTimes = convertDaysToTimeOfWeek(daysMock, true);
         List<Integer> closeTimes = convertDaysToTimeOfWeek(daysMock, false);
-        int timeNow = getTimeOfWeek(day, hour, minute);
+        int timeNow = getTimeOfWeek(timeInWeek);
         int lastTimeOpen = -1;
         for (int time : openTimes) {
             if (time > timeNow) {
@@ -60,8 +60,9 @@ public class OpeningHoursFormat {
         return lastTimeOpen > lastTimeClose;
     }
 
-    static int getTimeOfWeek(int day, int hour, int minute) {
-        return day * 10000 + hour * 100 + minute;
+
+    static int getTimeOfWeek(OpeningHours.TimeInWeek timeInWeek) {
+        return timeInWeek.getDay() * 10000 + timeInWeek.getHour() * 100 + timeInWeek.getMinute();
     }
 
     @NonNull
@@ -73,12 +74,12 @@ public class OpeningHoursFormat {
     }
 
     @Nullable
-    static Map<String, Object> opensAt(List<Map<String, Object>> daysMock, int day, int hour, int minute) {
+    static Map<String, Object> opensAt(List<Map<String, Object>> daysMock, OpeningHours.TimeInWeek timeInWeek) {
         if (daysMock.size() < 1) {
             return null;
         }
         List<Integer> openTimes = convertDaysToTimeOfWeek(daysMock, true);
-        int timeNow = getTimeOfWeek(day, hour, minute);
+        int timeNow = getTimeOfWeek(timeInWeek);
         int nextOpenTime = -1;
         boolean breakNext = false;
         boolean broke = false;
@@ -98,11 +99,11 @@ public class OpeningHoursFormat {
         Map<String, Object> res = getMapFromTimeOfWeek(nextOpenTime, true);
 
         //Add: today
-        if ((int) res.get("day") == day) {
+        if ((int) res.get("day") == timeInWeek.getDay()) {
             res.put("today", true);
         }
         //Add: tomorrow
-        if ((int) res.get("day") == (day + 1) % 7) {
+        if ((int) res.get("day") == (timeInWeek.getDay() + 1) % 7) {
             res.put("tomorrow", true);
         }
         //Add: soon
@@ -113,13 +114,13 @@ public class OpeningHoursFormat {
     }
 
     @Nullable
-    static Map<String, Object> closesAt(List<Map<String, Object>> daysMock, int day, int hour, int minute) {
+    static Map<String, Object> closesAt(List<Map<String, Object>> daysMock, OpeningHours.TimeInWeek timeInWeek) {
         if (daysMock.size() < 1) {
             return null;
         }
         List<Integer> closeTimes = convertDaysToTimeOfWeek(daysMock, false);
         List<Integer> openTimes = convertDaysToTimeOfWeek(daysMock, true);
-        int timeNow = getTimeOfWeek(day, hour, minute);
+        int timeNow = getTimeOfWeek(timeInWeek);
         int nextCloseTime = -1;
         boolean breakNext = false;
         boolean broke = false;
@@ -155,11 +156,11 @@ public class OpeningHoursFormat {
         Map<String, Object> res = getMapFromTimeOfWeek(nextCloseTime, false);
 
         //Add: today
-        if ((int) res.get("day") == day) {
+        if ((int) res.get("day") == timeInWeek.getDay()) {
             res.put("today", true);
         }
         //Add: tomorrow
-        if ((int) res.get("day") == (day + 1) % 7) {
+        if ((int) res.get("day") == (timeInWeek.getDay() + 1) % 7) {
             res.put("tomorrow", true);
         }
         //Add: soon
@@ -168,4 +169,5 @@ public class OpeningHoursFormat {
         }
         return res;
     }
+
 }

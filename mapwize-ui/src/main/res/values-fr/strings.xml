@@ -19,6 +19,7 @@
     <string name="mapwize_details_call">Appeler</string>
     <string name="mapwize_details_direction">Direction</string>
     <string name="mapwize_details_website">Site Web</string>
+    <string name="mapwize_details_share">Partager</string>
     <string name="mapwize_details_overview">Aperçu</string>
     <string name="mapwize_details_details">Détails</string>
 </resources>

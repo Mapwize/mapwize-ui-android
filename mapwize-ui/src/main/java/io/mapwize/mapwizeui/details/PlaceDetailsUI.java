@@ -2,6 +2,8 @@ package io.mapwize.mapwizeui.details;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -16,8 +18,10 @@ import android.widget.TextView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +32,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.mapwize.mapwizeui.R;
 
-public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRequestListener, View.OnLayoutChangeListener {
+import static io.mapwize.mapwizeui.details.OpeningHours.changeTimezoneOfDate;
+
+public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.ScrollRequestListener, View.OnLayoutChangeListener {
 
     public static final float bigImageRatio = 0.3f;
     public static final float smallImageRatio = 0.15f;
@@ -54,17 +60,17 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
     private boolean placeListSelected = false;
     private CardView cardView;
 
-    public PlaceDetails(@NonNull Context context) {
+    public PlaceDetailsUI(@NonNull Context context) {
         super(context);
         initLayout(context);
     }
 
-    public PlaceDetails(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PlaceDetailsUI(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initLayout(context);
     }
 
-    public PlaceDetails(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public PlaceDetailsUI(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initLayout(context);
     }
@@ -420,23 +426,25 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
         this.detailsStateListener = detailsStateListener;
     }
 
-    public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, Integer capacity, DetailsReadyListener detailsReadyListener) {
+    public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, String sharingLink, String timezone, Integer capacity, DetailsReadyListener detailsReadyListener) {
         setTitle(title);
         setSubTitle(subTitle);
         setDetails(details);
         setPhotos(photos);
-        setOpeningLabel(openingHours);
-        updateLayer(floor, photos, openingHours, phone, website, capacity, detailsReadyListener);
+        setOpeningLabel(openingHours, timezone);
+        updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, capacity, detailsReadyListener);
         invalidate();
         requestLayout();
     }
 
-    private void setOpeningLabel(List<Map<String, Object>> openingHours) {
+    private void setOpeningLabel(List<Map<String, Object>> openingHours, String timezone) {
         if (openingHours == null || openingHours.size() < 1) {
             sheetContent.setOpeningLabelVisiblity(false);
             return;
         }
-        String label = OpeningHours.getLabel(context, openingHours);
+
+        Calendar calendar = changeTimezoneOfDate(Calendar.getInstance().getTime(), TimeZone.getDefault(), TimeZone.getTimeZone(timezone));
+        String label = OpeningHours.getLabel(context, openingHours, OpeningHours.getTimeInWeek(calendar));
 
         sheetContent.setPlaceOpeningLabel(label);
         sheetContent.setOpeningLabelVisiblity(true);
@@ -450,12 +458,14 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
         this.sheetContent.setSmallButtonsVisibility(visible);
     }
 
-    public void updateLayer(String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
+    public void updateLayer(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
 //        View.OnClickListener clickListener = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
         List<Row> rows = new ArrayList<>();
         Row floorRow = new Row(context, floor, R.drawable.mapwize_details_ic_baseline_menu_24, !floor.equals(""), Row.FLOOR_ROW, null);
         rows.add(floorRow);
-        Row openingHoursRow = new OpeningHours(context, openingHours, null);
+
+        Calendar calendar = changeTimezoneOfDate(Calendar.getInstance().getTime(), TimeZone.getDefault(), TimeZone.getTimeZone(timezone));
+        Row openingHoursRow = new OpeningHours(context, openingHours, OpeningHours.getTimeInWeek(calendar), null);
         rows.add(openingHoursRow);
         Row phoneRow = new Row(context, phone, R.drawable.mapwize_details_ic_baseline_call_24, !phone.equals(""), Row.PHONE_NUMBER_ROW, null);
         rows.add(phoneRow);
@@ -474,7 +484,21 @@ public class PlaceDetails extends ConstraintLayout implements SheetFull.ScrollRe
         bigButtons.add(directionButton);
         bigButtons.add(callButton);
         bigButtons.add(websiteButton);
+        if (!sharingLink.equals("")) {
+            ButtonBig sharingLinkButton = new ButtonBig(context, context.getString(R.string.mapwize_details_share), R.drawable.mapwize_details_ic_baseline_share_24, false, ButtonBig.SHARE_BUTTON, view-> {
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                String message = context.getString(R.string.share_place_text, name);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, message + " " + "https://maps.mapwize.io/#" + sharingLink);
 
+                sendIntent.putExtra(Intent.EXTRA_TITLE, "Share this Mapwize place");
+                sendIntent.setType("text/plain");
+                sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                Intent shareIntent = Intent.createChooser(sendIntent, "Mapwize share");
+                context.startActivity(shareIntent);
+            });
+            bigButtons.add(sharingLinkButton);
+        }
 
         List<ButtonSmall> buttonSmalls = new ArrayList<>();
         ButtonSmall directionSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);

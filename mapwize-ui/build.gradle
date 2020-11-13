@@ -49,6 +49,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    testOptions.unitTests.includeAndroidResources = true
+
 }
 Properties localProps = new Properties()
 try {
@@ -69,6 +71,10 @@ dependencies {
         implementation ("io.mapwize.sdk:mapwize-sdk:$mapwize_sdk_version")
     }
     implementation "com.github.IndoorLocation:indoor-location-android:1.0.5"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.robolectric:robolectric:4.3'
+    testImplementation 'androidx.test:core:1.0.0'
 }
 
 repositories {
