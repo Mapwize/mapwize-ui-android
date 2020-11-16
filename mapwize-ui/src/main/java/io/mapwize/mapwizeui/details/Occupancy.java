@@ -2,13 +2,24 @@ package io.mapwize.mapwizeui.details;
 
 import android.content.Context;
 
+import java.util.List;
+import java.util.Map;
+
 import androidx.annotation.NonNull;
 import io.mapwize.mapwizeui.R;
 
 
 public class Occupancy extends Row {
-    public Occupancy(@NonNull Context context, String label, int icon, boolean available, int rowType, OnClickListener clickListener) {
+
+    private final List<Map<String, Object>> events;
+    DayCalendar dayCalendar;
+
+    public Occupancy(@NonNull Context context, String label, List<Map<String, Object>> events, int icon, boolean available, int rowType, OnClickListener clickListener) {
         super(context, label, icon, available, rowType, clickListener);
+        this.events = events;
+        if (dayCalendar != null) {
+            dayCalendar.setEvents(events, available);
+        }
     }
 
     @Override
@@ -22,15 +33,12 @@ public class Occupancy extends Row {
         this.context = context;
         this.rowType = rowType;
         rowLabel = findViewById(R.id.rowLabel);
-        DayCalendar dayCalendar = findViewById(R.id.day_calendar);
+        dayCalendar = findViewById(R.id.day_calendar);
         iconImageView = findViewById(R.id.rowIcon);
         this.setOnClickListener(clickListener);
         rowLabel.setText(label);
         this.iconId = iconId;
         iconImageView.setImageResource(iconId);
         setAvailability(highlighted);
-        if (highlighted) {
-            dayCalendar.setVisibility(VISIBLE);
-        }
     }
 }

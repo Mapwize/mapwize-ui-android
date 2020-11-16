@@ -327,6 +327,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                     formattedWebsite,
                     placeDetails.getShareLink(),
                     timezone,
+                    placeDetails.getEvents(),
                     placeDetails.getCapacity(), new PlaceDetailsUI.DetailsReadyListener() {
                         @Override
                         public boolean onReady(List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {

@@ -426,13 +426,13 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         this.detailsStateListener = detailsStateListener;
     }
 
-    public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, String sharingLink, String timezone, Integer capacity, DetailsReadyListener detailsReadyListener) {
+    public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, String sharingLink, String timezone, List<Map<String, Object>> events, Integer capacity, DetailsReadyListener detailsReadyListener) {
         setTitle(title);
         setSubTitle(subTitle);
         setDetails(details);
         setPhotos(photos);
         setOpeningLabel(openingHours, timezone);
-        updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, capacity, detailsReadyListener);
+        updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
         invalidate();
         requestLayout();
     }
@@ -458,7 +458,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         this.sheetContent.setSmallButtonsVisibility(visible);
     }
 
-    public void updateLayer(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
+    public void updateLayer(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, List<Map<String, Object>> events, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
 //        View.OnClickListener clickListener = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
         List<Row> rows = new ArrayList<>();
         Row floorRow = new Row(context, floor, R.drawable.mapwize_details_ic_baseline_menu_24, !floor.equals(""), Row.FLOOR_ROW, null);
@@ -473,8 +473,8 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         rows.add(websiteRow);
         Row capacityRow = new Row(context, capacity != null ? capacity.toString() : "", R.drawable.mapwize_details_ic_baseline_people_24, capacity != null, Row.CAPACITY_ROW, null);
         rows.add(capacityRow);
-//        Row mapwize_details_occupancy = new Occupancy(context, "Currently occupied", R.drawable.mapwize_details_ic_baseline_calendar_today_24, false, Row.OCCUPANCY_ROW, clickListener);
-//        rows.add(mapwize_details_occupancy);
+        Row mapwize_details_occupancy = new Occupancy(context, "Currently occupied", events, R.drawable.mapwize_details_ic_baseline_calendar_today_24, events != null && events.size() > 0, Row.OCCUPANCY_ROW, null);
+        rows.add(mapwize_details_occupancy);
 
 //        LinearLayout.OnClickListener clickListener1 = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
         ButtonBig directionButton = new ButtonBig(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);

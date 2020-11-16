@@ -9,7 +9,13 @@ import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +26,10 @@ import static io.mapwize.mapwizeui.details.EventItem.hourUnit;
 
 
 public class DayCalendar extends ConstraintLayout {
-    private double currentHour = 0;
+    static SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     RelativeLayout eventsList;
+    private double currentHour = 0;
+    private Context context;
 
     public DayCalendar(@NonNull Context context) {
         super(context);
@@ -38,7 +46,95 @@ public class DayCalendar extends ConstraintLayout {
         initLayout(context);
     }
 
+    static List<Map<String, Object>> filterAndAdaptToToday(List<Map<String, Object>> events, Date now) {
+        List<Map<String, Object>> filteredEvents = new ArrayList<>();
+        Date startOfDay = atStartOfDay(now);
+        Date endOfDay = atEndOfDay(now);
+        for (Map<String, Object> event : events) {
+            Map<String, Object> adaptedEvent = adaptToday(event, startOfDay, endOfDay);
+            if (adaptedEvent != null) {
+                filteredEvents.add(adaptedEvent);
+            }
+        }
+        return filteredEvents;
+    }
+
+    static Map<String, Object> adaptToday(Map<String, Object> event, Date startOfDay, Date endOfDay) {
+        Date startDate = parseDate((String) event.get("start"));
+        Date endDate = parseDate((String) event.get("end"));
+        if (startDate == null || endDate == null) return event;
+        if (
+                startDate.compareTo(startOfDay) >= 0 &&
+                        startDate.compareTo(endOfDay) <= 0 &&
+                        endDate.compareTo(endOfDay) <= 0
+        ) {//Small Event
+            event.put("start", getMinuteInDay(startDate));
+            event.put("end", getMinuteInDay(endDate));
+            return event;
+        } else if (
+                startDate.compareTo(startOfDay) <= 0 &&
+                        endDate.compareTo(endOfDay) >= 0
+        ) {//Whole day
+            event.put("start", getMinuteInDay(startOfDay));
+            event.put("end", getMinuteInDay(endOfDay));
+            return event;
+        } else if (
+                startDate.compareTo(startOfDay) <= 0 &&
+                        endDate.compareTo(startOfDay) >= 0 &&
+                        endDate.compareTo(endOfDay) <= 0
+        ) {//multiple days left
+            event.put("start", getMinuteInDay(startOfDay));
+            event.put("end", getMinuteInDay(endDate));
+            return event;
+        } else if (
+                startDate.compareTo(startOfDay) >= 0 &&
+                        startDate.compareTo(endOfDay) <= 0 &&
+                        endDate.compareTo(endOfDay) >= 0
+        ) {//multiple days right
+            event.put("start", getMinuteInDay(startDate));
+            event.put("end", getMinuteInDay(endOfDay));
+            return event;
+        }
+        return null;
+    }
+
+    static Date atEndOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTime();
+    }
+
+    static Date atStartOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    static Date parseDate(String dateStr) {
+        try {
+            return parser.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    static int getMinuteInDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
+    }
+
     private void initLayout(Context context) {
+        this.context = context;
         View.inflate(getContext(), R.layout.mapwize_details_day_calendar, this);
         eventsList = findViewById(R.id.eventsList);
         final HorizontalScrollView horizontalScrollView = findViewById(R.id.hoursScrollView);
@@ -60,23 +156,28 @@ public class DayCalendar extends ConstraintLayout {
         marginLayoutParams.leftMargin = (int) ((currentHour * hourUnit) * dp);
         currentTimeBar.setLayoutParams(marginLayoutParams);
 
-        addEvents(context);
     }
 
-    private void addEvents(Context context) {
-        String[][] events = {
-                {"8", "9", "Waking up", "#EEFF22"},
-                {"11", "13", "Point Indoor Analytics", "#FFEE22"},
-                {"16", "18", "Point Design", "#EEFF22"},
-                {"19", "20", "Proof reading", "#FFEE22"},
-        };
-        for (String[] event : events) {
+    public void setEvents(List<Map<String, Object>> events, boolean available) {
+        setVisibility(available);
+        List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, Calendar.getInstance().getTime());
+        for (Map<String, Object> event : adaptedEvents) {
             EventItem eventItem = new EventItem(context,
-                    Float.parseFloat(event[0]),
-                    Float.parseFloat(event[1])
+                    (float) ((Integer) (event.get("start")) / 60.0),
+                    (float) ((Integer) (event.get("end")) / 60.0)
             );
             eventsList.addView(eventItem);
             eventItem.setMarginParams();
         }
+
     }
+
+    void setVisibility(boolean visible) {
+        if (visible) {
+            setVisibility(VISIBLE);
+        } else {
+            setVisibility(GONE);
+        }
+    }
+
 }
