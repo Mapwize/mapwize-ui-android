@@ -6,7 +6,7 @@
     android:background="@drawable/mapwize_details_just_ripple_button"
     android:minHeight="40dp"
     android:orientation="vertical"
-    android:paddingHorizontal="10dp"
+    android:paddingHorizontal="2dp"
     android:paddingVertical="4dp">
 
     <RelativeLayout
