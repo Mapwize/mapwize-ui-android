@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         Toast.makeText(applicationContext, "Menu click", Toast.LENGTH_LONG).show()
     }
 
+    private var homeFragment: HomeFragment? = null
     private var mapwizeFragment: MapwizeFragment? = null
     private var mapwizeMap: MapwizeMap? = null
     private var provider: ManualIndoorLocationProvider? = null
@@ -46,9 +47,11 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
                 .compassHidden(true)*/
                 .build()
         mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
+        homeFragment = HomeFragment(mapwizeFragment!!)
+
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
-        ft.add(fragmentContainer.id, mapwizeFragment!!)
+        ft.add(fragmentContainer.id, homeFragment!!)
         ft.commit()
 
         EventManager.configure(this)
