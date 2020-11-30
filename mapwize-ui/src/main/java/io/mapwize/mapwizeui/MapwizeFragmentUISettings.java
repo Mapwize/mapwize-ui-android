@@ -14,13 +14,15 @@ public class MapwizeFragmentUISettings implements Parcelable {
     private boolean floorControllerHidden;
     private boolean compassHidden;
     private boolean universesButtonHidden;
+    private boolean directionsQrCodeHidden;
 
-    private MapwizeFragmentUISettings(boolean menuButtonHidden, boolean followUserButtonHidden, boolean floorControllerHidden, boolean compassHidden, boolean universesButtonHidden) {
+    private MapwizeFragmentUISettings(boolean menuButtonHidden, boolean followUserButtonHidden, boolean floorControllerHidden, boolean compassHidden, boolean universesButtonHidden, boolean directionsQrCodeHidden) {
         this.menuButtonHidden = menuButtonHidden;
         this.followUserButtonHidden = followUserButtonHidden;
         this.floorControllerHidden = floorControllerHidden;
         this.compassHidden = compassHidden;
         this.universesButtonHidden = universesButtonHidden;
+        this.directionsQrCodeHidden = directionsQrCodeHidden;
     }
 
     public boolean isMenuButtonHidden() {
@@ -43,12 +45,17 @@ public class MapwizeFragmentUISettings implements Parcelable {
         return universesButtonHidden;
     }
 
+    public boolean isDirectionsQrCodeHidden() {
+        return directionsQrCodeHidden;
+    }
+
     private MapwizeFragmentUISettings(Parcel in) {
         menuButtonHidden = in.readByte() != 0;
         followUserButtonHidden = in.readByte() != 0;
         floorControllerHidden = in.readByte() != 0;
         compassHidden = in.readByte() != 0;
         universesButtonHidden = in.readByte() != 0;
+        directionsQrCodeHidden = in.readByte() != 0;
     }
 
     public static final Creator<MapwizeFragmentUISettings> CREATOR = new Creator<MapwizeFragmentUISettings>() {
@@ -75,6 +82,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
         dest.writeByte((byte) (floorControllerHidden ? 1 : 0));
         dest.writeByte((byte) (compassHidden ? 1 : 0));
         dest.writeByte((byte) (universesButtonHidden ? 1 : 0));
+        dest.writeByte((byte) (directionsQrCodeHidden ? 1 : 0));
     }
 
     @Override
@@ -85,6 +93,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
                 ", floorControllerHidden=" + floorControllerHidden +
                 ", compassHidden=" + compassHidden +
                 ", universesButtonHidden=" + universesButtonHidden +
+                ", directionsQrCodeHidden=" + directionsQrCodeHidden +
                 '}';
     }
 
@@ -95,6 +104,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
         private boolean floorControllerHidden;
         private boolean compassHidden;
         private boolean universesButtonHidden;
+        private boolean directionsQrCodeHidden;
 
         public Builder() {
             this.menuButtonHidden = false;
@@ -102,6 +112,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
             this.floorControllerHidden = false;
             this.compassHidden = false;
             this.universesButtonHidden = false;
+            this.directionsQrCodeHidden = false;
         }
 
         /**
@@ -155,11 +166,21 @@ public class MapwizeFragmentUISettings implements Parcelable {
         }
 
         /**
+         * Show/Hide the qr code button in the search bar
+         * @param isHidden true if you want to hide the qr code button in the search bar
+         * @return the builder
+         */
+        public Builder poiQrCodeButtonHidden(boolean isHidden) {
+            this.directionsQrCodeHidden = isHidden;
+            return this;
+        }
+
+        /**
          * Build the fragment UISettings
          * @return the MapwizeFragmentUISettings
          */
         public MapwizeFragmentUISettings build() {
-            return new MapwizeFragmentUISettings(this.menuButtonHidden, this.followUserButtonHidden, this.floorControllerHidden, this.compassHidden, this.universesButtonHidden);
+            return new MapwizeFragmentUISettings(this.menuButtonHidden, this.followUserButtonHidden, this.floorControllerHidden, this.compassHidden, this.universesButtonHidden, this.directionsQrCodeHidden);
         }
     }
 }

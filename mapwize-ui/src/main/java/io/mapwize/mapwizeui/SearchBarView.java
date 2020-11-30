@@ -27,10 +27,12 @@ public class SearchBarView extends ConstraintLayout {
     private ImageView leftImageView;
     private ImageView backImageView;
     private ImageView rightImageView;
+    private ImageView qRCodeImageView;
     private EditText searchEditText;
     private ConstraintLayout mainLayout;
     private ProgressBar progressBar;
     private boolean directionButtonHidden = true;
+    private boolean directionQrCodeButtonHidden = true;
     private boolean menuHidden;
 
     public SearchBarView(Context context) {
@@ -48,6 +50,12 @@ public class SearchBarView extends ConstraintLayout {
         initialize(context);
     }
 
+    public void search(String text) {
+        searchEditText.setText(text);
+        searchEditText.requestFocus();
+        listener.onSearchBarQueryChange(text);
+    }
+
     private void initialize(Context context) {
         inflate(context, R.layout.mapwize_search_bar, this);
         mainLayout = findViewById(R.id.mapwizeSearchMainLayout);
@@ -63,6 +71,10 @@ public class SearchBarView extends ConstraintLayout {
         rightImageView = findViewById(R.id.mapwizeSearchBarRightButton);
         rightImageView.setOnClickListener(v -> {
             listener.onSearchBarDirectionButtonClick();
+        });
+        qRCodeImageView = findViewById(R.id.mapwizeQrCodeRightButton);
+        qRCodeImageView.setOnClickListener(v -> {
+            listener.onSearchBarDirectionQrCodeButtonClick();
         });
         searchEditText = findViewById(R.id.mapwizeSearchBarEditText);
         searchEditText.setOnFocusChangeListener((v, hasFocus) -> {
@@ -110,12 +122,14 @@ public class SearchBarView extends ConstraintLayout {
         searchEditText.setHint(String.format(searchPlaceHolder, title));
         searchEditText.setEnabled(true);
         rightImageView.setVisibility(View.VISIBLE);
+        qRCodeImageView.setVisibility(directionQrCodeButtonHidden ? View.GONE : View.VISIBLE);
         progressBar.setVisibility(GONE);
     }
 
     public void setDirectionButtonHidden(boolean isHidden) {
         directionButtonHidden = isHidden;
         this.rightImageView.setVisibility(isHidden ? View.GONE : View.VISIBLE);
+        this.qRCodeImageView.setVisibility((directionQrCodeButtonHidden || isHidden) ? View.GONE : View.VISIBLE);
     }
 
     public void setListener(SearchBarListener listener) {
@@ -173,6 +187,7 @@ public class SearchBarView extends ConstraintLayout {
         this.setBackgroundColor(Color.argb(255, 238, 238, 238));
 //        this.setTranslationZ(2);
         this.rightImageView.setVisibility(View.GONE);
+        this.qRCodeImageView.setVisibility(View.GONE);
     }
 
     /**
@@ -191,11 +206,13 @@ public class SearchBarView extends ConstraintLayout {
         this.setBackgroundColor(Color.TRANSPARENT);
         this.setTranslationZ(0);
         this.rightImageView.setVisibility(directionButtonHidden ? View.GONE : View.VISIBLE);
+        this.qRCodeImageView.setVisibility((directionQrCodeButtonHidden || directionButtonHidden) ? View.GONE : View.VISIBLE);
     }
 
     public void showOutOfVenue() {
         searchEditText.setHint(getResources().getString(R.string.mapwize_search_venue));
         rightImageView.setVisibility(GONE);
+        qRCodeImageView.setVisibility(GONE);
     }
 
     public void showVenueEntering(Venue venue, String language) {
@@ -209,6 +226,7 @@ public class SearchBarView extends ConstraintLayout {
         searchEditText.setHint(String.format(searchPlaceHolder, venue.getTranslation(language).getTitle()));
         searchEditText.setEnabled(true);
         rightImageView.setVisibility(View.VISIBLE);
+        qRCodeImageView.setVisibility(directionQrCodeButtonHidden ? View.GONE : View.VISIBLE);
     }
 
     public void showLoading() {
@@ -231,11 +249,16 @@ public class SearchBarView extends ConstraintLayout {
         }
     }
 
+    public void setDirectionsQrCodeButtonHidden(boolean isHidden) {
+        this.directionQrCodeButtonHidden = isHidden;
+    }
+
     public interface SearchBarListener {
         void onSearchStart();
         void onSearchBarMenuClick();
         void onSearchBarQueryChange(String query);
         void onSearchBarDirectionButtonClick();
+        void onSearchBarDirectionQrCodeButtonClick();
         void onSearchBarBackButtonClick();
     }
 

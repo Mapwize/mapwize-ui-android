@@ -122,6 +122,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         searchBarView = cv.findViewById(R.id.mapwizeSearchBar);
         searchBarView.setListener(this);
         searchBarView.setMenuHidden(initializeUiSettings.isMenuButtonHidden());
+        searchBarView.setDirectionsQrCodeButtonHidden(initializeUiSettings.isDirectionsQrCodeHidden());
         searchResultList = cv.findViewById(R.id.mapwizeSearchResultList);
         searchResultList.setListener(this);
         searchDirectionView = cv.findViewById(R.id.mapwizeDirectionSearchBar);
@@ -470,6 +471,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
+    public void onSearchBarDirectionQrCodeButtonClick() {
+        listener.onDirectionsQrButtonClick();
+    }
+
+    @Override
     public void onSearchBarBackButtonClick() {
         presenter.onSearchBackButtonClick();
     }
@@ -709,6 +715,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
         default boolean shouldDisplayFloorController(List<Floor> floors) {
             return true;
+        }
+
+        default void onDirectionsQrButtonClick() {
+
         }
     }
 }
