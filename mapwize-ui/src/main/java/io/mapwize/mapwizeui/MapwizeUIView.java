@@ -436,6 +436,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
+    public void setSearchListLanguage(String language) {
+        searchResultList.setLanguage(language);
+    }
+
+    @Override
     public void showDirectionError() {
         bottomCardView.showDirectionError();
     }
