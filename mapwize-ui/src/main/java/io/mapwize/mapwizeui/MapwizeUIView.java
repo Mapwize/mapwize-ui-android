@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -35,7 +36,7 @@ import io.mapwize.mapwizesdk.map.PlacePreview;
 public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
         BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener,
-        FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener {
+        FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener, ClosestExitButton.ClosestExitButtonListener {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -62,6 +63,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private SearchResultList searchResultList;
     private SearchDirectionView searchDirectionView;
     private FollowUserButton followUserButton;
+    private ClosestExitButton closestExitButton;
     private CompassView compassView;
     private ConstraintLayout mainLayout;
     private FrameLayout headerLayout;
@@ -127,6 +129,9 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         searchResultList.setListener(this);
         searchDirectionView = cv.findViewById(R.id.mapwizeDirectionSearchBar);
         searchDirectionView.setListener(this);
+        closestExitButton = cv.findViewById(R.id.mapwizeClosestExitButton);
+        closestExitButton.setListener(this);
+        closestExitButton.setVisibility(initializeUiSettings.isClosestExitButtonHidden() ? View.GONE : View.VISIBLE);
         followUserButton = cv.findViewById(R.id.mapwizeFollowUserButton);
         followUserButton.setListener(this);
         followUserButton.setVisibility(initializeUiSettings.isFollowUserButtonHidden() ? View.GONE : View.VISIBLE);
@@ -697,6 +702,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         return false;
     }
 
+    @Override
+    public void onClosestSortieClick() {
+        listener.onClosestExitButtonClick();
+    }
+
     public interface OnViewInteractionListener {
         default void onMenuButtonClick() {
 
@@ -718,6 +728,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
 
         default void onDirectionsQrButtonClick() {
+
+        }
+
+        default void onClosestExitButtonClick() {
 
         }
     }

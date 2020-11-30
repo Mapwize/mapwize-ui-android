@@ -15,14 +15,16 @@ public class MapwizeFragmentUISettings implements Parcelable {
     private boolean compassHidden;
     private boolean universesButtonHidden;
     private boolean directionsQrCodeHidden;
+    private boolean closestExitButtonHidden;
 
-    private MapwizeFragmentUISettings(boolean menuButtonHidden, boolean followUserButtonHidden, boolean floorControllerHidden, boolean compassHidden, boolean universesButtonHidden, boolean directionsQrCodeHidden) {
+    private MapwizeFragmentUISettings(boolean menuButtonHidden, boolean followUserButtonHidden, boolean floorControllerHidden, boolean compassHidden, boolean universesButtonHidden, boolean directionsQrCodeHidden, boolean closestExitButtonHidden) {
         this.menuButtonHidden = menuButtonHidden;
         this.followUserButtonHidden = followUserButtonHidden;
         this.floorControllerHidden = floorControllerHidden;
         this.compassHidden = compassHidden;
         this.universesButtonHidden = universesButtonHidden;
         this.directionsQrCodeHidden = directionsQrCodeHidden;
+        this.closestExitButtonHidden = closestExitButtonHidden;
     }
 
     public boolean isMenuButtonHidden() {
@@ -49,6 +51,10 @@ public class MapwizeFragmentUISettings implements Parcelable {
         return directionsQrCodeHidden;
     }
 
+    public boolean isClosestExitButtonHidden() {
+        return closestExitButtonHidden;
+    }
+
     private MapwizeFragmentUISettings(Parcel in) {
         menuButtonHidden = in.readByte() != 0;
         followUserButtonHidden = in.readByte() != 0;
@@ -56,6 +62,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
         compassHidden = in.readByte() != 0;
         universesButtonHidden = in.readByte() != 0;
         directionsQrCodeHidden = in.readByte() != 0;
+        closestExitButtonHidden = in.readByte() != 0;
     }
 
     public static final Creator<MapwizeFragmentUISettings> CREATOR = new Creator<MapwizeFragmentUISettings>() {
@@ -83,6 +90,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
         dest.writeByte((byte) (compassHidden ? 1 : 0));
         dest.writeByte((byte) (universesButtonHidden ? 1 : 0));
         dest.writeByte((byte) (directionsQrCodeHidden ? 1 : 0));
+        dest.writeByte((byte) (closestExitButtonHidden ? 1 : 0));
     }
 
     @Override
@@ -94,6 +102,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
                 ", compassHidden=" + compassHidden +
                 ", universesButtonHidden=" + universesButtonHidden +
                 ", directionsQrCodeHidden=" + directionsQrCodeHidden +
+                ", closestExitButtonHidden=" + closestExitButtonHidden +
                 '}';
     }
 
@@ -105,6 +114,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
         private boolean compassHidden;
         private boolean universesButtonHidden;
         private boolean directionsQrCodeHidden;
+        private boolean closestExitButtonHidden;
 
         public Builder() {
             this.menuButtonHidden = false;
@@ -113,6 +123,7 @@ public class MapwizeFragmentUISettings implements Parcelable {
             this.compassHidden = false;
             this.universesButtonHidden = false;
             this.directionsQrCodeHidden = false;
+            this.closestExitButtonHidden = false;
         }
 
         /**
@@ -176,11 +187,23 @@ public class MapwizeFragmentUISettings implements Parcelable {
         }
 
         /**
+         * Show/Hide the closest exit button in the UI
+         * @param isHidden true if you want to hide the closest exit button in the UI
+         * @return the builder
+         */
+        public Builder closestExitButtonHidden(boolean isHidden) {
+            this.closestExitButtonHidden = isHidden;
+            return this;
+        }
+
+
+
+        /**
          * Build the fragment UISettings
          * @return the MapwizeFragmentUISettings
          */
         public MapwizeFragmentUISettings build() {
-            return new MapwizeFragmentUISettings(this.menuButtonHidden, this.followUserButtonHidden, this.floorControllerHidden, this.compassHidden, this.universesButtonHidden, this.directionsQrCodeHidden);
+            return new MapwizeFragmentUISettings(this.menuButtonHidden, this.followUserButtonHidden, this.floorControllerHidden, this.compassHidden, this.universesButtonHidden, this.directionsQrCodeHidden, this.closestExitButtonHidden);
         }
     }
 }

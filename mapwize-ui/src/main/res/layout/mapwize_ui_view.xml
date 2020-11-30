@@ -75,6 +75,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
+    <io.mapwize.mapwizeui.ClosestExitButton
+        android:id="@+id/mapwizeClosestExitButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:padding="12dp"
+        android:elevation="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
     <io.mapwize.mapwizeui.LanguagesButton
         android:id="@+id/mapwizeLanguagessButton"
         android:layout_width="52dp"
