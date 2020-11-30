@@ -251,6 +251,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onLanguageChange(@NonNull String language) {
         this.venueLanguage = language;
+        fragment.setSearchListLanguage(language);
     }
 
     @Override
