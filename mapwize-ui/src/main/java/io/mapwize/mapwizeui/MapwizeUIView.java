@@ -179,12 +179,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     @Override
     public void showUniversesSelector(List<Universe> universes) {
-        universesButton.setUniverses(universes);
-        universesButton.showIfNeeded();
-        universesButton.setListener(universe -> {
-            searchBarView.showLoading();
-            presenter.onUniverseClick(universe);
-        });
+        if(!initializeUiSettings.isUniversesButtonHidden()) {
+            universesButton.setUniverses(universes);
+            universesButton.showIfNeeded();
+            universesButton.setListener(universe -> {
+                searchBarView.showLoading();
+                presenter.onUniverseClick(universe);
+            });
+        }
     }
 
     @Override
@@ -324,7 +326,9 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     public void showVenueEntered(Venue venue, String language) {
         searchBarView.showVenueEntered(venue, language);
         languagesButton.showIfNeeded();
-        universesButton.showIfNeeded();
+        if(!initializeUiSettings.isUniversesButtonHidden()) {
+            universesButton.showIfNeeded();
+        }
     }
 
     public void showAccessibleFloors(List<Floor> floors) {

@@ -92,6 +92,7 @@
 
     <io.mapwize.mapwizeui.UniversesButton
         android:id="@+id/mapwizeUniversesButton"
+        android:visibility="gone"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginTop="4dp"
