@@ -38,6 +38,9 @@ import io.mapwize.mapwizesdk.map.PreviewCallback;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
 
+import static io.mapwize.mapwizesdk.map.MapwizeConstants.DEFAULT_DIRECTION_END_MARKER_NAME;
+import static io.mapwize.mapwizesdk.map.MapwizeConstants.DEFAULT_DIRECTION_START_MARKER_NAME;
+
 public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListener,
         MapwizeMap.OnVenueExitListener, MapwizeMap.OnUniverseChangeListener, MapwizeMap.OnFloorChangeListener,
         MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener,
@@ -791,32 +794,28 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.hideUniversesSelector();
         fragment.hideSearchResultsList();
 
-        MarkerOptions startMarkerOptions = null;
-        MarkerOptions endMarkerOptions = null;
+        MarkerOptions.Builder startMarkerOptionsBuilder = new MarkerOptions.Builder()
+                .iconName(DEFAULT_DIRECTION_START_MARKER_NAME);
+        MarkerOptions.Builder endMarkerOptionsBuilder = new MarkerOptions.Builder()
+                .iconName(DEFAULT_DIRECTION_END_MARKER_NAME);
 
         if (from instanceof Place) {
-            startMarkerOptions = new MarkerOptions.Builder().title(((Place) from).getTranslation(language).getTitle()).build();
+            startMarkerOptionsBuilder.title(((Place) from).getTranslation(language).getTitle());
         } else if (from instanceof PlacePreview) {
-            startMarkerOptions = new MarkerOptions.Builder().title(((PlacePreview) from).getTitle()).build();
+            startMarkerOptionsBuilder.title(((PlacePreview) from).getTitle());
         } else if (from instanceof Placelist) {
-            startMarkerOptions = new MarkerOptions.Builder()
-                    .title(((Placelist) from).getTranslation(language).getTitle())
-                    .build();
-        } else {
-            startMarkerOptions = new MarkerOptions.Builder().build();
+            startMarkerOptionsBuilder.title(((Placelist) from).getTranslation(language).getTitle());
         }
+        MarkerOptions startMarkerOptions = startMarkerOptionsBuilder.build();
 
         if (to instanceof Place) {
-            endMarkerOptions = new MarkerOptions.Builder().title(((Place) to).getTranslation(language).getTitle()).build();
+            endMarkerOptionsBuilder.title(((Place) to).getTranslation(language).getTitle());
         } else if (to instanceof PlacePreview) {
-            endMarkerOptions = new MarkerOptions.Builder().title(((PlacePreview) to).getTitle()).build();
+            endMarkerOptionsBuilder.title(((PlacePreview) to).getTitle());
         } else if (to instanceof Placelist) {
-            endMarkerOptions = new MarkerOptions.Builder()
-                    .title(((Placelist) to).getTranslation(language).getTitle())
-                    .build();
-        } else {
-            endMarkerOptions = new MarkerOptions.Builder().build();
+            endMarkerOptionsBuilder.title(((Placelist) to).getTranslation(language).getTitle());
         }
+        MarkerOptions endMarkerOptions = endMarkerOptionsBuilder.build();
 
         if (from instanceof MapwizeIndoorLocation) {
             fragment.showDirectionLoading();
