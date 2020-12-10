@@ -1,6 +1,10 @@
 # UI Components Changelog
 
 
+## 2.3.8-beta1
+
+- Updating sdk version to 3.5.0-beta1
+
 ## 2.3.7
 
 - Updating sdk version to 3.4.5
