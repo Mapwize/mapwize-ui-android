@@ -38,7 +38,7 @@ public class MapwizeFragment extends Fragment {
     private Place initializePlace = null;
     private MapwizeConfiguration mapwizeConfiguration;
 
-    private MapwizeUIView mapwizeUIView;
+    public MapwizeUIView mapwizeUIView;
 
     /**
      * Create a instance of MapwizeUIView
