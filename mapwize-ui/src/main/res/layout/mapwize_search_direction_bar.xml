@@ -48,8 +48,7 @@
                 android:id="@+id/mapwizeFromPicto"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/mapwize_ic_adjust_black_24dp"
-                android:tint="#000"
+                android:src="@drawable/mapwize_direction_start_white"
                 app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
                 app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionFromEditText"
                 app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditText"/>
@@ -58,8 +57,7 @@
                 android:id="@+id/mapwizeToPicto"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/mapwize_ic_location_on_black_24dp"
-                android:tint="#000"
+                android:src="@drawable/mapwize_direction_end_white"
                 app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
                 app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionToEditText"
                 app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionToEditText"/>
