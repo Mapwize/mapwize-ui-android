@@ -1,5 +1,8 @@
 # UI Components Changelog
 
+## 2.3.8
+
+- Fixing FloorController scroll to visible floor
 
 ## 2.3.7
 
