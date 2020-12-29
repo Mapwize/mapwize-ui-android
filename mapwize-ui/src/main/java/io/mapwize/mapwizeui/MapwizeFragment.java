@@ -41,7 +41,7 @@ public class MapwizeFragment extends Fragment implements MapwizeFragmentDirectio
     private Place initializePlace = null;
     private MapwizeConfiguration mapwizeConfiguration;
 
-    public MapwizeUIView mapwizeUIView;
+    private MapwizeUIView mapwizeUIView;
 
     /**
      * Create a instance of MapwizeUIView
@@ -380,24 +380,22 @@ public class MapwizeFragment extends Fragment implements MapwizeFragmentDirectio
     @Nullable
     @Override
     public MapwizeIndoorLocation getUserLocation() {
-        return mapwizeUIView.mapwizeMap.getUserLocation();
+        return mapwizeUIView.getUserLocation();
     }
 
     @NonNull
     @Override
     public List<DirectionMode> getDirectionModes() {
-        return mapwizeUIView.mapwizeMap.getDirectionModes();
+        return mapwizeUIView.getDirectionModes();
     }
 
     @Override
     public void setDirection(Direction direction) {
-        mapwizeUIView.mapwizeMap.setDirection(direction);
+        mapwizeUIView.setDirection(direction);
     }
 
     @Override
     public void quitDirections() {
-        mapwizeUIView.mapwizeMap.removeDirection();
-        mapwizeUIView.mapwizeMap.stopNavigation();
-        mapwizeUIView.mapwizeMap.removeMarkers();
+        mapwizeUIView.quitDirections();
     }
 }

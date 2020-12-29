@@ -52,11 +52,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private Place initializePlace = null;
 
     // Component map & mapwize
-    public MapwizeMap mapwizeMap;
+    private MapwizeMap mapwizeMap;
     private MapwizeView mapwizeView;
     private MapwizeConfiguration mapwizeConfiguration;
 
-    public BasePresenter presenter;
+    private BasePresenter presenter;
 
     private BottomCardView bottomCardView;
     private FloorControllerView floorControllerView;

@@ -67,12 +67,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     private List<Universe> universes;
     private String venueLanguage;
     private List<String> venueLanguages;
-    public DirectionMode directionMode;
-    public List<DirectionMode> directionModes;
+    private DirectionMode directionMode;
+    private List<DirectionMode> directionModes;
     private List<? extends MapwizeObject> mainFroms = new ArrayList<>();
     private List<? extends MapwizeObject> mainSearches = new ArrayList<>();
-    public DirectionPoint from;
-    public DirectionPoint to;
+    private DirectionPoint from;
+    private DirectionPoint to;
     private Direction direction;
 
     private List<MapwizeObject> preloadedSearchResults;
@@ -878,7 +878,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    public void requestDirectionFrom() {
+    void requestDirectionFrom() {
         state = UIState.SEARCH_FROM;
         fragment.hideSwapButton();
         fragment.showSearchResultsList();
@@ -888,7 +888,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showSearchDirectionFrom();
     }
 
-    public void requestDirectionTo() {
+    void requestDirectionTo() {
         state = UIState.SEARCH_TO;
         fragment.hideSwapButton();
         fragment.hideCurrentLocationInResult();
@@ -896,19 +896,19 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showSearchDirectionTo();
     }
 
-    public void validateDirectionFrom(DirectionPoint point) {
+    void validateDirectionFrom(DirectionPoint point) {
         from = point;
         fragment.showSelectedDirectionFrom(point, venueLanguage);
         tryToStartDirection();
     }
 
-    public void validateDirectionTo(DirectionPoint point) {
+    void validateDirectionTo(DirectionPoint point) {
         to = point;
         fragment.showSelectedDirectionTo(point, venueLanguage);
         tryToStartDirection();
     }
 
-    public void validateDirectionMode(DirectionMode mode) {
+    void validateDirectionMode(DirectionMode mode) {
         directionMode = mode;
         fragment.showSelectedDirectionMode(mode);
         tryToStartDirection();
