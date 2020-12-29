@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
@@ -28,6 +30,7 @@ import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
+import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
@@ -36,7 +39,7 @@ import io.mapwize.mapwizesdk.map.PlacePreview;
 public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
         BottomCardView.BottomCardListener, SearchDirectionView.SearchDirectionListener,
-        FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener, ClosestExitButton.ClosestExitButtonListener {
+        FollowUserButton.FollowUserButtonListener, CompassView.OnCompassClickListener, ClosestExitButton.ClosestExitButtonListener, MapwizeMapLocationAndDirectionInterface {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -734,5 +737,29 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         default void onClosestExitButtonClick() {
 
         }
+    }
+
+    @Nullable
+    @Override
+    public MapwizeIndoorLocation getUserLocation() {
+        return mapwizeMap.getUserLocation();
+    }
+
+    @NonNull
+    @Override
+    public List<DirectionMode> getDirectionModes() {
+        return mapwizeMap.getDirectionModes();
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        mapwizeMap.setDirection(direction);
+    }
+
+    @Override
+    public void quitDirections() {
+        mapwizeMap.removeDirection();
+        mapwizeMap.stopNavigation();
+        mapwizeMap.removeMarkers();
     }
 }

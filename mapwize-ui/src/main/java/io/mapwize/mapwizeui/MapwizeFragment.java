@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 
+import java.util.List;
+
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
@@ -24,8 +26,9 @@ import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.MapOptions;
+import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
 
-public class MapwizeFragment extends Fragment {
+public class MapwizeFragment extends Fragment implements MapwizeFragmentDirectionsInterface {
 
     // Options
     private static String ARG_OPTIONS = "param_options";
@@ -345,4 +348,56 @@ public class MapwizeFragment extends Fragment {
         }
     }
 
+
+    // MapwizeFragmentDirectionsInterface implementation
+
+
+    @Override
+    public void showDirectionLoading() {
+        mapwizeUIView.showDirectionLoading();
+    }
+
+    @Override
+    public void showDirectionInfo(Direction direction) {
+        mapwizeUIView.showDirectionInfo(direction);
+    }
+
+    @Override
+    public void showAccessibleDirectionModes(List<DirectionMode> modes) {
+        mapwizeUIView.showAccessibleDirectionModes(modes);
+    }
+
+    @Override
+    public void showDirectionError() {
+        mapwizeUIView.showDirectionError();
+    }
+
+    @Override
+    public void hideInfo() {
+        mapwizeUIView.hideInfo();
+    }
+
+    @Nullable
+    @Override
+    public MapwizeIndoorLocation getUserLocation() {
+        return mapwizeUIView.mapwizeMap.getUserLocation();
+    }
+
+    @NonNull
+    @Override
+    public List<DirectionMode> getDirectionModes() {
+        return mapwizeUIView.mapwizeMap.getDirectionModes();
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        mapwizeUIView.mapwizeMap.setDirection(direction);
+    }
+
+    @Override
+    public void quitDirections() {
+        mapwizeUIView.mapwizeMap.removeDirection();
+        mapwizeUIView.mapwizeMap.stopNavigation();
+        mapwizeUIView.mapwizeMap.removeMarkers();
+    }
 }
