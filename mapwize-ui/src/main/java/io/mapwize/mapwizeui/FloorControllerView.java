@@ -2,11 +2,10 @@ package io.mapwize.mapwizeui;
 
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -14,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.mapwize.mapwizesdk.api.Floor;
 
 /**
@@ -103,12 +104,24 @@ public class FloorControllerView extends ScrollView {
             FloorView tv  = (FloorView) linearLayout.getChildAt(i);
             Double tvValue = tv.getFloor().getNumber();
             if (floor != null && floor.getNumber().equals(tvValue)) {
+                if (!isViewVisible(tv)) {
+                    post(() -> smoothScrollTo(0, tv.getTop()));
+                }
                 tv.setSelected(true);
-            }
-            else {
+            } else {
                 tv.setSelected(false);
             }
         }
+    }
+
+    private boolean isViewVisible(View view) {
+        Rect scrollBounds = new Rect();
+        getDrawingRect(scrollBounds);
+
+        float top = view.getY();
+        float bottom = top + view.getHeight();
+
+        return scrollBounds.top < top && scrollBounds.bottom > bottom;
     }
 
     public interface OnFloorClickListener {

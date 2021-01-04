@@ -45,4 +45,5 @@ interface BasePresenter {
 
     MapwizeMap getMapwizeMap();
     boolean onBackButtonPressed();
+    void unselectContent();
 }

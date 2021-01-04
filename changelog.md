@@ -1,5 +1,36 @@
 # UI Components Changelog
 
+## 2.4.0
+
+- Deprecating the following methods, class and attributes:
+    - Methods:
+        - In `MapwizeMap`: the Add markers methods.
+        - In `MapwizeMap`: the Add promoted place methods.
+    - Attributes:
+        - displayStartMarker, startMarkerIconName, displayEndMarker and endMarkerIconName in DirectionOptions.
+
+- Adding a `Marker` to the map is now done using `MapwizeMap#addMarker` methods:
+    - A `Marker` can be created using the factory methods `Marker#createMarker`.
+    - The second parameter `MarkerOptions` now allows more customization to the `Marker`.
+
+- Adding new select place methods (`MapwizeMap#selectPlace`):
+    - Selecting a place allows you to highlight and improve its visibility.
+
+- Adding Some customization to the `DirectionOptions` :
+    - Adding `DirectionOptions#startMarkerOptions` to customize the starting `Marker` of a `Direction`/`Navigation`.
+    - Adding `DirectionOptions#endMarkerOptions` to customize the last `Marker` of a `Direction`/`Navigation`.
+    - Adding `DirectionOptions#backgroundLineOptions`, `DirectionOptions#foregroundLineOptions` and `DirectionOptions#progressLineOptions` to allow more customization of the `Direction` drawing process.
+
+- Adding `MarkerOptions` to help customize the drawing of the `Marker` (eg. `iconName`, `title` and `lineDashPattern`)
+- Adding `LineOptions` to help customize the drawing of the lines of the `Direction` (eg. `lineWidth`, `lineColor` and `lineDashPattern`)
+
+## 2.3.8
+
+- Fixing FloorController scroll to visible floor
+
+## 2.3.7
+
+- Updating sdk version to 3.4.5
 
 ## 2.3.6
 
