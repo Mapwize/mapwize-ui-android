@@ -38,12 +38,10 @@ interface BasePresenter {
     void selectPlace(Place place, boolean centerOn);
     void grantAccess(String accessKey, ApiCallback<Boolean> callback);
     void refreshSearchData();
-
     void unselectContent();
 
     String getFloor();
 
     MapwizeMap getMapwizeMap();
     boolean onBackButtonPressed();
-    void unselectContent();
 }
