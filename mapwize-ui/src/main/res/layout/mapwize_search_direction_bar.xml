@@ -7,6 +7,7 @@
     android:focusable="true"
     android:clickable="true"
     android:animateLayoutChanges="true"
+    android:paddingBottom="8dp"
     android:id="@+id/mapwizeDirectionMainLayout">
 
     <androidx.cardview.widget.CardView
@@ -24,6 +25,90 @@
             android:focusableInTouchMode="true"
             android:paddingTop="@dimen/mapwize_ui_padding_top">
 
+            <FrameLayout
+                android:id="@+id/mapwizeDirectionFromEditTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:animateLayoutChanges="true"
+                app:layout_constraintEnd_toStartOf="@+id/mapwizeDirectionBarSwapButton"
+                app:layout_constraintStart_toEndOf="@+id/mapwizeFromPicto"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:id="@+id/mapwizeDirectionFromEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/mapwize_rounded_field"
+                    android:hint="@string/mapwize_starting_point"
+                    android:inputType="textFilter|textNoSuggestions"
+                    android:paddingStart="16dp"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/clearTextFrom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:background="@drawable/mapwize_ripple_button_clear_text"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:src="@drawable/ic_baseline_cancel_24"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/mapwizeDirectionToEditTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:animateLayoutChanges="true"
+                app:layout_constraintEnd_toStartOf="@id/mapwizeDirectionBarSwapButton"
+                app:layout_constraintStart_toEndOf="@id/mapwizeToPicto"
+                app:layout_constraintTop_toBottomOf="@id/mapwizeDirectionFromEditTextLayout">
+
+                <EditText
+                    android:id="@+id/mapwizeDirectionToEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/mapwize_rounded_field"
+                    android:hint="@string/mapwize_destination"
+                    android:inputType="textFilter|textNoSuggestions"
+                    android:paddingStart="16dp"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/clearTextTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:background="@drawable/mapwize_ripple_button_clear_text"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:src="@drawable/ic_baseline_cancel_24"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/mapwizeFromPicto"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/mapwize_direction_start_white"
+                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
+                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionFromEditTextLayout"
+                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditTextLayout" />
+
+            <ImageView
+                android:id="@+id/mapwizeToPicto"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/mapwize_direction_end_white"
+                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
+                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionToEditTextLayout"
+                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionToEditTextLayout" />
+
             <ImageView
                 android:id="@+id/mapwizeDirectionBarBackButton"
                 android:layout_width="48dp"
@@ -31,8 +116,9 @@
                 android:src="@drawable/mapwize_ic_arrow_back_black_24dp"
                 android:padding="12dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditText"
-                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionFromEditText"/>
+                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionFromEditTextLayout"
+                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditTextLayout" />
+
 
             <ImageView
                 android:id="@+id/mapwizeDirectionBarSwapButton"
@@ -41,56 +127,8 @@
                 android:src="@drawable/mapwize_ic_swap_vert_black_24dp"
                 android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionToEditText"
-                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditText"/>
-
-            <ImageView
-                android:id="@+id/mapwizeFromPicto"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/mapwize_direction_start_white"
-                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
-                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionFromEditText"
-                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditText"/>
-
-            <ImageView
-                android:id="@+id/mapwizeToPicto"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/mapwize_direction_end_white"
-                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
-                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionToEditText"
-                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionToEditText"/>
-
-            <EditText
-                android:id="@+id/mapwizeDirectionFromEditText"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:paddingStart="16dp"
-                android:textSize="18sp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:hint="@string/mapwize_starting_point"
-                android:inputType="textFilter|textNoSuggestions"
-                android:background="@drawable/mapwize_rounded_field"
-                app:layout_constraintStart_toEndOf="@+id/mapwizeFromPicto"
-                app:layout_constraintEnd_toStartOf="@+id/mapwizeDirectionBarSwapButton"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/mapwizeDirectionToEditText"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:paddingStart="16dp"
-                android:textSize="18sp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="8dp"
-                android:hint="@string/mapwize_destination"
-                android:inputType="textFilter|textNoSuggestions"
-                android:background="@drawable/mapwize_rounded_field"
-                app:layout_constraintStart_toEndOf="@+id/mapwizeToPicto"
-                app:layout_constraintEnd_toStartOf="@+id/mapwizeDirectionBarSwapButton"
-                app:layout_constraintTop_toBottomOf="@+id/mapwizeDirectionFromEditText"/>
+                app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionToEditTextLayout"
+                app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditTextLayout" />
 
             <io.mapwize.mapwizeui.modeview.ModeView
                 android:id="@+id/mapwizeModeView"
@@ -98,8 +136,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/mapwizeDirectionToEditText"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/mapwizeDirectionToEditTextLayout"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
