@@ -1,0 +1,17 @@
+<resources>
+    <string name="mapwize_time_placeholder">%1$d min</string>
+    <string name="mapwize_floor_placeholder">Piano %1$s</string>
+    <string name="mapwize_search_in_placeholder">Ricerca in %1$s…</string>
+    <string name="mapwize_search_venue">Cerca un\'area di interesse…</string>
+    <string name="mapwize_loading_venue_placeholder">Caricando %1$s…</string>
+    <string name="mapwize_current_location">Posizione corrente</string>
+    <string name="mapwize_no_result">Nessun risultato trovato</string>
+    <string name="mapwize_choose_language">Scegli la tua lingua</string>
+    <string name="mapwize_choose_universe">Scegli la tua vista</string>
+    <string name="mapwize_direction">Direzione</string>
+    <string name="mapwize_information">Informazioni</string>
+    <string name="mapwize_starting_point">Punto di partenza</string>
+    <string name="mapwize_destination">Destinazione</string>
+    <string name="mapwize_direction_not_found">Nessuna direzione è stata trovata</string>
+    <string name="mapwize_display_content_error">Qualcosa è andato storto. Assicurati di essere connesso a qualsiasi rete e riprova.</string>
+</resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MapwizeUIComponents</string>
+    <string name="mapwize_api_key">Your Mapwize API Key goes here</string>
     <!-- Strings used by Mapwize Fragment. You can use them to translate the Fragment
     text or change them.
     Those values override the default strings value found in mapwizecomponent project-->
