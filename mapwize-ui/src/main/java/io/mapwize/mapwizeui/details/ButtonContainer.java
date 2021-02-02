@@ -3,6 +3,7 @@ package io.mapwize.mapwizeui.details;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -13,8 +14,9 @@ import androidx.annotation.Nullable;
 import io.mapwize.mapwizeui.R;
 
 
-public class ButtonContainer extends LinearLayout {
+public class ButtonContainer extends HorizontalScrollView {
 
+    LinearLayout container;
     List<ButtonBig> bigButtons = new ArrayList<>();
 
     public ButtonContainer(@NonNull Context context) {
@@ -34,18 +36,19 @@ public class ButtonContainer extends LinearLayout {
 
     void initLayout(final Context context) {
         inflate(context, R.layout.mapwize_details_button_container, this);
+        container = findViewById(R.id.bigButtonContainerInsideScroll);
     }
 
     void setBigButtons(List<ButtonBig> buttonsButtons) {
         this.bigButtons = buttonsButtons;
-        this.removeAllViews();
+        container.removeAllViews();
         for (ButtonBig buttonBig : buttonsButtons) {
-            this.addView(buttonBig);
+            container.addView(buttonBig);
         }
         if (buttonsButtons.size() == 4) {
-            this.setGravity(Gravity.CENTER_HORIZONTAL);
+            container.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
-            this.setGravity(Gravity.START);
+            container.setGravity(Gravity.START);
         }
     }
 
