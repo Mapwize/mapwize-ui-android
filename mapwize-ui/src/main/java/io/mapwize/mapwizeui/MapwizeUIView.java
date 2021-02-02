@@ -13,22 +13,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
-import io.mapwize.mapwizesdk.api.DirectionPointWrapperAndDistance;
-import io.mapwize.mapwizesdk.api.DistanceResponse;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
@@ -40,7 +34,6 @@ import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapOptions;
-import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.MapwizeView;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
@@ -426,7 +419,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         //bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
         infoVisible = true;
         placeDetailsUI.show();
-        placeDetailsUI.setLoading(true);
+//        placeDetailsUI.setLoading(true);//TODO uncomment to display placelist in a grid view
         placeDetailsUI.setTitle(placelist.getTranslation(language).getTitle());
         placeDetailsUI.setSubTitle(placelist.getTranslation(language).getSubtitle());
         if (!placelist.getTranslation(language).getSubtitle().equals("")) {
@@ -434,70 +427,94 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
         placeDetailsUI.show();
 
-        mapwizeMap.getMapwizeApi().getPlacesForPlacelist(placelist.getId(), new ApiCallback<List<Place>>() {
-            @Override
-            public void onSuccess(@NonNull List<Place> object) {
-                MapwizeIndoorLocation userLocation = mapwizeMap.getUserLocation();
-                if (userLocation != null) {
-                    mapwizeMap.getMapwizeApi().getDistances(userLocation, object, mapwizeMap.getDirectionModes().get(0), true, new ApiCallback<DistanceResponse>() {
-                        @Override
-                        public void onSuccess(@NonNull DistanceResponse object) {
-                            List<DirectionPointWrapperAndDistance> list2 = object.getDistances();
-                            Iterator<DirectionPointWrapperAndDistance> iterDistanceResponse = list2.iterator();
-                            while (iterDistanceResponse.hasNext()) {
-                                DirectionPointWrapperAndDistance directionPointWrapperAndDistance = iterDistanceResponse.next();
-                                if (directionPointWrapperAndDistance.getDistance() < 0) {
-                                    iterDistanceResponse.remove();
-                                }
-                            }
+        this.placeDetailsUI.showDetailsForPlacelist(
+                placelist.getTranslation(language).getTitle(),
+                placelist.getTranslation(language).getSubtitle(),
+                new PlaceDetailsUI.DetailsReadyListener() {
+                    @Override
+                    public boolean onReady(List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
 
-                            Collections.sort(list2, (o1, o2) -> (int) (o1.getTraveltime() - o2.getTraveltime()));
-
-                            List<Map<String, Object>> distances = new ArrayList<>();
-                            for (DirectionPointWrapperAndDistance dpwad : list2) {
-                                Map<String, Object> map = new HashMap<>();
-                                map.put("placeId", dpwad.getPlaceId());
-                                map.put("venueId", dpwad.getVenueId());
-                                map.put("floor", dpwad.getFloor());
-                                map.put("distance", dpwad.getDistance());
-                                map.put("traveltime", dpwad.getTraveltime() / 60);
-                                distances.add(map);
-                            }
-                            placeDetailsUI.post(() -> {
-                                placeDetailsUI.setTitle(placelist.getTranslation(language).getTitle());
-                                placeDetailsUI.setSubTitle(placelist.getTranslation(language).getSubtitle());
-                                placeDetailsUI.showPlacelist(distances, (placeId, venueId) -> {
-                                    mapwizeMap.getMapwizeApi().getPlace(placeId, new ApiCallback<Place>() {
-                                        @Override
-                                        public void onSuccess(@NonNull Place place) {
-                                            mapwizeView.post(() -> mapwizeMap.centerOnPlace(place, 200));
-                                        }
-
-                                        @Override
-                                        public void onFailure(@NonNull Throwable t) {
-                                            //TODO handle Failure
-                                        }
-                                    });
-                                });
-                                placeDetailsUI.setLoading(false);
-                            });
+                        if (listener.shouldDisplayInformationButton(placelist)) {
+                            ButtonSmall buttonSmall = new ButtonSmall(
+                                    getContext(),
+                                    "Information",
+                                    R.drawable.mapwize_details_ic_baseline_info_24,
+                                    false, ButtonSmall.INFORMATION_BUTTON,
+                                    view -> presenter.onInformationClick()
+                            );
+                            smallButtons.add(buttonSmall);
                         }
 
-                        @Override
-                        public void onFailure(@NonNull Throwable t) {
-                            //TODO handle Failure
-                            System.out.println("Failed to get distances : " + t.getMessage());
-                        }
-                    });
+                        listener.onPlaceSelected(placelist, buttonBigs, rows, smallButtons);
+                        return true;
+                    }
                 }
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                //TODO handle Failure
-                System.out.println("Failed to get places for placelist : " + t.getMessage());
-            }
-        });
+        );
+        //TODO uncomment to display placelist in a grid view
+//        mapwizeMap.getMapwizeApi().getPlacesForPlacelist(placelist.getId(), new ApiCallback<List<Place>>() {
+//            @Override
+//            public void onSuccess(@NonNull List<Place> object) {
+//                MapwizeIndoorLocation userLocation = mapwizeMap.getUserLocation();
+//                if (userLocation != null) {
+//                    mapwizeMap.getMapwizeApi().getDistances(userLocation, object, mapwizeMap.getDirectionModes().get(0), true, new ApiCallback<DistanceResponse>() {
+//                        @Override
+//                        public void onSuccess(@NonNull DistanceResponse object) {
+//                            List<DirectionPointWrapperAndDistance> list2 = object.getDistances();
+//                            Iterator<DirectionPointWrapperAndDistance> iterDistanceResponse = list2.iterator();
+//                            while (iterDistanceResponse.hasNext()) {
+//                                DirectionPointWrapperAndDistance directionPointWrapperAndDistance = iterDistanceResponse.next();
+//                                if (directionPointWrapperAndDistance.getDistance() < 0) {
+//                                    iterDistanceResponse.remove();
+//                                }
+//                            }
+//
+//                            Collections.sort(list2, (o1, o2) -> (int) (o1.getTraveltime() - o2.getTraveltime()));
+//
+//                            List<Map<String, Object>> distances = new ArrayList<>();
+//                            for (DirectionPointWrapperAndDistance dpwad : list2) {
+//                                Map<String, Object> map = new HashMap<>();
+//                                map.put("placeId", dpwad.getPlaceId());
+//                                map.put("venueId", dpwad.getVenueId());
+//                                map.put("floor", dpwad.getFloor());
+//                                map.put("distance", dpwad.getDistance());
+//                                map.put("traveltime", dpwad.getTraveltime() / 60);
+//                                distances.add(map);
+//                            }
+//                            placeDetailsUI.post(() -> {
+//                                placeDetailsUI.setTitle(placelist.getTranslation(language).getTitle());
+//                                placeDetailsUI.setSubTitle(placelist.getTranslation(language).getSubtitle());
+//                                placeDetailsUI.showPlacelist(distances, (placeId, venueId) -> {
+//                                    mapwizeMap.getMapwizeApi().getPlace(placeId, new ApiCallback<Place>() {
+//                                        @Override
+//                                        public void onSuccess(@NonNull Place place) {
+//                                            mapwizeView.post(() -> mapwizeMap.centerOnPlace(place, 200));
+//                                        }
+//
+//                                        @Override
+//                                        public void onFailure(@NonNull Throwable t) {
+//                                            //TODO handle Failure
+//                                        }
+//                                    });
+//                                });
+//                                placeDetailsUI.setLoading(false);
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onFailure(@NonNull Throwable t) {
+//                            //TODO handle Failure
+//                            System.out.println("Failed to get distances : " + t.getMessage());
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Throwable t) {
+//                //TODO handle Failure
+//                System.out.println("Failed to get places for placelist : " + t.getMessage());
+//            }
+//        });
 
         //TODO listener.shouldDisplayInformationButton(placelist)
 //        bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
@@ -994,7 +1011,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             return true;
         }
 
-        default boolean onPlaceSelected(Place place, List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
+        default boolean onPlaceSelected(MapwizeObject place, List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
             return false;
         }
     }

@@ -437,6 +437,19 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         requestLayout();
     }
 
+    public void showDetailsForPlacelist(String title, String subTitle, DetailsReadyListener detailsReadyListener) {
+        setTitle(title);
+        setSubTitle(subTitle);
+        updateLayerPlaceList(detailsReadyListener);
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        bottomSheetBehavior.setDraggable(false);
+        placeListSelected = true;
+
+        invalidate();
+        requestLayout();
+    }
+
     private void setOpeningLabel(List<Map<String, Object>> openingHours, String timezone) {
         if (openingHours == null || openingHours.size() < 1) {
             sheetContent.setOpeningLabelVisiblity(false);
@@ -458,6 +471,36 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         this.sheetContent.setSmallButtonsVisibility(visible);
     }
 
+    public void updateLayerPlaceList(DetailsReadyListener detailsReadyListener) {
+        List<Row> rows = new ArrayList<>();
+        List<ButtonBig> bigButtons = new ArrayList<>();
+
+
+        List<ButtonSmall> buttonSmalls = new ArrayList<>();
+        ButtonSmall directionSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
+        buttonSmalls.add(directionSmallButton);
+
+        if (this.initalDetailsReadyListener != null) {
+            boolean change = initalDetailsReadyListener.onReady(bigButtons, rows, buttonSmalls);
+            if (change) {
+                setSmallButtons(buttonSmalls);
+                setBigButtons(bigButtons);
+                setRows(rows);
+            }
+        }
+        if (detailsReadyListener != null) {
+            boolean change = detailsReadyListener.onReady(bigButtons, rows, buttonSmalls);
+            if (change) {
+                setSmallButtons(buttonSmalls);
+                setBigButtons(bigButtons);
+                setRows(rows);
+            }
+        }
+
+
+        setSmallButtonsVisibility(true);
+    }
+
     public void updateLayer(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, List<Map<String, Object>> events, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
 //        View.OnClickListener clickListener = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
         List<Row> rows = new ArrayList<>();
@@ -476,7 +519,6 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         Row mapwize_details_occupancy = new Occupancy(context, "Currently occupied", events, R.drawable.mapwize_details_ic_baseline_calendar_today_24, events != null && events.size() > 0, Row.OCCUPANCY_ROW, null);
         rows.add(mapwize_details_occupancy);
 
-//        LinearLayout.OnClickListener clickListener1 = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
         ButtonBig directionButton = new ButtonBig(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
         ButtonBig callButton = new ButtonBig(context, context.getString(R.string.mapwize_details_call), R.drawable.mapwize_details_ic_baseline_call_24, false, ButtonBig.CALL_BUTTON, null);
         ButtonBig websiteButton = new ButtonBig(context, context.getString(R.string.mapwize_details_website), R.drawable.mapwize_details_ic_baseline_language_24, false, ButtonBig.WEBSITE_BUTTON, null);

@@ -9,15 +9,15 @@ import io.indoorlocation.manual.ManualIndoorLocationProvider
 import io.mapwize.mapwizesdk.api.*
 import io.mapwize.mapwizesdk.map.MapOptions
 import io.mapwize.mapwizesdk.map.MapwizeMap
-import io.mapwize.mapwizeui.MapwizeFragmentUISettings
-import io.mapwize.mapwizeui.events.Channel
-import io.mapwize.mapwizeui.events.EventManager
-import io.mapwize.mapwizeui.events.OnEventListener
 import io.mapwize.mapwizeui.MapwizeFragment
+import io.mapwize.mapwizeui.MapwizeFragmentUISettings
 import io.mapwize.mapwizeui.MapwizeUIView
 import io.mapwize.mapwizeui.details.ButtonBig
 import io.mapwize.mapwizeui.details.ButtonSmall
 import io.mapwize.mapwizeui.details.Row
+import io.mapwize.mapwizeui.events.Channel
+import io.mapwize.mapwizeui.events.EventManager
+import io.mapwize.mapwizeui.events.OnEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListener, OnEventListener {
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
     }
 
     override fun shouldDisplayInformationButton(mapwizeObject: MapwizeObject?): Boolean {
-        return mapwizeObject?.name?.startsWith("I")!!
+        return mapwizeObject?.name?.startsWith("B")!!
     }
 
     override fun onContentSelect(place: Place,
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         Log.i("Debug", "" + placelist.name + " " + currentUniverse.name +  " " + channel + " " + searchQuery)
     }
 
-    override fun onPlaceSelected(place: Place?, buttonBigs: MutableList<ButtonBig>?, rows: MutableList<Row>?, smallButtons: MutableList<ButtonSmall>?): Boolean {
+    override fun onPlaceSelected(place: MapwizeObject?, buttonBigs: MutableList<ButtonBig>?, rows: MutableList<Row>?, smallButtons: MutableList<ButtonSmall>?): Boolean {
         smallButtons?.forEach {
             if (it.buttonType == ButtonSmall.CALL_BUTTON) {
 //                it.setOnClickListener({ Toast.makeText(this, "Calling from Kotlin", Toast.LENGTH_SHORT).show() })
