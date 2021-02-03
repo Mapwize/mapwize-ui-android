@@ -158,9 +158,16 @@ public class DayCalendar extends ConstraintLayout {
 
     }
 
-    public void setEvents(List<Map<String, Object>> events, boolean available) {
+
+    public static boolean occupied(Map<String, Object> adaptedEvent, Date now) {
+        int nowInMinute = getMinuteInDay(now);
+        return (Integer) adaptedEvent.get("start") < nowInMinute && (Integer) adaptedEvent.get("end") > nowInMinute;
+    }
+
+    public boolean setEvents(List<Map<String, Object>> events, boolean available) {
         setVisibility(available);
-        List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, Calendar.getInstance().getTime());
+        Date now = Calendar.getInstance().getTime();
+        List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
         for (Map<String, Object> event : adaptedEvents) {
             EventItem eventItem = new EventItem(context,
                     (float) ((Integer) (event.get("start")) / 60.0),
@@ -169,7 +176,10 @@ public class DayCalendar extends ConstraintLayout {
             eventsList.addView(eventItem);
             eventItem.setMarginParams();
         }
-
+        for (Map<String, Object> adaptedEvent : adaptedEvents) {
+            if (occupied(adaptedEvent, now)) return true;
+        }
+        return false;
     }
 
     void setVisibility(boolean visible) {

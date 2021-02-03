@@ -22,4 +22,7 @@
     <string name="mapwize_details_share">Partager</string>
     <string name="mapwize_details_overview">Aperçu</string>
     <string name="mapwize_details_details">Détails</string>
+    <string name="share_place_text">Bonjour, je vous partage %1$s dans Mapwize Map</string>
+    <string name="mapwize_details_occupied">Occupé</string>
+    <string name="mapwize_details_not_occupied">Libre</string>
 </resources>

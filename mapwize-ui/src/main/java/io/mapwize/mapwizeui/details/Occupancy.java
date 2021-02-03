@@ -17,8 +17,10 @@ public class Occupancy extends Row {
     public Occupancy(@NonNull Context context, String label, List<Map<String, Object>> events, int icon, boolean available, int rowType, OnClickListener clickListener) {
         super(context, label, icon, available, rowType, clickListener);
         this.events = events;
-        if (dayCalendar != null) {
-            dayCalendar.setEvents(events, available);
+        if (available && dayCalendar != null) {
+            boolean occupied = dayCalendar.setEvents(events, available);
+            String calculatedLabel = occupied ? context.getString(R.string.mapwize_details_occupied) : context.getString(R.string.mapwize_details_not_occupied);
+            rowLabel.setText(calculatedLabel);
         }
     }
 
