@@ -39,43 +39,43 @@ public class OpeningHoursTest3 {
 
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 0);
-            put("open", "0900");
-            put("close", "2359");
+            put("open", "09:00");
+            put("close", "23:59");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 1);
-            put("open", "0000");
-            put("close", "1200");
+            put("open", "00:00");
+            put("close", "12:00");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 2);
-            put("open", "0900");
-            put("close", "1700");
+            put("open", "09:00");
+            put("close", "17:00");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 3);
-            put("open", "0900");
-            put("close", "1700");
+            put("open", "09:00");
+            put("close", "17:00");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 4);
-            put("open", "0900");
-            put("close", "2359");
+            put("open", "09:00");
+            put("close", "23:59");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 5);
-            put("open", "0000");
-            put("close", "2359");
+            put("open", "00:00");
+            put("close", "23:59");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 6);
-            put("open", "0000");
-            put("close", "2359");
+            put("open", "00:00");
+            put("close", "23:59");
         }});
         daysMock.add(new HashMap<String, Object>() {{
             put("day", 1);
-            put("open", "1400");
-            put("close", "1800");
+            put("open", "14:00");
+            put("close", "18:00");
         }});
     }
 

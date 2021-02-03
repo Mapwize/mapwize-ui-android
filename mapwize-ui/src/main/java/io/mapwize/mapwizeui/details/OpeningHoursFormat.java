@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
@@ -28,12 +27,12 @@ public class OpeningHoursFormat {
         if (open) {
             String openVal = (String) day.get("open");
             if (openVal != null) {
-                timeOfWeek += Integer.parseInt(openVal);
+                timeOfWeek += Integer.parseInt(openVal.replace(":", ""));
             }
         } else {
             String openVal = (String) day.get("close");
             if (openVal != null) {
-                timeOfWeek += Integer.parseInt(openVal);
+                timeOfWeek += Integer.parseInt(openVal.replace(":", ""));
             }
         }
         return timeOfWeek;
@@ -81,15 +80,12 @@ public class OpeningHoursFormat {
         List<Integer> openTimes = convertDaysToTimeOfWeek(daysMock, true);
         int timeNow = getTimeOfWeek(timeInWeek);
         int nextOpenTime = -1;
-        boolean breakNext = false;
         boolean broke = false;
         for (int time : openTimes) {
-            if (breakNext) {
+            if (time > timeNow) {
+                nextOpenTime = time;
                 broke = true;
                 break;
-            }
-            if (time > timeNow) {
-                breakNext = true;
             }
             nextOpenTime = time;
         }
