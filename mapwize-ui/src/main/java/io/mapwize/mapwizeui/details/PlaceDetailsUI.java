@@ -3,7 +3,6 @@ package io.mapwize.mapwizeui.details;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -530,7 +529,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
             ButtonBig sharingLinkButton = new ButtonBig(context, context.getString(R.string.mapwize_details_share), R.drawable.mapwize_details_ic_baseline_share_24, false, ButtonBig.SHARE_BUTTON, view-> {
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 String message = context.getString(R.string.share_place_text, name);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, message + " " + "https://maps.mapwize.io/#" + sharingLink);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, message + " " + sharingLink);
 
                 sendIntent.putExtra(Intent.EXTRA_TITLE, "Share this Mapwize place");
                 sendIntent.setType("text/plain");
