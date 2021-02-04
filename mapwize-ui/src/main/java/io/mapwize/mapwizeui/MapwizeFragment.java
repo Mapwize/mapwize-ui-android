@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -171,19 +170,6 @@ public class MapwizeFragment extends Fragment {
                         .build();
             }
         }
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                if (mapwizeUIView != null) {
-                    if (!mapwizeUIView.backButtonClick()) {
-                        requireActivity().finish();
-                    }
-                }
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
-
     }
 
     @Override
@@ -200,6 +186,7 @@ public class MapwizeFragment extends Fragment {
         FrameLayout layout = view.findViewById(R.id.mapViewContainer);
         layout.addView(mapwizeUIView);
         mapwizeUIView.onCreate(savedInstanceState);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, mapwizeUIView.getOnBackPressedCallback());
     }
 
     @Override
