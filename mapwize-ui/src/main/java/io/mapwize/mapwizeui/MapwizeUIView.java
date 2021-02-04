@@ -309,11 +309,16 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             if (timezone.equals("")) {
                 timezone = TimeZone.getDefault().getID();
             }
+            String floorName = "";
+            Double floor = placeDetails.getFloor();
+            if (floor != null) {
+                floorName = "" + floor.intValue();
+            }
             this.placeDetailsUI.showDetails(
                     translation.getTitle(),
                     translation.getSubtitle(),
                     translation.getDetails(),
-                    presenter.getFloor(),
+                    floorName,
                     placeDetails.getPhotos(),
                     placeDetails.getOpeningHours(),
                     formatedPhoneNumber,
