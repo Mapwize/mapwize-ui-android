@@ -688,7 +688,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     public void invalidateOnBackPressedCallbackState() {
-        onBackPressedCallback.setEnabled(presenter.isBackEnabled() || infoVisible);
+        onBackPressedCallback.setEnabled((presenter != null && presenter.isBackEnabled()) || infoVisible);
     }
 
     public OnBackPressedCallback getOnBackPressedCallback() {
