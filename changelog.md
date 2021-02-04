@@ -1,5 +1,11 @@
 # UI Components Changelog
 
+## 2.4.1
+
+- Adding clear text button to the direction search bar
+- Fixing the direction search bar behavior
+- Fixing some UI issues
+
 ## 2.4.0
 
 - Deprecating the following methods, class and attributes:

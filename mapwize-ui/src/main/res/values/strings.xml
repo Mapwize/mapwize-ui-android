@@ -1,6 +1,5 @@
 <resources>
-    <string name="mapwize_api_key" translatable="false">Your Mapwize API Key goes here</string>
-    <string name="mapwize_server_url" translatable="false">https://api.mapwize.io/</string>
+    <string name="mapwize_api_key">Your Mapwize API Key goes here</string>
     <string name="mapwize_time_placeholder">%1$d min</string>
     <string name="mapwize_floor_placeholder">Floor %1$s</string>
     <string name="mapwize_search_in_placeholder">Search in %1$s…</string>
