@@ -1,5 +1,12 @@
 # UI Components Changelog
 
+
+## 2.4.2
+
+- Adding Italian translation.
+- Fixing onBackPressedCallback() issue.
+- updating sdk to version 3.5.2.
+
 ## 2.4.1
 
 - Adding clear text button to the direction search bar
