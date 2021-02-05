@@ -74,4 +74,6 @@ interface BaseUIView {
     void dispatchInformationButtonClick(MapwizeObject object);
     void dispatchMapwizeReady(MapwizeMap mapwizeMap);
     void setLanguage(String language);
+
+    void invalidateOnBackPressedCallbackState();
 }

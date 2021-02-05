@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
@@ -271,11 +272,22 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
 
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+            if (presenter.onBackButtonPressed()) {
+                return;
+            }
+            if (infoVisible) {
+                presenter.unselectContent();
+            }
+        }
+    };
+
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
-        //bottomCardView.setContent(preview);
-        infoVisible = true;
         placeDetailsUI.show();
+        setInfoVisible(true);
         placeDetailsUI.setLoading(true);
         placeDetailsUI.setTitle(preview.getTitle());
         if (preview.getSubtitle() != null) {
@@ -284,13 +296,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         if (preview.getSubtitle() != null && !preview.getSubtitle().equals("")) {
             placeDetailsUI.setSubTitleVisibility(true);
         }
-    }
-
-    @Override
-    public void showPlaceInfoFromPreview(Place place, PlaceDetails placeDetails, String language) {
-        //bottomCardView.setContentFromPreview(place, language, listener.shouldDisplayInformationButton(place));
-        infoVisible = true;
-        showPlaceDetails(place, placeDetails, language);
     }
 
     private void showPlaceDetails(Place place, PlaceDetails placeDetails, String language) {
@@ -412,18 +417,22 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
+    public void showPlaceInfoFromPreview(Place place, PlaceDetails placeDetails, String language) {
+        showPlaceDetails(place, placeDetails, language);
+        setInfoVisible(true);
+    }
+
+    @Override
     public void showPlaceInfo(Place place, PlaceDetails placeDetails, String language) {
-        //bottomCardView.setContent(place, language, listener.shouldDisplayInformationButton(place));
-        infoVisible = true;
         placeDetailsUI.show();
+        setInfoVisible(true);
         showPlaceDetails(place, placeDetails, language);
     }
 
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
-        //bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
-        infoVisible = true;
         placeDetailsUI.show();
+        setInfoVisible(true);
 //        placeDetailsUI.setLoading(true);//TODO uncomment to display placelist in a grid view
         placeDetailsUI.setTitle(placelist.getTranslation(language).getTitle());
         placeDetailsUI.setSubTitle(placelist.getTranslation(language).getSubtitle());
@@ -523,13 +532,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
         //TODO listener.shouldDisplayInformationButton(placelist)
 //        bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
-    }
-
-    @Override
-    public void hideInfo() {
-        bottomCardView.removeContent();
-        placeDetailsUI.hide();
-        infoVisible = false;
     }
 
     @Override
@@ -980,15 +982,24 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
     }
 
-    public boolean backButtonClick() {
-        if (presenter.onBackButtonPressed()) {
-            return true;
-        }
-        if (infoVisible) {
-            presenter.unselectContent();
-            return true;
-        }
-        return false;
+    @Override
+    public void hideInfo() {
+        bottomCardView.removeContent();
+        placeDetailsUI.hide();
+        setInfoVisible(false);
+    }
+
+    public void setInfoVisible(boolean infoVisible) {
+        this.infoVisible = infoVisible;
+        invalidateOnBackPressedCallbackState();
+    }
+
+    public void invalidateOnBackPressedCallbackState() {
+        onBackPressedCallback.setEnabled((presenter != null && presenter.isBackEnabled()) || this.infoVisible);
+    }
+
+    public OnBackPressedCallback getOnBackPressedCallback() {
+        return onBackPressedCallback;
     }
 
     public interface OnViewInteractionListener {
@@ -1003,15 +1014,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         default void onFragmentReady(MapwizeMap mapwizeMap) {
 
         }
-
         default void onFollowUserButtonClickWithoutLocation() {
 
         }
-
         default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
             return false;
         }
-
         default boolean shouldDisplayFloorController(List<Floor> floors) {
             return true;
         }

@@ -44,4 +44,6 @@ interface BasePresenter {
 
     MapwizeMap getMapwizeMap();
     boolean onBackButtonPressed();
+
+    boolean isBackEnabled();
 }
