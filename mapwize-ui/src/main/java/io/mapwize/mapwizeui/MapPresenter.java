@@ -86,7 +86,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         this.mapwizeConfiguration = mapwizeConfiguration;
         this.mapOptions = mapOptions;
         api = MapwizeApiFactory.getApi(mapwizeConfiguration);
-        state = UIState.DEFAULT;
+        setState(UIState.DEFAULT);
         preloadVenueSearchResults();
     }
 
@@ -422,7 +422,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     @Override
     public void onQueryClick() {
-        state = UIState.SEARCH;
+        setState(UIState.SEARCH);
         fragment.showSearch();
         onSearchQueryChange("");
     }
@@ -430,7 +430,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onSearchBackButtonClick() {
         fragment.hideSearch();
-        state = UIState.DEFAULT;
+        setState(UIState.DEFAULT);
     }
 
     @Override
@@ -515,7 +515,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             EventManager.getInstance().triggerOnContentSelect(place, this.universe, universe, lastQuery.length() == 0 ? Channel.MAIN_SEARCHES : Channel.SEARCH, lastQuery);
             fragment.hideSearch();
             selectPlace(place, universe);
-            state = UIState.DEFAULT;
+            setState(UIState.DEFAULT);
         }
         if (state == UIState.SEARCH_FROM) {
             from = place;
@@ -523,7 +523,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 requestDirectionTo();
             }
             else {
-                state = UIState.DIRECTION;
+                setState(UIState.DIRECTION);
                 startDirection();
             }
             fragment.showSelectedDirectionFrom(from, venueLanguage);
@@ -532,7 +532,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         else if (state == UIState.SEARCH_TO) {
             to = place;
             if (from != null) {
-                state = UIState.DIRECTION;
+                setState(UIState.DIRECTION);
                 startDirection();
             }
             else {
@@ -547,7 +547,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         if (state == UIState.SEARCH) {
             fragment.hideSearch();
             mapwizeMap.centerOnVenue(venue, 300);
-            state = UIState.DEFAULT;
+            setState(UIState.DEFAULT);
         }
     }
 
@@ -557,12 +557,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             EventManager.getInstance().triggerOnContentSelect(placelist, universe, universe, lastQuery.length() == 0 ? Channel.MAIN_SEARCHES : Channel.SEARCH, lastQuery);
             fragment.hideSearch();
             selectPlacelist(placelist);
-            state = UIState.DEFAULT;
+            setState(UIState.DEFAULT);
         }
         if (state == UIState.SEARCH_TO) {
             to = placelist;
             if (from != null) {
-                state = UIState.DIRECTION;
+                setState(UIState.DIRECTION);
                 startDirection();
             }
             else {
@@ -579,7 +579,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             requestDirectionTo();
         }
         else {
-            state = UIState.DIRECTION;
+            setState(UIState.DIRECTION);
             startDirection();
         }
         fragment.showSelectedDirectionFrom(from, venueLanguage);
@@ -604,7 +604,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onDirectionBackClick() {
         if (state == UIState.SEARCH_FROM || state == UIState.SEARCH_TO) {
             if (mapwizeMap.getDirection() != null) {
-                state = UIState.DIRECTION;
+                setState(UIState.DIRECTION);
                 fragment.hideSearchResultsList();
                 fragment.showSelectedDirectionFrom(from, venueLanguage);
                 fragment.showSelectedDirectionTo(to, venueLanguage);
@@ -789,7 +789,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     private void startDirection() {
-        state = UIState.DIRECTION;
+        setState(UIState.DIRECTION);
         fragment.hideLanguagesSelector();
         fragment.hideUniversesSelector();
         fragment.hideSearchResultsList();
@@ -899,7 +899,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     void requestDirectionFrom() {
-        state = UIState.SEARCH_FROM;
+        setState(UIState.SEARCH_FROM);
         fragment.hideSwapButton();
         fragment.showSearchResultsList();
         if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
@@ -909,7 +909,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     void requestDirectionTo() {
-        state = UIState.SEARCH_TO;
+        setState(UIState.SEARCH_TO);
         fragment.hideSwapButton();
         fragment.hideCurrentLocationInResult();
         fragment.showSearchResultsList();
@@ -971,7 +971,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showSelectedDirectionFrom(null, null);
         fragment.showSelectedDirectionTo(null, null);
 
-        state = UIState.DEFAULT;
+        setState(UIState.DEFAULT);
         if (selectedContent != null) {
             if (selectedContent instanceof Place) {
                 selectPlace((Place)selectedContent, universe);
@@ -980,5 +980,14 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 selectPlacelist((Placelist)selectedContent);
             }
         }
+    }
+
+    public boolean isBackEnabled() {
+        return state == MapPresenter.UIState.SEARCH_FROM || state == MapPresenter.UIState.SEARCH_TO || state == MapPresenter.UIState.DIRECTION || state == MapPresenter.UIState.SEARCH;
+    }
+
+    public void setState(UIState state) {
+        this.state = state;
+        fragment.invalidateOnBackPressedCallbackState();
     }
 }
