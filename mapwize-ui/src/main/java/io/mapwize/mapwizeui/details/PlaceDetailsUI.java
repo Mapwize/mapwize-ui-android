@@ -37,7 +37,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
     public static final float bigImageRatio = 0.3f;
     public static final float smallImageRatio = 0.15f;
-    public static float halfExpandedRatio = 0.3f;
+    public static float halfExpandedRatio = 0.45f;
     public static float peekRatio = 0.3f;
     SheetContent sheetContent;
     RecyclerView.LayoutManager photosLayoutManager;
@@ -124,11 +124,39 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         cardView.setOnClickListener(this::cardViewClickListener);
     }
 
+    int fakeHeight = 0;
+
+    private void cardViewClickListener(View view) {
+        if (placeListSelected) return;
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HALF_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED && hasImages) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+        }
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED && !hasImages) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED && !hasImages) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED && hasImages) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+        }
+    }
+
+    private void SetPhotosRecyclerView(Context context, RecyclerView photosRecyclerView) {
+        photosLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        photosRecyclerView.setLayoutManager(photosLayoutManager);
+        imageViewAdapter = new ImageViewAdapter();
+        photosRecyclerView.setAdapter(imageViewAdapter);
+    }
+
     private void setBottomSheetBehavior(RecyclerView photosRecyclerView) {
         bottomSheetBehavior.setDraggable(true);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setHalfExpandedRatio(halfExpandedRatio);
-        bottomSheetBehavior.setPeekHeight(sheetContent.getHeight());
+        bottomSheetBehavior.setPeekHeight(sheetContent.getHeight() + placeTitle.getHeight());
         bottomSheetBehavior.setDraggable(true);
         bottomSheetBehavior.setSaveFlags(BottomSheetBehavior.SAVE_ALL);
         bottomSheetBehavior.setUpdateImportantForAccessibilityOnSiblings(true);
@@ -199,7 +227,8 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                onSlideNotify(screenHeight - bottomSheet.getY(), screenHeight * (smallImageRatio + peekRatio));
+//                onSlideNotify(screenHeight - bottomSheet.getY(), screenHeight * (smallImageRatio + peekRatio));
+                float screenHeight = PlaceDetailsUI.this.screenHeight + fakeHeight;
                 float viewOffset = bottomSheet.getY();
                 int height = (int) imageHeight(viewOffset, screenHeight, screenHeight * bigImageRatio, screenHeight * smallImageRatio);
                 float fullAlpha = alphaFull(viewOffset, screenHeight);
@@ -224,32 +253,6 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         });
     }
 
-    private void cardViewClickListener(View view) {
-        if (placeListSelected) return;
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HALF_EXPANDED) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED && hasImages) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-        }
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED && !hasImages) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED && !hasImages) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED && hasImages) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-        }
-    }
-
-    private void SetPhotosRecyclerView(Context context, RecyclerView photosRecyclerView) {
-        photosLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        photosRecyclerView.setLayoutManager(photosLayoutManager);
-        imageViewAdapter = new ImageViewAdapter();
-        photosRecyclerView.setAdapter(imageViewAdapter);
-    }
-
     private int getStatusBarHeightAndSetHideButton(Context context) {
         int resource = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         int statusBarHeight = 0;
@@ -259,6 +262,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         }
         if (statusBarHidden) {
             statusBarHeight = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? 24 : 25;
+            fakeHeight = statusBarHeight;
             //Setting hide button margin
             LayoutParams layoutParams = (LayoutParams) hideBottomSheetButton.getLayoutParams();
             layoutParams.topMargin = (int) ((statusBarHeight + 16) * dp);
@@ -432,6 +436,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         setPhotos(photos);
         setOpeningLabel(openingHours, timezone);
         updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
+        this.onLayoutChange(null, -1, -1, -1, -1, -1, -1, -1, -1);
         invalidate();
         requestLayout();
     }
@@ -570,6 +575,8 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        onSlideNotify(screenHeight - bottomSheet.getY(), screenHeight * (smallImageRatio + peekRatio));
+        float screenHeight = PlaceDetailsUI.this.screenHeight + fakeHeight;
         int height = (sheetContent.getLayoutHeight() + placeTitle.getHeight());
         peekRatio = height / screenHeight;
         peekRatio = peekRatio < 1 ? peekRatio : 0.9f;
@@ -578,7 +585,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         bottomSheetBehavior.setPeekHeight(height, true);
         bottomSheetBehavior.setHalfExpandedRatio(halfExpandedRatio);
         updateShouldScroll();
-        onSlideNotify(screenHeight - bottomSheet.getY(), screenHeight * (smallImageRatio + peekRatio));
+
     }
 
     public interface SlideListener {

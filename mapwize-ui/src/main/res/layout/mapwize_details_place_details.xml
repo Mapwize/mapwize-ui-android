@@ -57,27 +57,27 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@id/placeTitle"
                     tools:itemCount="3"
-                    tools:listitem="@layout/mapwize_details_recycler_item"/>
+                    tools:listitem="@layout/mapwize_details_recycler_item" />
 
-                    <TextView
-                        android:id="@+id/placeTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="4dp"
-                        android:paddingHorizontal="16dp"
-                        android:text="EuraTechnologies"
-                        android:textColor="#333"
-                        android:textAlignment="textStart"
-                        android:textSize="24sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/recyclerView"/>
-                    <FrameLayout
-                        android:id="@+id/sheetFrame"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/placeTitle"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                <FrameLayout
+                    android:id="@+id/sheetFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/placeTitle" />
+
+                <TextView
+                    android:id="@+id/placeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="4dp"
+                    android:text=""
+                    android:textAlignment="textStart"
+                    android:textColor="#333"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

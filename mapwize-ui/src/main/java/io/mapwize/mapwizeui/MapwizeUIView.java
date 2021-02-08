@@ -78,7 +78,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private CompassView compassView;
     private ConstraintLayout mainLayout;
     private FrameLayout headerLayout;
-    private float marginBottom = 24;
+    private float marginBottom = 16;
     private float dp;
 
     // Component listener
@@ -190,16 +190,18 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     private void setMarginBottom(int margin) {
+        float logoMargin = (marginBottom + 16) * dp;
+        int newMargin = (int) (margin < logoMargin ? logoMargin : margin + marginBottom * dp);
         ConstraintLayout.LayoutParams languagesButtonLayoutParams = (ConstraintLayout.LayoutParams) languagesButton.getLayoutParams();
-        languagesButtonLayoutParams.bottomMargin = (int) (margin + marginBottom * dp);
+        languagesButtonLayoutParams.bottomMargin = newMargin;
         languagesButton.setLayoutParams(languagesButtonLayoutParams);
 
         ConstraintLayout.LayoutParams followUserButtonLayoutParams = (ConstraintLayout.LayoutParams) followUserButton.getLayoutParams();
-        followUserButtonLayoutParams.bottomMargin = (int) (margin + marginBottom * dp);
+        followUserButtonLayoutParams.bottomMargin = newMargin;
         followUserButton.setLayoutParams(followUserButtonLayoutParams);
 
         ConstraintLayout.LayoutParams universesButtonLayoutParams = (ConstraintLayout.LayoutParams) universesButton.getLayoutParams();
-        universesButtonLayoutParams.bottomMargin = (int) (margin + marginBottom * dp);
+        universesButtonLayoutParams.bottomMargin = newMargin;
         universesButton.setLayoutParams(universesButtonLayoutParams);
     }
 

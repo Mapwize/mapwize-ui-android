@@ -11,7 +11,7 @@
         android:gravity="start"
         android:paddingHorizontal="16dp"
         android:paddingBottom="8dp"
-        android:text="Incubateur et accélérateur Startups Lills"
+        android:text=""
         android:textAlignment="textStart"
         android:textColor="#555"
         android:textSize="18sp"
