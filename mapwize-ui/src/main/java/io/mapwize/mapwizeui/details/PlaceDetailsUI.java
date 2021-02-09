@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -435,6 +436,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         setDetails(details);
         setPhotos(photos);
         setOpeningLabel(openingHours, timezone);
+        setOccupiedLabel(events);
         updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
         this.onLayoutChange(null, -1, -1, -1, -1, -1, -1, -1, -1);
         invalidate();
@@ -454,9 +456,22 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         requestLayout();
     }
 
+    private void setOccupiedLabel(List<Map<String, Object>> events) {
+        if (events == null || events.size() < 1) {
+            sheetContent.setCalendarLabelVisibility(false);
+            return;
+        }
+
+        Date now = Calendar.getInstance().getTime();
+        String calculatedLabel = Occupancy.getOccupiedLabel(events, now, context);
+
+        sheetContent.setPlaceCalendarLabel(calculatedLabel);
+        sheetContent.setCalendarLabelVisibility(true);
+    }
+
     private void setOpeningLabel(List<Map<String, Object>> openingHours, String timezone) {
         if (openingHours == null || openingHours.size() < 1) {
-            sheetContent.setOpeningLabelVisiblity(false);
+            sheetContent.setOpeningLabelVisibility(false);
             return;
         }
 
@@ -464,7 +479,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         String label = OpeningHours.getLabel(context, openingHours, OpeningHours.getTimeInWeek(calendar));
 
         sheetContent.setPlaceOpeningLabel(label);
-        sheetContent.setOpeningLabelVisiblity(true);
+        sheetContent.setOpeningLabelVisibility(true);
     }
 
     private void setDetails(String details) {

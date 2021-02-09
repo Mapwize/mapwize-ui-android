@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,8 @@ public class DayCalendar extends ConstraintLayout {
         return filteredEvents;
     }
 
-    static Map<String, Object> adaptToday(Map<String, Object> event, Date startOfDay, Date endOfDay) {
+    static Map<String, Object> adaptToday(Map<String, Object> eventIn, Date startOfDay, Date endOfDay) {
+        Map<String, Object> event = new HashMap<>(eventIn);
         Date startDate = parseDate((String) event.get("start"));
         Date endDate = parseDate((String) event.get("end"));
         if (startDate == null || endDate == null) return event;
@@ -164,7 +166,17 @@ public class DayCalendar extends ConstraintLayout {
         return (Integer) adaptedEvent.get("start") < nowInMinute && (Integer) adaptedEvent.get("end") > nowInMinute;
     }
 
-    public boolean setEvents(List<Map<String, Object>> events, boolean available) {
+    public static boolean isOccupied(List<Map<String, Object>> events, Date now) {
+        List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
+        for (Map<String, Object> adaptedEvent : adaptedEvents) {
+            if (occupied(adaptedEvent, now)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setEvents(List<Map<String, Object>> events, boolean available) {
         setVisibility(available);
         Date now = Calendar.getInstance().getTime();
         List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
@@ -176,10 +188,6 @@ public class DayCalendar extends ConstraintLayout {
             eventsList.addView(eventItem);
             eventItem.setMarginParams();
         }
-        for (Map<String, Object> adaptedEvent : adaptedEvents) {
-            if (occupied(adaptedEvent, now)) return true;
-        }
-        return false;
     }
 
     void setVisibility(boolean visible) {

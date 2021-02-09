@@ -21,6 +21,7 @@ public class SheetContent extends ConstraintLayout {
     private SmallButtonContainer smallButtonContainer;
     private ProgressBar progress_loader;
     private TextView placeOpeningLabelTextView;
+    private TextView placeCalendarLabelTextView;
     private View linearContentSheet;
     private DistancesAdapter distanceAdapter;
     private GridView gridView;
@@ -47,6 +48,13 @@ public class SheetContent extends ConstraintLayout {
         }
     }
 
+    public void setPlaceCalendarLabel(String placeCalendarLabel) {
+        if (placeCalendarLabelTextView != null) {
+            placeCalendarLabelTextView.setText(placeCalendarLabel);
+            placeCalendarLabelTextView.setVisibility(VISIBLE);
+        }
+    }
+
     private void initLayout(Context context) {
         View.inflate(context, R.layout.mapwize_details_content_basic, this);
         constraintLayout = findViewById(R.id.contentBasicLayout);
@@ -54,6 +62,7 @@ public class SheetContent extends ConstraintLayout {
         smallButtonContainer = findViewById(R.id.smallButtonContainer);
         progress_loader = findViewById(R.id.progress_loader);
         placeOpeningLabelTextView = findViewById(R.id.placeOpeningLabel);
+        placeCalendarLabelTextView = findViewById(R.id.placeCalendarLabel);
         linearContentSheet = findViewById(R.id.linearContentSheet);
         gridView = findViewById(R.id.gridView);
         distanceAdapter = new DistancesAdapter(context);
@@ -96,6 +105,9 @@ public class SheetContent extends ConstraintLayout {
             if (placeOpeningLabelTextView.getVisibility() == VISIBLE) {
                 placeOpeningLabelTextView.setVisibility(INVISIBLE);
             }
+            if (placeCalendarLabelTextView.getVisibility() == VISIBLE) {
+                placeCalendarLabelTextView.setVisibility(INVISIBLE);
+            }
             if (placeSubTitle.getVisibility() == VISIBLE) {
                 placeSubTitle.setVisibility(INVISIBLE);
             }
@@ -106,8 +118,12 @@ public class SheetContent extends ConstraintLayout {
         this.smallButtonContainer.setVisibility(visible ? VISIBLE : INVISIBLE);
     }
 
-    public void setOpeningLabelVisiblity(boolean b) {
+    public void setOpeningLabelVisibility(boolean b) {
         placeOpeningLabelTextView.setVisibility(b ? VISIBLE : GONE);
+    }
+
+    public void setCalendarLabelVisibility(boolean b) {
+        placeCalendarLabelTextView.setVisibility(b ? VISIBLE : GONE);
     }
 
     public void addConstraintLayoutChangeListener(OnLayoutChangeListener layoutChangeListener) {
@@ -125,7 +141,7 @@ public class SheetContent extends ConstraintLayout {
     public void showPlacelist(List<Map<String, Object>> distances, PlaceDetailsUI.DistanceItemClickListener distanceItemClickListener) {
         if (distanceAdapter != null) {
             smallButtonContainer.setVisibility(GONE);
-            setOpeningLabelVisiblity(false);
+            setOpeningLabelVisibility(false);
             setSubTitle("");
             setSubTitleVisibility(false);
             distanceAdapter.showPlacelist(distances, distanceItemClickListener);
