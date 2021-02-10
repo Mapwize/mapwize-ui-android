@@ -189,20 +189,24 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         getContext().startActivity(browserIntent);
     }
 
+    int lastMargin = 0;
+
+    private static void setBottomMargin(View view, int newMargin) {
+        ConstraintLayout.LayoutParams viewLayoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        viewLayoutParams.bottomMargin = newMargin;
+        view.setLayoutParams(viewLayoutParams);
+    }
+
     private void setMarginBottom(int margin) {
+        if (margin == lastMargin) {
+            return;
+        }
+        lastMargin = margin;
         float logoMargin = (marginBottom + 16) * dp;
         int newMargin = (int) (margin < logoMargin ? logoMargin : margin + marginBottom * dp);
-        ConstraintLayout.LayoutParams languagesButtonLayoutParams = (ConstraintLayout.LayoutParams) languagesButton.getLayoutParams();
-        languagesButtonLayoutParams.bottomMargin = newMargin;
-        languagesButton.setLayoutParams(languagesButtonLayoutParams);
-
-        ConstraintLayout.LayoutParams followUserButtonLayoutParams = (ConstraintLayout.LayoutParams) followUserButton.getLayoutParams();
-        followUserButtonLayoutParams.bottomMargin = newMargin;
-        followUserButton.setLayoutParams(followUserButtonLayoutParams);
-
-        ConstraintLayout.LayoutParams universesButtonLayoutParams = (ConstraintLayout.LayoutParams) universesButton.getLayoutParams();
-        universesButtonLayoutParams.bottomMargin = newMargin;
-        universesButton.setLayoutParams(universesButtonLayoutParams);
+        setBottomMargin(languagesButton, newMargin);
+        setBottomMargin(followUserButton, newMargin);
+        setBottomMargin(followUserButton, newMargin);
     }
 
     public void setListener(OnViewInteractionListener listener) {
@@ -409,8 +413,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                     return 1;
                                 }
                             });
-                            listener.onPlaceSelected(place, buttonBigs, rows, smallButtons);
-                            return true;
+                            return listener.onPlaceSelected(place, buttonBigs, rows, smallButtons);
                         }
                     }
             );

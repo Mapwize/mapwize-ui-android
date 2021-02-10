@@ -66,6 +66,15 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/placeTitle" />
 
+                <View
+                    android:layout_width="32dp"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/drag_round"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
+
                 <TextView
                     android:id="@+id/placeTitle"
                     android:layout_width="wrap_content"
