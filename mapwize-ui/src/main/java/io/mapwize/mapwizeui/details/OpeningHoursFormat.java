@@ -23,7 +23,7 @@ public class OpeningHoursFormat {
     }
 
     static int convertDayToTimeOfWeek(Map<String, Object> day, boolean open) {
-        int timeOfWeek = ((int) day.get("day")) * 10000;
+        int timeOfWeek = (((int) day.get("day") + 6) % 7) * 10000;
         if (open) {
             String openVal = (String) day.get("open");
             if (openVal != null) {

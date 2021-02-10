@@ -58,7 +58,7 @@ public class OpeningHours extends Row {
                     label+= context.getString( isOpen ? R.string.mapwize_details_closes_today : R.string.mapwize_details_opens_today, date);
                 } else {
                     int closingDay = (int) closingOrOpening.get("day");
-                    String weekday = new DateFormatSymbols().getWeekdays()[(closingDay + 1) % 8];//days start from SUNDAY=1 to SATURDAY=7.
+                    String weekday = new DateFormatSymbols().getWeekdays()[(closingDay + 2) % 7];//days start from SUNDAY=1 to SATURDAY=7.
                     label+= context.getString( isOpen ? R.string.mapwize_details_closes_weekday : R.string.mapwize_details_opens_weekday, weekday, date);
                 }
             }

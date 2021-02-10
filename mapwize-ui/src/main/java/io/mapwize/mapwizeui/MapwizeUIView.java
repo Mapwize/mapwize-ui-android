@@ -206,7 +206,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         int newMargin = (int) (margin < logoMargin ? logoMargin : margin + marginBottom * dp);
         setBottomMargin(languagesButton, newMargin);
         setBottomMargin(followUserButton, newMargin);
-        setBottomMargin(followUserButton, newMargin);
+        setBottomMargin(universesButton, newMargin);
     }
 
     public void setListener(OnViewInteractionListener listener) {
@@ -320,10 +320,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             if (timezone.equals("")) {
                 timezone = TimeZone.getDefault().getID();
             }
+            timezone = "America/Chicago";//TODO remove hardcoded timezone
             String floorName = "";
             Double floor = placeDetails.getFloor();
             if (floor != null) {
-                floorName = "" + floor.intValue();
+                floorName = "Floor " + floor.intValue();
             }
             this.placeDetailsUI.showDetails(
                     translation.getTitle(),
@@ -395,7 +396,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                         buttonBig.setOnClickListener(view -> callPhoneNumber(placeDetails.getPhone()));
                                     }
                                 }
-                                if (buttonBig.getButtonType() == ButtonSmall.WEBSITE_BUTTON) {
+                                if (buttonBig.getButtonType() == ButtonBig.WEBSITE_BUTTON) {
                                     if (placeDetails.getWebsite().equals("")) {
                                         iterBigButtons.remove();
                                     } else {
