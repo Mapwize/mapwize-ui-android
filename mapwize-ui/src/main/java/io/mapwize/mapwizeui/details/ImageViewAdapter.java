@@ -62,7 +62,7 @@ public class ImageViewAdapter extends RecyclerView.Adapter<ImageViewAdapter.MyVi
                 downloadImageTask.cancel(true);
             }
             if (url.equals("")) {
-                imageView.setImageResource(R.drawable.mapwize_details_placeholder);
+                imageView.setImageResource(R.drawable.mapwize_details_ic_placeholder);
                 return;
             }
             downloadImageTask = new DownloadImageTask(imageView).execute(url);

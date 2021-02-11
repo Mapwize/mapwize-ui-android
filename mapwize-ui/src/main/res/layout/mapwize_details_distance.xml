@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/mapwize_details_ic_baseline_menu_24"
+            android:src="@drawable/mapwize_details_ic_floor"
             app:tint="@color/mapwize_main_color" />
 
         <TextView
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/mapwize_details_ic_baseline_timer_24"
+            android:src="@drawable/mapwize_details_ic_clock"
             app:tint="@color/mapwize_main_color" />
 
         <TextView

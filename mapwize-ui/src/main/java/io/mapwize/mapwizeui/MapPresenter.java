@@ -759,6 +759,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         return mapwizeMap;
     }
 
+    static boolean notified = false;
     private void selectPlace(PlacePreview preview) {
         mapwizeMap.removeMarkers();
         mapwizeMap.selectPlace(preview);
@@ -780,7 +781,18 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
                     @Override
                     public void onFailure(@NonNull Throwable t) {
+                        if (!notified) {
+                            notified = true;
+                            fragment.showErrorMessage("Can't get more details");
+                        }
                         t.printStackTrace();
+                        fragment.showPlaceInfoFromPreview(object, null, venueLanguage);
+                        selectedContent = object;
+                        EventManager.getInstance().triggerOnContentSelect(
+                                object, mapwizeMap.getUniverse(),
+                                mapwizeMap.getUniverse(),
+                                Channel.MAP_CLICK,
+                                null);
                     }
                 });
 
@@ -788,6 +800,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             @Override
             public void error(Throwable t) {
+                fragment.showErrorMessage("Can't get more details");
                 t.printStackTrace();
             }
         });

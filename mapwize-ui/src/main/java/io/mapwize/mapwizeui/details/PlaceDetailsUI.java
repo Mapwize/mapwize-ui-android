@@ -59,6 +59,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     private boolean didImageExpand = false;
     private boolean placeListSelected = false;
     private CardView cardView;
+    private View dragBar;
 
     public PlaceDetailsUI(@NonNull Context context) {
         super(context);
@@ -80,6 +81,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         this.context = context;
         bottomSheet = findViewById(R.id.bottomSheet);
         cardView = findViewById(R.id.cardView);
+        dragBar = findViewById(R.id.dragBar);
         hideBottomSheetButton = findViewById(R.id.hideBottomSheetButton);
         RecyclerView photosRecyclerView = findViewById(R.id.recyclerView);
         final FrameLayout sheetFrame = findViewById(R.id.sheetFrame);
@@ -355,6 +357,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     }
 
     public void reset() {
+        dragBar.setVisibility(INVISIBLE);
         bottomSheetBehavior.setDraggable(true);
         placeListSelected = false;
         imageViewAdapter.setPhotos(getPlaceHolderImages(new ArrayList<>()));
@@ -435,15 +438,21 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         setPhotos(photos);
         setOpeningLabel(openingHours, timezone);
         setOccupiedLabel(events, timezone);
+        dragBar.setVisibility(VISIBLE);
         updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
         this.onLayoutChange(null, -1, -1, -1, -1, -1, -1, -1, -1);
         invalidate();
         requestLayout();
     }
 
-    public void showDetailsForPlacelist(String title, String subTitle, DetailsReadyListener detailsReadyListener) {
+    public void showUnexpandedDetails(String title, String subTitle, DetailsReadyListener detailsReadyListener) {
         setTitle(title);
         setSubTitle(subTitle);
+
+        dragBar.setVisibility(INVISIBLE);
+        sheetContent.setCalendarLabelVisibility(false);
+        sheetContent.setOpeningLabelVisibility(false);
+
         updateLayerPlaceList(detailsReadyListener);
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -493,26 +502,26 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
     public void updateLayerPlaceList(DetailsReadyListener detailsReadyListener) {
         List<Row> rows = new ArrayList<>();
-        List<ButtonBig> bigButtons = new ArrayList<>();
+        List<ButtonBig> buttonsBig = new ArrayList<>();
 
 
-        List<ButtonSmall> buttonSmalls = new ArrayList<>();
+        List<ButtonSmall> buttonsSmall = new ArrayList<>();
         ButtonSmall directionSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
-        buttonSmalls.add(directionSmallButton);
+        buttonsSmall.add(directionSmallButton);
 
         if (this.initalDetailsReadyListener != null) {
-            boolean change = initalDetailsReadyListener.onReady(bigButtons, rows, buttonSmalls);
+            boolean change = initalDetailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
             if (change) {
-                setSmallButtons(buttonSmalls);
-                setBigButtons(bigButtons);
+                setSmallButtons(buttonsSmall);
+                setBigButtons(buttonsBig);
                 setRows(rows);
             }
         }
         if (detailsReadyListener != null) {
-            boolean change = detailsReadyListener.onReady(bigButtons, rows, buttonSmalls);
+            boolean change = detailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
             if (change) {
-                setSmallButtons(buttonSmalls);
-                setBigButtons(bigButtons);
+                setSmallButtons(buttonsSmall);
+                setBigButtons(buttonsBig);
                 setRows(rows);
             }
         }
@@ -524,19 +533,19 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     public void updateLayer(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, List<Map<String, Object>> events, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
 //        View.OnClickListener clickListener = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
         List<Row> rows = new ArrayList<>();
-        Row floorRow = new Row(context, floor, R.drawable.mapwize_details_ic_baseline_menu_24, !floor.equals(""), Row.FLOOR_ROW, null);
+        Row floorRow = new Row(context, floor, R.drawable.mapwize_details_ic_floor, !floor.equals(""), Row.FLOOR_ROW, null);
         rows.add(floorRow);
 
         Calendar calendar = changeTimezoneOfDate(Calendar.getInstance().getTime(), TimeZone.getDefault(), TimeZone.getTimeZone(timezone));
         Row openingHoursRow = new OpeningHours(context, openingHours, OpeningHours.getTimeInWeek(calendar), null);
         rows.add(openingHoursRow);
-        Row phoneRow = new Row(context, phone, R.drawable.mapwize_details_ic_baseline_call_24, !phone.equals(""), Row.PHONE_NUMBER_ROW, null);
+        Row phoneRow = new Row(context, phone, R.drawable.mapwize_details_ic_phone_outline, !phone.equals(""), Row.PHONE_NUMBER_ROW, null);
         rows.add(phoneRow);
-        Row websiteRow = new Row(context, website, R.drawable.mapwize_details_ic_baseline_language_24, !website.equals(""), Row.WEBSITE_ROW, null);
+        Row websiteRow = new Row(context, website, R.drawable.mapwize_details_ic_globe, !website.equals(""), Row.WEBSITE_ROW, null);
         rows.add(websiteRow);
         Row capacityRow = new Row(context,
                 capacity != null ? capacity.toString() : "",
-                R.drawable.mapwize_details_ic_baseline_people_24,
+                R.drawable.mapwize_details_ic_group,
                 capacity != null,
                 Row.CAPACITY_ROW,
                 null
@@ -545,7 +554,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         Row mapwize_details_occupancy = new Occupancy(
                 context,
                 "Currently occupied", events,
-                R.drawable.mapwize_details_ic_baseline_calendar_today_24,
+                R.drawable.mapwize_details_ic_calendar,
                 events != null && events.size() > 0,
                 Row.OCCUPANCY_ROW,
                 calendar.getTime(),
@@ -553,32 +562,34 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         );
         rows.add(mapwize_details_occupancy);
 
-        ButtonBig directionButton = new ButtonBig(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
-        ButtonBig callButton = new ButtonBig(context, context.getString(R.string.mapwize_details_call), R.drawable.mapwize_details_ic_baseline_call_24, false, ButtonBig.CALL_BUTTON, null);
-        List<ButtonBig> bigButtons = new ArrayList<>();
-        bigButtons.add(directionButton);
-        bigButtons.add(callButton);
+        List<ButtonBig> buttonsBig = new ArrayList<>();
+        List<ButtonSmall> buttonsSmall = new ArrayList<>();
 
-        List<ButtonSmall> buttonSmalls = new ArrayList<>();
+        ButtonBig directionButtonBig = new ButtonBig(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
         ButtonSmall directionSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
-        ButtonSmall callSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_call), R.drawable.mapwize_details_ic_baseline_call_24, false, ButtonBig.CALL_BUTTON, null);
-        buttonSmalls.add(directionSmallButton);
-        buttonSmalls.add(callSmallButton);
+        buttonsSmall.add(directionSmallButton);
+        buttonsBig.add(directionButtonBig);
 
+        if (!phone.equals("")) {
+            ButtonBig callButtonBig = new ButtonBig(context, context.getString(R.string.mapwize_details_call), R.drawable.mapwize_details_ic_phone, false, ButtonBig.CALL_BUTTON, null);
+            ButtonSmall callSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_call), R.drawable.mapwize_details_ic_phone, false, ButtonBig.CALL_BUTTON, null);
+            buttonsSmall.add(callSmallButton);
+            buttonsBig.add(callButtonBig);
+        }
         if (!website.equals("")) {
-            ButtonBig websiteButtonBig = new ButtonBig(context, context.getString(R.string.mapwize_details_website), R.drawable.mapwize_details_ic_baseline_language_24, false, ButtonBig.WEBSITE_BUTTON, null);
-            ButtonSmall websiteButtonSmall = new ButtonSmall(context, context.getString(R.string.mapwize_details_website), R.drawable.mapwize_details_ic_baseline_language_24, false, ButtonSmall.WEBSITE_BUTTON, null);
-            buttonSmalls.add(websiteButtonSmall);
-            bigButtons.add(websiteButtonBig);
+            ButtonBig websiteButtonBig = new ButtonBig(context, context.getString(R.string.mapwize_details_website), R.drawable.mapwize_details_ic_globe, false, ButtonBig.WEBSITE_BUTTON, null);
+            ButtonSmall websiteButtonSmall = new ButtonSmall(context, context.getString(R.string.mapwize_details_website), R.drawable.mapwize_details_ic_globe, false, ButtonSmall.WEBSITE_BUTTON, null);
+            buttonsSmall.add(websiteButtonSmall);
+            buttonsBig.add(websiteButtonBig);
 
         }
         if (!sharingLink.equals("")) {
             OnClickListener shareButtonClickListener = view -> {
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                String message = context.getString(R.string.share_place_text, name);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, message + " " + sharingLink);
+//                String message = context.getString(R.string.share_place_text, name);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, sharingLink);
 
-                sendIntent.putExtra(Intent.EXTRA_TITLE, "Share this Mapwize place");
+                sendIntent.putExtra(Intent.EXTRA_TITLE, "Share " + name);
                 sendIntent.setType("text/plain");
                 sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
@@ -602,24 +613,24 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
                     ButtonSmall.SHARE_BUTTON,
                     shareButtonClickListener
             );
-            buttonSmalls.add(sharingLinkButtonSmall);
-            bigButtons.add(sharingLinkButtonBig);
+            buttonsSmall.add(sharingLinkButtonSmall);
+            buttonsBig.add(sharingLinkButtonBig);
         }
 
 
         if (this.initalDetailsReadyListener != null) {
-            boolean change = initalDetailsReadyListener.onReady(bigButtons, rows, buttonSmalls);
+            boolean change = initalDetailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
             if (change) {
-                setSmallButtons(buttonSmalls);
-                setBigButtons(bigButtons);
+                setSmallButtons(buttonsSmall);
+                setBigButtons(buttonsBig);
                 setRows(rows);
             }
         }
         if (detailsReadyListener != null) {
-            boolean change = detailsReadyListener.onReady(bigButtons, rows, buttonSmalls);
+            boolean change = detailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
             if (change) {
-                setSmallButtons(buttonSmalls);
-                setBigButtons(bigButtons);
+                setSmallButtons(buttonsSmall);
+                setBigButtons(buttonsBig);
                 setRows(rows);
             }
         }
@@ -648,7 +659,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     }
 
     public interface DetailsReadyListener {
-        default boolean onReady(List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
+        default boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
             return false;
         }
     }

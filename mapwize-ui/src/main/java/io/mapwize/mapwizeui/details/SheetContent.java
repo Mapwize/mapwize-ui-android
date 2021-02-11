@@ -142,6 +142,7 @@ public class SheetContent extends ConstraintLayout {
         if (distanceAdapter != null) {
             smallButtonContainer.setVisibility(GONE);
             setOpeningLabelVisibility(false);
+            setCalendarLabelVisibility(false);
             setSubTitle("");
             setSubTitleVisibility(false);
             distanceAdapter.showPlacelist(distances, distanceItemClickListener);

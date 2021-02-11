@@ -40,5 +40,12 @@
     <string name="mapwize_details_details">Details</string>
     <string name="share_place_text">Hello, please check %1$s on Mapwize Map</string>
     <string name="mapwize_details_occupied">Currently occupied</string>
-    <string name="mapwize_details_not_occupied">Currently not occupied</string>
+    <string name="mapwize_details_not_occupied">Currently available</string>
+    <string name="capacity_not_available">Capacity not available</string>
+    <string name="website_not_available">Website not available</string>
+    <string name="occupancy_not_available">Schedule not available</string>
+    <string name="floor_not_available">Floor not available</string>
+    <string name="phone_number_not_available">Phone number not available</string>
+    <string name="opening_hours_not_available">Opening hours not available</string>
+    <string name="information_not_available">Information not available</string>
 </resources>

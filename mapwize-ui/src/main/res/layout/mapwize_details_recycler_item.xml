@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="2dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/mapwize_details_placeholder"
+        android:src="@drawable/mapwize_details_ic_placeholder"
         android:transitionName="place"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

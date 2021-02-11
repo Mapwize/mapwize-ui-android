@@ -67,6 +67,7 @@
                     app:layout_constraintTop_toBottomOf="@id/placeTitle" />
 
                 <View
+                    android:id="@+id/dragBar"
                     android:layout_width="32dp"
                     android:layout_height="4dp"
                     android:layout_marginTop="4dp"

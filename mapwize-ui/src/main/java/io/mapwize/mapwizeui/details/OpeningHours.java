@@ -29,7 +29,7 @@ public class OpeningHours extends Row {
     private RecyclerView recyclerView;
 
     public OpeningHours(Context context, List<Map<String, Object>> openingHours, TimeInWeek timeInWeek, OnClickListener clickListener) {
-        super(context, getLabel(context, openingHours, timeInWeek), R.drawable.mapwize_details_ic_baseline_access_time_24, openingHours != null && openingHours.size() != 0, OPENING_TIME_ROW, clickListener);
+        super(context, getLabel(context, openingHours, timeInWeek), R.drawable.mapwize_details_ic_clock, openingHours != null && openingHours.size() != 0, OPENING_TIME_ROW, clickListener);
         showOpeningHours(openingHours);
     }
 
@@ -47,7 +47,7 @@ public class OpeningHours extends Row {
             label = closingOrOpening.containsKey("soon") ?
                     (isOpen ? context.getString(R.string.mapwize_details_closing_soon) : context.getString(R.string.mapwize_details_opening_soon)) :
                     (isOpen ? context.getString(R.string.mapwize_details_open) : context.getString(R.string.mapwize_details_closed));
-            label += ", ";
+            label += " - ";
             String closesAt = isOpen ? (String) closingOrOpening.get("close") : (String) closingOrOpening.get("open");
             if (closesAt != null) {
                 String date = closesAt.equals("2359") ? context.getString(R.string.mapwize_details_midnight) :

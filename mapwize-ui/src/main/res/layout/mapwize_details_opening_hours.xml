@@ -28,16 +28,6 @@
                 android:src="@drawable/mapwize_details_ic_baseline_access_time_24"
                 app:tint="@color/mapwize_main_color" />
 
-            <ImageView
-                android:id="@+id/arrowDownOpeningHours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="4dp"
-                android:paddingHorizontal="4dp"
-                android:src="@drawable/mapwize_details_ic_baseline_keyboard_arrow_down_24"
-                app:tint="@color/mapwize_main_color" />
-
             <TextView
                 android:id="@+id/rowLabel"
                 android:layout_width="0dp"
@@ -48,6 +38,16 @@
                 android:text="Closed, opens Sunday at 8:00 AM"
                 android:textColor="@color/mapwize_details_row_text_color"
                 android:textSize="@dimen/mapwize_details_row_text_size" />
+
+            <ImageView
+                android:id="@+id/arrowDownOpeningHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:paddingHorizontal="8dp"
+                android:src="@drawable/mapwize_details_ic_baseline_keyboard_arrow_down_24"
+                app:tint="@color/mapwize_main_color" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

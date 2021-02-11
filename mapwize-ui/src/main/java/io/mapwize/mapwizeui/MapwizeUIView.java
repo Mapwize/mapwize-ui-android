@@ -152,17 +152,18 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         placeDetailsUI.setOnSlideListener((offset, halfExpandedOffset) -> {
             if (languagesButton != null && offset < halfExpandedOffset) {
                 setMarginBottom((int) (offset));
+                floorControllerView.smoothScroll();
             }
         });
         placeDetailsUI.setInitalDetailsReadyListener(new PlaceDetailsUI.DetailsReadyListener() {
             @Override
-            public boolean onReady(List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
-                for (ButtonBig buttonBig : buttonBigs) {
+            public boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
+                for (ButtonBig buttonBig : buttonsBig) {
                     if (buttonBig.getButtonType() == ButtonSmall.DIRECTION_BUTTON) {
                         buttonBig.setOnClickListener(view -> presenter.onDirectionButtonClick());
                     }
                 }
-                for (ButtonSmall buttonSmall : smallButtons) {
+                for (ButtonSmall buttonSmall : buttonsSmall) {
                     if (buttonSmall.getButtonType() == ButtonSmall.DIRECTION_BUTTON) {
                         buttonSmall.setOnClickListener(view -> presenter.onDirectionButtonClick());
                     }
@@ -304,7 +305,41 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
     }
 
+    private void showPlace(Place place, String language) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            this.placeDetailsUI.showUnexpandedDetails(
+                    place.getTranslation(language).getTitle(),
+                    place.getTranslation(language).getSubtitle(),
+                    new PlaceDetailsUI.DetailsReadyListener() {
+                        @Override
+                        public boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
+
+                            if (listener.shouldDisplayInformationButton(place)) {
+                                ButtonSmall buttonSmall = new ButtonSmall(
+                                        getContext(),
+                                        "Information",
+                                        R.drawable.mapwize_details_ic_baseline_info_24,
+                                        false, ButtonSmall.INFORMATION_BUTTON,
+                                        view -> presenter.onInformationClick()
+                                );
+                                buttonsSmall.add(buttonSmall);
+                            }
+
+                            listener.onPlaceSelected(place, buttonsSmall, buttonsBig, rows);
+                            return true;
+                        }
+                    }
+            );
+            placeDetailsUI.setLoading(false);
+            floorControllerView.smoothScroll();
+        });
+    }
+
     private void showPlaceDetails(Place place, PlaceDetails placeDetails, String language) {
+        if (placeDetails == null) {
+            showPlace(place, language);
+            return;
+        }
         Translation translation = placeDetails.getTranslation(language);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {//We post delayed it to wait for the bottom sheet animation
             String formatedPhoneNumber = PhoneNumberUtils.formatNumber(placeDetails.getPhone(), "fr");
@@ -320,7 +355,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             if (timezone.equals("")) {
                 timezone = TimeZone.getDefault().getID();
             }
-            timezone = "America/Chicago";//TODO remove hardcoded timezone
             String floorName = "";
             Double floor = placeDetails.getFloor();
             if (floor != null) {
@@ -340,7 +374,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                     placeDetails.getEvents(),
                     placeDetails.getCapacity(), new PlaceDetailsUI.DetailsReadyListener() {
                         @Override
-                        public boolean onReady(List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
+                        public boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
 
                             for (Row row : rows) {
                                 if (row.getRowType() == Row.PHONE_NUMBER_ROW) {
@@ -355,7 +389,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                 }
                             }
 
-                            Iterator<ButtonSmall> iterSmallButtons = smallButtons.iterator();
+                            Iterator<ButtonSmall> iterSmallButtons = buttonsSmall.iterator();
                             while (iterSmallButtons.hasNext()) {
                                 ButtonSmall buttonBig = iterSmallButtons.next();
                                 if (buttonBig.getButtonType() == ButtonSmall.CALL_BUTTON) {
@@ -382,10 +416,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                         false, ButtonSmall.INFORMATION_BUTTON,
                                         view -> presenter.onInformationClick()
                                 );
-                                smallButtons.add(buttonSmall);
+                                buttonsSmall.add(buttonSmall);
                             }
 
-                            Iterator<ButtonBig> iterBigButtons = buttonBigs.iterator();
+                            Iterator<ButtonBig> iterBigButtons = buttonsBig.iterator();
 
                             while (iterBigButtons.hasNext()) {
                                 ButtonBig buttonBig = iterBigButtons.next();
@@ -414,11 +448,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                     return 1;
                                 }
                             });
-                            return listener.onPlaceSelected(place, buttonBigs, rows, smallButtons);
+                            return listener.onPlaceSelected(place, buttonsSmall, buttonsBig, rows);
                         }
                     }
             );
             placeDetailsUI.setLoading(false);
+            floorControllerView.smoothScroll();
         }, 500);
     }
 
@@ -447,12 +482,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
         placeDetailsUI.show();
 
-        this.placeDetailsUI.showDetailsForPlacelist(
+        this.placeDetailsUI.showUnexpandedDetails(
                 placelist.getTranslation(language).getTitle(),
                 placelist.getTranslation(language).getSubtitle(),
                 new PlaceDetailsUI.DetailsReadyListener() {
                     @Override
-                    public boolean onReady(List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
+                    public boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
 
                         if (listener.shouldDisplayInformationButton(placelist)) {
                             ButtonSmall buttonSmall = new ButtonSmall(
@@ -462,82 +497,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                     false, ButtonSmall.INFORMATION_BUTTON,
                                     view -> presenter.onInformationClick()
                             );
-                            smallButtons.add(buttonSmall);
+                            buttonsSmall.add(buttonSmall);
                         }
 
-                        listener.onPlaceSelected(placelist, buttonBigs, rows, smallButtons);
+                        listener.onPlaceSelected(placelist, buttonsSmall, buttonsBig, rows);
                         return true;
                     }
                 }
         );
-        //TODO uncomment to display placelist in a grid view
-//        mapwizeMap.getMapwizeApi().getPlacesForPlacelist(placelist.getId(), new ApiCallback<List<Place>>() {
-//            @Override
-//            public void onSuccess(@NonNull List<Place> object) {
-//                MapwizeIndoorLocation userLocation = mapwizeMap.getUserLocation();
-//                if (userLocation != null) {
-//                    mapwizeMap.getMapwizeApi().getDistances(userLocation, object, mapwizeMap.getDirectionModes().get(0), true, new ApiCallback<DistanceResponse>() {
-//                        @Override
-//                        public void onSuccess(@NonNull DistanceResponse object) {
-//                            List<DirectionPointWrapperAndDistance> list2 = object.getDistances();
-//                            Iterator<DirectionPointWrapperAndDistance> iterDistanceResponse = list2.iterator();
-//                            while (iterDistanceResponse.hasNext()) {
-//                                DirectionPointWrapperAndDistance directionPointWrapperAndDistance = iterDistanceResponse.next();
-//                                if (directionPointWrapperAndDistance.getDistance() < 0) {
-//                                    iterDistanceResponse.remove();
-//                                }
-//                            }
-//
-//                            Collections.sort(list2, (o1, o2) -> (int) (o1.getTraveltime() - o2.getTraveltime()));
-//
-//                            List<Map<String, Object>> distances = new ArrayList<>();
-//                            for (DirectionPointWrapperAndDistance dpwad : list2) {
-//                                Map<String, Object> map = new HashMap<>();
-//                                map.put("placeId", dpwad.getPlaceId());
-//                                map.put("venueId", dpwad.getVenueId());
-//                                map.put("floor", dpwad.getFloor());
-//                                map.put("distance", dpwad.getDistance());
-//                                map.put("traveltime", dpwad.getTraveltime() / 60);
-//                                distances.add(map);
-//                            }
-//                            placeDetailsUI.post(() -> {
-//                                placeDetailsUI.setTitle(placelist.getTranslation(language).getTitle());
-//                                placeDetailsUI.setSubTitle(placelist.getTranslation(language).getSubtitle());
-//                                placeDetailsUI.showPlacelist(distances, (placeId, venueId) -> {
-//                                    mapwizeMap.getMapwizeApi().getPlace(placeId, new ApiCallback<Place>() {
-//                                        @Override
-//                                        public void onSuccess(@NonNull Place place) {
-//                                            mapwizeView.post(() -> mapwizeMap.centerOnPlace(place, 200));
-//                                        }
-//
-//                                        @Override
-//                                        public void onFailure(@NonNull Throwable t) {
-//                                            //TODO handle Failure
-//                                        }
-//                                    });
-//                                });
-//                                placeDetailsUI.setLoading(false);
-//                            });
-//                        }
-//
-//                        @Override
-//                        public void onFailure(@NonNull Throwable t) {
-//                            //TODO handle Failure
-//                            System.out.println("Failed to get distances : " + t.getMessage());
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Throwable t) {
-//                //TODO handle Failure
-//                System.out.println("Failed to get places for placelist : " + t.getMessage());
-//            }
-//        });
-
-        //TODO listener.shouldDisplayInformationButton(placelist)
-//        bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
     }
 
     @Override
@@ -1030,7 +997,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             return true;
         }
 
-        default boolean onPlaceSelected(MapwizeObject place, List<ButtonBig> buttonBigs, List<Row> rows, List<ButtonSmall> smallButtons) {
+        default boolean onPlaceSelected(MapwizeObject place, List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
             return false;
         }
     }

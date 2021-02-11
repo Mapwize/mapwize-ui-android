@@ -36,13 +36,13 @@ public class Row extends LinearLayout {
 
     public Row(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initLayout(context, "Sample label", R.drawable.mapwize_details_ic_baseline_call_24, true, OTHER, view -> {
+        initLayout(context, "Sample label", R.drawable.mapwize_details_ic_phone_outline, true, OTHER, view -> {
         });
     }
 
     public Row(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initLayout(context, "Sample label", R.drawable.mapwize_details_ic_baseline_call_24, true, OTHER, view -> {
+        initLayout(context, "Sample label", R.drawable.mapwize_details_ic_phone_outline, true, OTHER, view -> {
         });
     }
 
@@ -87,17 +87,17 @@ public class Row extends LinearLayout {
     public String getNonAvailableLabel() {
         switch (rowType) {
             case CAPACITY_ROW:
-                return "Capacity is not available";
+                return getContext().getString(R.string.capacity_not_available);
             case WEBSITE_ROW:
-                return "Website is not available";
+                return getContext().getString(R.string.website_not_available);
             case OCCUPANCY_ROW:
-                return "Occupation is not available";
+                return getContext().getString(R.string.occupancy_not_available);
             case PHONE_NUMBER_ROW:
-                return "Phone number is not available";
+                return getContext().getString(R.string.phone_number_not_available);
             case OPENING_TIME_ROW:
-                return "Opening hours are not available";
+                return getContext().getString(R.string.opening_hours_not_available);
         }
-        return "Information not available";
+        return getContext().getString(R.string.information_not_available);
     }
 
 }

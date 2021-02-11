@@ -89,19 +89,19 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
                                  searchResultUniverse: Universe,
                                  channel: Channel,
                                  searchQuery: String?) {
-        Log.i("Debug", "" + place.name + " " + currentUniverse.name +  " " + channel + " " + searchQuery)
+        Log.i("Debug", "" + place.name + " " + currentUniverse.name + " " + channel + " " + searchQuery)
     }
 
     override fun onDirectionStart(venue: Venue, universe: Universe?, from: DirectionPoint?, to: DirectionPoint?, mode: String?, isNavigation: Boolean) {
-        Log.i("Debug", "" + venue.name + " " + universe?.name +  " " + from + " " + to + " " + mode + " " + isNavigation)
+        Log.i("Debug", "" + venue.name + " " + universe?.name + " " + from + " " + to + " " + mode + " " + isNavigation)
     }
 
     override fun onContentSelect(placelist: Placelist, currentUniverse: Universe, searchResultUniverse: Universe, channel: Channel, searchQuery: String?) {
-        Log.i("Debug", "" + placelist.name + " " + currentUniverse.name +  " " + channel + " " + searchQuery)
+        Log.i("Debug", "" + placelist.name + " " + currentUniverse.name + " " + channel + " " + searchQuery)
     }
 
-    override fun onPlaceSelected(place: MapwizeObject?, buttonBigs: MutableList<ButtonBig>?, rows: MutableList<Row>?, smallButtons: MutableList<ButtonSmall>?): Boolean {
-        smallButtons?.forEach {
+    override fun onPlaceSelected(place: MapwizeObject?, buttonsSmall: MutableList<ButtonSmall>?, buttonsBig: MutableList<ButtonBig>?, rows: MutableList<Row>?): Boolean {
+        buttonsSmall?.forEach {
             if (it.buttonType == ButtonSmall.CALL_BUTTON) {
 //                it.setOnClickListener({ Toast.makeText(this, "Calling from Kotlin", Toast.LENGTH_SHORT).show() })
             }
