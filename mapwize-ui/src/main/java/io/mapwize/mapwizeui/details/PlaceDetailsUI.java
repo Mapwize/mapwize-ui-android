@@ -446,8 +446,8 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     }
 
     public void showUnexpandedDetails(String title, String subTitle, DetailsReadyListener detailsReadyListener) {
-        setTitle(title);
-        setSubTitle(subTitle);
+        setTitle(title != null ? title : "");
+        setSubTitle(subTitle != null ? subTitle : "");
 
         dragBar.setVisibility(INVISIBLE);
         sheetContent.setCalendarLabelVisibility(false);

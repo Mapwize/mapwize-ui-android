@@ -23,6 +23,7 @@ import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.map.MapwizeIndoorLocation;
+import io.mapwize.mapwizesdk.map.PlacePreview;
 import io.mapwize.mapwizeui.modeview.ModeView;
 import io.mapwize.mapwizeui.modeview.ModeViewAdapter;
 
@@ -286,6 +287,9 @@ public class SearchDirectionView extends ConstraintLayout implements
             textView.setText(mapwizeObject.getTranslation(language).getTitle());
         } else if (directionPoint instanceof MapwizeIndoorLocation) {
             textView.setText(getResources().getString(R.string.mapwize_current_location));
+        } else if (directionPoint instanceof PlacePreview) {
+            PlacePreview placePreview = (PlacePreview) directionPoint;
+            textView.setText(placePreview.getTitle());
         }
     }
 

@@ -50,6 +50,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
 
     private String lastPlacePreviewId = "";
+    private PlacePreview selectedPlacePreview = null;
 
     private enum UIState {
         DEFAULT, SEARCH, SEARCH_FROM, SEARCH_TO, DIRECTION
@@ -303,18 +304,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
         }
         if (clickEvent.getEventType() == ClickEvent.PLACE_CLICK) {
-            PlacePreview placePreview = clickEvent.getPlacePreview();
-            if (placePreview != null) {
-                String newId = placePreview.getId();
+            selectedPlacePreview = clickEvent.getPlacePreview();
+            if (selectedPlacePreview != null) {
+                String newId = selectedPlacePreview.getId();
                 if (selectedContent == null || !lastPlacePreviewId.equals(newId)) {
-                    lastPlacePreviewId = placePreview.getId();
-                    selectPlace(placePreview);
+                    lastPlacePreviewId = selectedPlacePreview.getId();
+                    selectPlace(selectedPlacePreview);
                 }
             }
 
         }
         if (clickEvent.getEventType() == ClickEvent.MAP_CLICK) {
             if (selectedContent != null) {
+                unselectContent();
+            } else if (selectedPlacePreview != null) {
                 unselectContent();
             }
         }
@@ -434,7 +437,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             validateDirectionFrom(mapwizeMap.getUserLocation());
         }
         if (selectedContent != null) {
-            validateDirectionTo((DirectionPoint)selectedContent);
+            validateDirectionTo((DirectionPoint) selectedContent);
+        } else if (selectedPlacePreview != null) {
+            validateDirectionTo((DirectionPoint) selectedPlacePreview);
         }
         fragment.hideInfo();
         fragment.showAccessibleDirectionModes(directionModes);
@@ -745,6 +750,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.removeMarkers();
         mapwizeMap.unselectPlace();
         selectedContent = null;
+        selectedPlacePreview = null;
         fragment.hideInfo();
     }
 
@@ -763,6 +769,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     static boolean notified = false;
     private void selectPlace(PlacePreview preview) {
+        selectedPlacePreview = preview;
         mapwizeMap.removeMarkers();
         mapwizeMap.selectPlace(preview);
         fragment.showPlacePreviewInfo(preview, venueLanguage);
@@ -802,8 +809,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
             @Override
             public void error(Throwable t) {
-                fragment.showErrorMessage("Can't get more details");
+                if (!notified) {
+                    notified = true;
+                    fragment.showErrorMessage("Can't get more details");
+                }
                 t.printStackTrace();
+                fragment.showPreviewOnly(selectedPlacePreview);
             }
         });
     }
@@ -1026,7 +1037,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.stopNavigation();
         mapwizeMap.removeMarkers();
         if (to instanceof Place || to instanceof Placelist) {
-            selectedContent = (MapwizeObject)to;
+            selectedContent = (MapwizeObject) to;
+        } else if (to instanceof PlacePreview) {
+            selectedPlacePreview = (PlacePreview) to;
         }
         from = null;
         to = null;
@@ -1047,6 +1060,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             } else {
                 selectPlacelist((Placelist) selectedContent);
             }
+        } else if (selectedPlacePreview != null) {
+            selectPlace(selectedPlacePreview);
         }
     }
 

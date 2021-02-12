@@ -305,6 +305,31 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
     }
 
+    @Override
+    public void showPreviewOnly(PlacePreview placePreview) {
+        if (placePreview == null) {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                placeDetailsUI.setLoading(false);
+                floorControllerView.smoothScroll();
+            });
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            this.placeDetailsUI.showUnexpandedDetails(
+                    placePreview.getTitle(),
+                    placePreview.getSubtitle(),
+                    new PlaceDetailsUI.DetailsReadyListener() {
+                        @Override
+                        public boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
+                            return true;
+                        }
+                    }
+            );
+            placeDetailsUI.setLoading(false);
+            floorControllerView.smoothScroll();
+        });
+    }
+
     private void showPlace(Place place, String language) {
         new Handler(Looper.getMainLooper()).post(() -> {
             this.placeDetailsUI.showUnexpandedDetails(

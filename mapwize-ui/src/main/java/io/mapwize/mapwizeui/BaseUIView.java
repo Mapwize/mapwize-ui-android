@@ -66,14 +66,22 @@ interface BaseUIView {
     void showSearchDirectionLoading();
     void hideSearchDirectionLoading();
     void showErrorMessage(String message);
+
     void showFollowUserMode(FollowUserMode mode);
+
     void showDirectionError();
 
     void refreshSearchData();
+
     void dispatchFollowUserModeWithoutLocation();
+
     void dispatchInformationButtonClick(MapwizeObject object);
+
     void dispatchMapwizeReady(MapwizeMap mapwizeMap);
+
     void setLanguage(String language);
 
     void invalidateOnBackPressedCallbackState();
+
+    void showPreviewOnly(PlacePreview selectedPlacePreview);
 }
