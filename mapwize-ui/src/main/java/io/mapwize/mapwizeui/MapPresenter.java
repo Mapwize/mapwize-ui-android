@@ -383,6 +383,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             @Override
             public void onFailure(@NonNull Throwable t) {
                 t.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(
+                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
             }
         });
     }
@@ -826,6 +828,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             @Override
             public void onFailure(@NonNull Throwable t) {
                 t.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(
+                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
             }
         });
     }
