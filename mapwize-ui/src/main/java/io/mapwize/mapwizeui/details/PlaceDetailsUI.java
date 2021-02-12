@@ -557,7 +557,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
                 R.drawable.mapwize_details_ic_calendar,
                 events != null && events.size() > 0,
                 Row.OCCUPANCY_ROW,
-                calendar.getTime(),
+                calendar,
                 null
         );
         rows.add(mapwize_details_occupancy);

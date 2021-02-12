@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
@@ -31,6 +30,8 @@ public class DayCalendar extends ConstraintLayout {
     RelativeLayout eventsList;
     private double currentHour = 0;
     private Context context;
+    private HorizontalScrollView horizontalScrollView;
+    private View currentTimeBar;
 
     public DayCalendar(@NonNull Context context) {
         super(context);
@@ -139,10 +140,11 @@ public class DayCalendar extends ConstraintLayout {
         this.context = context;
         View.inflate(getContext(), R.layout.mapwize_details_day_calendar, this);
         eventsList = findViewById(R.id.eventsList);
-        final HorizontalScrollView horizontalScrollView = findViewById(R.id.hoursScrollView);
-        final View currentTimeBar = findViewById(R.id.currentTimeBar);
+        horizontalScrollView = findViewById(R.id.hoursScrollView);
+        currentTimeBar = findViewById(R.id.currentTimeBar);
+    }
 
-        Calendar calendar = Calendar.getInstance();
+    public void setCurrentTime(Calendar calendar) {
         int hour24hrs = calendar.get(Calendar.HOUR_OF_DAY);
         int minutes = calendar.get(Calendar.MINUTE);
         currentHour = hour24hrs + minutes / 60f;
@@ -152,12 +154,11 @@ public class DayCalendar extends ConstraintLayout {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-        horizontalScrollView.post(() -> horizontalScrollView.scrollTo((int) ((currentHour - 1) * hourUnit * dp), 0));
+        horizontalScrollView.post(() -> horizontalScrollView.scrollTo((int) ((currentHour - 2) * hourUnit * dp), 0));
 
-        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) currentTimeBar.getLayoutParams();
-        marginLayoutParams.leftMargin = (int) ((currentHour * hourUnit) * dp);
+        MarginLayoutParams marginLayoutParams = (MarginLayoutParams) currentTimeBar.getLayoutParams();
+        marginLayoutParams.leftMargin = (int) (((currentHour - 1) * hourUnit) * dp);
         currentTimeBar.setLayoutParams(marginLayoutParams);
-
     }
 
 
@@ -176,9 +177,8 @@ public class DayCalendar extends ConstraintLayout {
         return false;
     }
 
-    public void setEvents(List<Map<String, Object>> events, boolean available) {
+    public void setEvents(List<Map<String, Object>> events, boolean available, Date now) {
         setVisibility(available);
-        Date now = Calendar.getInstance().getTime();
         List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
         for (Map<String, Object> event : adaptedEvents) {
             EventItem eventItem = new EventItem(context,

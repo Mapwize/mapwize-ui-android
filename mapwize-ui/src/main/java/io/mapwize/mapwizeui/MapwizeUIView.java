@@ -474,14 +474,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     public void showPlacelistInfo(Placelist placelist, String language) {
         placeDetailsUI.show();
         setInfoVisible(true);
-//        placeDetailsUI.setLoading(true);//TODO uncomment to display placelist in a grid view
-        placeDetailsUI.setTitle(placelist.getTranslation(language).getTitle());
-        placeDetailsUI.setSubTitle(placelist.getTranslation(language).getSubtitle());
-        if (!placelist.getTranslation(language).getSubtitle().equals("")) {
-            placeDetailsUI.setSubTitleVisibility(true);
-        }
-        placeDetailsUI.show();
-
         this.placeDetailsUI.showUnexpandedDetails(
                 placelist.getTranslation(language).getTitle(),
                 placelist.getTranslation(language).getSubtitle(),
@@ -505,6 +497,9 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                     }
                 }
         );
+
+        placeDetailsUI.setLoading(false);
+        floorControllerView.smoothScroll();
     }
 
     @Override

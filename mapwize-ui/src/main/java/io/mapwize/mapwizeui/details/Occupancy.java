@@ -2,6 +2,7 @@ package io.mapwize.mapwizeui.details;
 
 import android.content.Context;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,13 @@ public class Occupancy extends Row {
     private final List<Map<String, Object>> events;
     DayCalendar dayCalendar;
 
-    public Occupancy(@NonNull Context context, String label, List<Map<String, Object>> events, int icon, boolean available, int rowType, Date now, OnClickListener clickListener) {
+    public Occupancy(@NonNull Context context, String label, List<Map<String, Object>> events, int icon, boolean available, int rowType, Calendar calendar, OnClickListener clickListener) {
         super(context, label, icon, available, rowType, clickListener);
         this.events = events;
         if (available && dayCalendar != null) {
-            dayCalendar.setEvents(events, available);
-            String calculatedLabel = Occupancy.getOccupiedLabel(events, now, context);
+            dayCalendar.setEvents(events, available, calendar.getTime());
+            dayCalendar.setCurrentTime(calendar);
+            String calculatedLabel = Occupancy.getOccupiedLabel(events, calendar.getTime(), context);
             rowLabel.setText(calculatedLabel);
         }
     }
