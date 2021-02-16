@@ -184,6 +184,46 @@ public void setDirection(Direction direction, DirectionPoint from, DirectionPoin
 public void grantAccess(String accesskey, ApiCallback<Boolean> callback)
 ```
 
+## Place details
+
+Place details provides you with a ready to use, yet customizable UI.
+You can have a full control over the displayed buttons and rows.
+
+You can use the following callback to control the Buttons and the Rows of the Details UI.
+
+```java
+/**
+* Setup the UI to display details about the selected place
+* @param place the selected place
+* @param buttonsSmall the buttons shown in the small view
+* @param buttonsBig the buttons shown in the full view
+* @param rows the rows that contains the details of the place
+*/
+boolean onPlaceSelected(MapwizeObject place, List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
+            return false;
+        }
+```
+
+You will receive a list of Buttons, you can modify them, change their order or remove some of them.
+
+
+The `shouldDisplayInformationButton` callback is called before the `onPlaceSelected`.
+The `onPlaceSelected` callback will have the last word on the display of the Rows or Buttons.
+
+### Managing Buttons
+
+You can create a Small Button object using the `ButtonSmall(@NonNull Context context, String label, int icon, boolean highlighted, int buttonType, OnClickListener clickListener)` constructor.
+
+To change the label of a particular Button, you can find it using its category with the (`getButtonType`) method that returns one of the following values: `ButtonSmall.DIRECTION_BUTTON`, `Row.CALL_BUTTON`, `Row.WEBSITE_BUTTON`, `Row.SHARE_BUTTON`, `Row.INFORMATION_BUTTON`, `Row.OTHER`.
+
+You can also manage Big Buttons the same way as the Small Buttons.
+
+### Managing Rows
+You can create a Row object using: `Row(@NonNull Context context, String label, int icon, boolean available, int rowType, OnClickListener clickListener)` constructor.
+
+To change the label of a particular Row,  you can find it using its category with the (`getRowType`) method that returns: `Row.FLOOR_ROW`, `Row.OPENING_TIME_ROW`, `Row.PHONE_NUMBER_ROW`, `Row.WEBSITE_ROW`, `Row.CAPACITY_ROW`, `Row.OCCUPANCY_ROW`,  `Row.OTHER`.
+
+
 ## Information button
 
 When users select a Place or a PlaceList, either by clicking on the map or using the search engine, you might want to give the possibility to the user to open a page of your app about it. Think about shops or exhibitors for example for which your app probably has a page with all the details about.
