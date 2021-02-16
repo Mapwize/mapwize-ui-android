@@ -280,6 +280,7 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     private void setTextViewValue(TextView textView, DirectionPoint directionPoint, String language) {
         if (directionPoint == null) {
+            textView.setText("");
             return;
         }
         if (directionPoint instanceof Place || directionPoint instanceof Placelist) {
