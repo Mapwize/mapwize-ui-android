@@ -160,7 +160,6 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setHalfExpandedRatio(halfExpandedRatio);
         bottomSheetBehavior.setPeekHeight(sheetContent.getHeight() + placeTitle.getHeight());
-        bottomSheetBehavior.setDraggable(true);
         bottomSheetBehavior.setSaveFlags(BottomSheetBehavior.SAVE_ALL);
         bottomSheetBehavior.setUpdateImportantForAccessibilityOnSiblings(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -171,11 +170,11 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         if (hasImages && !didImageExpand) {
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-                            didImageExpand = true;
                         }
                         cardView.setRadius(8 * dp);
                         break;
                     case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                        didImageExpand = true;
                         cardView.setRadius(8 * dp);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
