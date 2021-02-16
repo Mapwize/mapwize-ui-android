@@ -79,8 +79,16 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.MyViewHolder> 
             }
             String openings = "";
             for (Map<String, Object> span : day) {
-                String open = (String) span.get("open");
-                String close = (String) span.get("close");
+                String open = "0000";
+                Object openAtObject = span.get("open");
+                if (openAtObject instanceof String) {
+                    open = (String) openAtObject;
+                }
+                String close = "2359";
+                Object closeAtObject = span.get("close");
+                if (closeAtObject instanceof String) {
+                    close = (String) closeAtObject;
+                }
                 if (open.equals("0000") && close.equals("2359")) {
                     openings += context.getString(R.string.mapwize_details_open24hours) + "\n";
                     break;

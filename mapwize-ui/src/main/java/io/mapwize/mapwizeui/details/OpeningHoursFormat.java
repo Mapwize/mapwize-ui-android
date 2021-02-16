@@ -25,15 +25,20 @@ public class OpeningHoursFormat {
     static int convertDayToTimeOfWeek(Map<String, Object> day, boolean open) {
         int timeOfWeek = (((int) day.get("day") + 6) % 7) * 10000;
         if (open) {
-            String openVal = (String) day.get("open");
-            if (openVal != null) {
-                timeOfWeek += Integer.parseInt(openVal.replace(":", ""));
+            int openAt = 0;
+            Object openVal = day.get("open");
+            if (openVal instanceof String) {
+                openAt = Integer.parseInt(((String) openVal).replace(":", ""));
             }
+            timeOfWeek += openAt;
         } else {
-            String openVal = (String) day.get("close");
-            if (openVal != null) {
-                timeOfWeek += Integer.parseInt(openVal.replace(":", ""));
+            int closeAt = 2359;
+            Object closeVal = day.get("close");
+            if (closeVal instanceof String) {
+                closeAt = Integer.parseInt(((String) closeVal).replace(":", ""));
             }
+            timeOfWeek += closeAt;
+
         }
         return timeOfWeek;
     }

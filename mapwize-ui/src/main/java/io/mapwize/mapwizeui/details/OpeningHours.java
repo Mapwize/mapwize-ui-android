@@ -48,14 +48,24 @@ public class OpeningHours extends Row {
                     (isOpen ? context.getString(R.string.mapwize_details_closing_soon) : context.getString(R.string.mapwize_details_opening_soon)) :
                     (isOpen ? context.getString(R.string.mapwize_details_open) : context.getString(R.string.mapwize_details_closed));
             label += " - ";
-            String closesAt = isOpen ? (String) closingOrOpening.get("close") : (String) closingOrOpening.get("open");
+            String closetAtStr = "2359";
+            Object closetAtObject = closingOrOpening.get("close");
+            if (closetAtObject instanceof String) {
+                closetAtStr = (String) closetAtObject;
+            }
+            String opensAtStr = "0000";
+            Object openAtObject = closingOrOpening.get("open");
+            if (openAtObject instanceof String) {
+                opensAtStr = (String) openAtObject;
+            }
+            String closesAt = isOpen ? closetAtStr : opensAtStr;
             if (closesAt != null) {
                 String date = closesAt.equals("2359") ? context.getString(R.string.mapwize_details_midnight) :
                         (closesAt.equals("1200") ? context.getString(R.string.mapwize_details_midday) : formatHour(closesAt));
                 if (closingOrOpening.containsKey("tomorrow")) {
-                    label+= context.getString( isOpen ? R.string.mapwize_details_closes_tomorrow : R.string.mapwize_details_opens_tomorrow, date);
+                    label += context.getString(isOpen ? R.string.mapwize_details_closes_tomorrow : R.string.mapwize_details_opens_tomorrow, date);
                 } else if (closingOrOpening.containsKey("today")) {
-                    label+= context.getString( isOpen ? R.string.mapwize_details_closes_today : R.string.mapwize_details_opens_today, date);
+                    label += context.getString(isOpen ? R.string.mapwize_details_closes_today : R.string.mapwize_details_opens_today, date);
                 } else {
                     int closingDay = (int) closingOrOpening.get("day");
                     String weekday = new DateFormatSymbols().getWeekdays()[(closingDay + 2) % 7];//days start from SUNDAY=1 to SATURDAY=7.
