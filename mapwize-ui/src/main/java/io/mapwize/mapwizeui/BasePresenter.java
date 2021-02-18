@@ -38,7 +38,12 @@ interface BasePresenter {
     void selectPlace(Place place, boolean centerOn);
     void grantAccess(String accessKey, ApiCallback<Boolean> callback);
     void refreshSearchData();
-    boolean onBackButtonPressed();
     void unselectContent();
+
+    String getFloor();
+
+    MapwizeMap getMapwizeMap();
+    boolean onBackButtonPressed();
+
     boolean isBackEnabled();
 }

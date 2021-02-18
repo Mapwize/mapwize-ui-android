@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.mapwize.mapwizeui.MapwizeUIView"
     android:id="@+id/mapwizeFragmentLayout"
-    android:animateLayoutChanges="true"
+    android:animateLayoutChanges="false"
     android:paddingBottom="@dimen/mapwize_ui_padding_bottom"
     android:paddingStart="@dimen/mapwize_ui_padding_start"
     android:paddingEnd="@dimen/mapwize_ui_padding_end">
@@ -71,7 +71,7 @@
         android:layout_marginStart="8dp"
         android:padding="12dp"
         android:elevation="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
+        app:layout_constraintBottom_toTopOf="@id/mapwizeBottomCardView"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
@@ -87,7 +87,7 @@
         android:elevation="6dp"
         android:src="@drawable/mapwize_ic_language_black_24dp"
         android:background="@drawable/mapwize_circle_view"
-        app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <io.mapwize.mapwizeui.UniversesButton
@@ -103,8 +103,8 @@
         android:elevation="6dp"
         android:src="@drawable/mapwize_ic_apps_black_24dp"
         android:background="@drawable/mapwize_circle_view"
-        app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomCardView"
-        app:layout_constraintStart_toEndOf="@+id/mapwizeLanguagessButton"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mapwizeLanguagessButton"/>
 
     <io.mapwize.mapwizeui.FloorControllerView
         android:id="@+id/mapwizeFloorController"
@@ -117,9 +117,9 @@
         app:layout_constrainedHeight="true"
         android:layout_marginEnd="22dp"
         app:layout_goneMarginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/mapwizeFollowUserButton"
+        app:layout_constraintBottom_toTopOf="@id/mapwizeFollowUserButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapwizeCompassView"
+        app:layout_constraintTop_toBottomOf="@id/mapwizeCompassView"
         app:layout_constraintVertical_bias="1.0"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
@@ -139,6 +139,14 @@
         app:cardCornerRadius="8dp"
         app:layout_constraintVertical_bias="1.0"
         android:clickable="true"/>
+
+    <io.mapwize.mapwizeui.details.PlaceDetailsUI
+        android:id="@+id/placeDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="12dp"
+        android:translationZ="12dp"/>
+
 
     <io.mapwize.mapwizeui.SearchResultList
         android:id="@+id/mapwizeSearchResultList"
