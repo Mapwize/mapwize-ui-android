@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +27,7 @@ import static io.mapwize.mapwizeui.details.EventItem.hourUnit;
 
 
 public class DayCalendar extends ConstraintLayout {
-    static SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private static final SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     RelativeLayout eventsList;
     private double currentHour = 0;
     private Context context;
@@ -123,6 +124,7 @@ public class DayCalendar extends ConstraintLayout {
 
     static Date parseDate(String dateStr) {
         try {
+            parser.setTimeZone(TimeZone.getTimeZone("GMT"));
             return parser.parse(dateStr);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -157,7 +159,7 @@ public class DayCalendar extends ConstraintLayout {
         horizontalScrollView.post(() -> horizontalScrollView.scrollTo((int) ((currentHour - 2) * hourUnit * dp), 0));
 
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) currentTimeBar.getLayoutParams();
-        marginLayoutParams.leftMargin = (int) (((currentHour - 1) * hourUnit) * dp);
+        marginLayoutParams.leftMargin = (int) (((currentHour - 1) * hourUnit - 2) * dp);
         currentTimeBar.setLayoutParams(marginLayoutParams);
     }
 
@@ -182,8 +184,8 @@ public class DayCalendar extends ConstraintLayout {
         List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
         for (Map<String, Object> event : adaptedEvents) {
             EventItem eventItem = new EventItem(context,
-                    (float) ((Integer) (event.get("start")) / 60.0),
-                    (float) ((Integer) (event.get("end")) / 60.0)
+                    (float) ((Integer) (event.get("start")) / 60.0) - 1,
+                    (float) ((Integer) (event.get("end")) / 60.0) - 1
             );
             eventsList.addView(eventItem);
             eventItem.setMarginParams();
