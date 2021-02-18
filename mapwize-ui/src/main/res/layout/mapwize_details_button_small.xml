@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:background="@drawable/mapwize_details_just_ripple_button"
+    android:layout_marginHorizontal="8dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/smallButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingEnd="8dp"
+        android:paddingStart="12dp"
+        android:paddingVertical="9dp"
+        android:layout_gravity="center"
+        android:minWidth="64dp">
+
+        <ImageView
+            android:id="@+id/smallButtonIcon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/mapwize_details_ic_baseline_directions_24"
+            app:tint="#FFF" />
+
+        <TextView
+            android:id="@+id/smallButtonLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="direction"
+            android:textAllCaps="true"
+            android:textColor="#FFF"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>

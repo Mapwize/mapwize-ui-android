@@ -107,7 +107,7 @@ public class BottomCardView extends CardView {
         this.setLayoutParams(lp);
         closeDetailsButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
-        listener.onDetailsOpen();
+        listener.onDetailsOpen(this.getHeight());
     }
 
     private void hideDetails() {
@@ -335,6 +335,16 @@ public class BottomCardView extends CardView {
         });
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == GONE ) {
+            listener.onDetailsClose();
+        } else if (visibility == VISIBLE){
+            listener.onDetailsOpen(getHeight());
+        }
+    }
+
     /**
      * Get the BottomCardListener
      * @return the listener
@@ -366,7 +376,7 @@ public class BottomCardView extends CardView {
          */
         void onInformationClick();
 
-        void onDetailsOpen();
+        void onDetailsOpen(int height);
 
         void onDetailsClose();
 

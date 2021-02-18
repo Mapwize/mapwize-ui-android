@@ -9,12 +9,15 @@ import io.indoorlocation.manual.ManualIndoorLocationProvider
 import io.mapwize.mapwizesdk.api.*
 import io.mapwize.mapwizesdk.map.MapOptions
 import io.mapwize.mapwizesdk.map.MapwizeMap
+import io.mapwize.mapwizeui.MapwizeFragment
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings
+import io.mapwize.mapwizeui.MapwizeUIView
+import io.mapwize.mapwizeui.details.ButtonBig
+import io.mapwize.mapwizeui.details.ButtonSmall
+import io.mapwize.mapwizeui.details.Row
 import io.mapwize.mapwizeui.events.Channel
 import io.mapwize.mapwizeui.events.EventManager
 import io.mapwize.mapwizeui.events.OnEventListener
-import io.mapwize.mapwizeui.MapwizeFragment
-import io.mapwize.mapwizeui.MapwizeUIView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListener, OnEventListener {
@@ -35,8 +38,8 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         val opts = MapOptions.Builder()
                 //.restrictContentToOrganization("YOUR_ORGANIZATION_ID")
                 //.restrictContentToVenue("YOUR_VENUE_ID")
-                //.centerOnVenue("56b20714c3fa800b00d8f0b5")
-                .centerOnPlace("5d08d8a4efe1d20012809ee5")
+                .centerOnVenue("56b20714c3fa800b00d8f0b5")
+//                .centerOnPlace("5d08d8a4efe1d20012809ee5")
                 .build()
 
         // Uncomment and change value to test different settings configuration
@@ -70,7 +73,6 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
             val il = IndoorLocation("manual", it.latLngFloor.latitude, it.latLngFloor.longitude, it.latLngFloor.floor, System.currentTimeMillis())
             provider!!.setIndoorLocation(il)
         }
-        Toast.makeText(this, "onFragmentReady", Toast.LENGTH_LONG).show()
     }
 
     override fun onInformationButtonClick(mapwizeObject: MapwizeObject?) {
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
     }
 
     override fun shouldDisplayInformationButton(mapwizeObject: MapwizeObject?): Boolean {
-        return true
+        return mapwizeObject?.name?.startsWith("B")!!
     }
 
     override fun onContentSelect(place: Place,
@@ -90,15 +92,24 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
                                  searchResultUniverse: Universe,
                                  channel: Channel,
                                  searchQuery: String?) {
-        Log.i("Debug", "" + place.name + " " + currentUniverse.name +  " " + channel + " " + searchQuery)
+        Log.i("Debug", "" + place.name + " " + currentUniverse.name + " " + channel + " " + searchQuery)
     }
 
     override fun onDirectionStart(venue: Venue, universe: Universe?, from: DirectionPoint?, to: DirectionPoint?, mode: String?, isNavigation: Boolean) {
-        Log.i("Debug", "" + venue.name + " " + universe?.name +  " " + from + " " + to + " " + mode + " " + isNavigation)
+        Log.i("Debug", "" + venue.name + " " + universe?.name + " " + from + " " + to + " " + mode + " " + isNavigation)
     }
 
     override fun onContentSelect(placelist: Placelist, currentUniverse: Universe, searchResultUniverse: Universe, channel: Channel, searchQuery: String?) {
-        Log.i("Debug", "" + placelist.name + " " + currentUniverse.name +  " " + channel + " " + searchQuery)
+        Log.i("Debug", "" + placelist.name + " " + currentUniverse.name + " " + channel + " " + searchQuery)
+    }
+
+    override fun onPlaceSelected(place: MapwizeObject?, buttonsSmall: MutableList<ButtonSmall>?, buttonsBig: MutableList<ButtonBig>?, rows: MutableList<Row>?): Boolean {
+        buttonsSmall?.forEach {
+            if (it.buttonType == ButtonSmall.CALL_BUTTON) {
+//                it.setOnClickListener({ Toast.makeText(this, "Calling from Kotlin", Toast.LENGTH_SHORT).show() })
+            }
+        }
+        return true
     }
 
 }

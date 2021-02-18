@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/hoursScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:scrollIndicators="none"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="58dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.4"
+            android:elevation="2dp"
+            android:paddingTop="4dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/hoursRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#FFF"
+                android:nestedScrollingEnabled="false"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="1h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="2h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="3h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="4h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="5h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="6h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="7h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="8h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="9h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="10h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="11h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="12h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="13h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="14h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="15h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="16h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="17h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="18h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="19h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="20h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="21h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="22h" />
+
+                <TextView
+                    android:layout_width="26dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/mapwize_details_border_background"
+                    android:padding="2dp"
+                    android:text="23h" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/eventsList"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            android:elevation="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/currentTimeBar"
+            android:layout_width="2dp"
+            android:layout_height="58dp"
+            android:alpha="0.5"
+            android:background="@color/mapwize_main_color"
+            android:elevation="3dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</HorizontalScrollView>

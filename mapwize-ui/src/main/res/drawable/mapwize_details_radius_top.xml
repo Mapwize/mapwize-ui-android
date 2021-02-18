@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:bottom="-20dp"
+        >
+        <shape android:shape="rectangle" >
+            <corners android:radius="8dp" />
+            <solid android:color="@color/mapwize_main_color" />
+        </shape>
+    </item>
+
+</layer-list>

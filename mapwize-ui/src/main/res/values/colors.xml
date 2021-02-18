@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#711083</color>
     <color name="colorAccent">#C51586</color>
     <color name="alphaMainColor">#11C51586</color>
+    <color name="mapwize_details_row_text_color">#444</color>
+    <color name="mapwize_details_row_unavailable_text_color">#555</color>
 </resources>
