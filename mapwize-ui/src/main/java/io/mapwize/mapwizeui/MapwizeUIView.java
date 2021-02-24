@@ -322,7 +322,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                     new PlaceDetailsUI.DetailsReadyListener() {
                         @Override
                         public PlaceDetailsConfig onReady(PlaceDetailsConfig placeDetailsConfig) {
-                            placeDetailsConfig.setExpandDetails(false);
+                            placeDetailsConfig.setPreventExpandDetails(true);
                             return placeDetailsConfig;
                         }
                     }

@@ -443,7 +443,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         setSubTitle(subTitle);
         setSmallButtons(placeDetailsConfig.getButtonsSmall());
 
-        if (placeDetailsConfig.isExpandDetails()) {
+        if (!placeDetailsConfig.isPreventExpandDetails()) {
             setDetails(details);
             setPhotos(photos);
             setOpeningLabel(openingHours, timezone);

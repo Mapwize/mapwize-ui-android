@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
 //                it.setOnClickListener({ Toast.makeText(this, "Calling from Kotlin", Toast.LENGTH_SHORT).show() })
             }
         }
-//        placeDetailsConfig?.isExpandDetails = false
+//        placeDetailsConfig?.isPreventExpandDetails = true
         return placeDetailsConfig
     }
 

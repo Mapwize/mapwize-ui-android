@@ -6,7 +6,7 @@ public class PlaceDetailsConfig {
     private List<ButtonSmall> buttonsSmall;
     private List<ButtonBig> buttonsBig;
     private List<Row> rows;
-    private boolean expandDetails = true;
+    private boolean preventExpandDetails = false;
 
     public PlaceDetailsConfig(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
         this.buttonsSmall = buttonsSmall;
@@ -38,11 +38,11 @@ public class PlaceDetailsConfig {
         this.rows = rows;
     }
 
-    public boolean isExpandDetails() {
-        return expandDetails;
+    public boolean isPreventExpandDetails() {
+        return preventExpandDetails;
     }
 
-    public void setExpandDetails(boolean expandDetails) {
-        this.expandDetails = expandDetails;
+    public void setPreventExpandDetails(boolean preventExpandDetails) {
+        this.preventExpandDetails = preventExpandDetails;
     }
 }
