@@ -436,7 +436,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             return;
         }
         if (query.length() == 0) {
-            fragment.showSearchResults(mainSearches, universes, universe);
+            fragment.showSearchResults(null, universes, universe);
             return;
         }
 

@@ -114,7 +114,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
      */
     public void showData(List<? extends MapwizeObject> objects) {
         searchResultAdapter.swapData(objects);
-        if (objects == null || objects.size() == 0) {
+        if (objects.size() == 0) {
             showNoResultCard();
         }
         else {
@@ -128,12 +128,15 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
      * @param universes list of available universe
      * @param currentUniverse current universe
      */
+
+    private static final String TAG = "SearchResultList";
     public void showData(List objects, List<Universe> universes, Universe currentUniverse) {
-        searchResultAdapter.swapData(objects, universes, currentUniverse);
-        if (objects == null || objects.size() == 0) {
-            showNoResultCard();
-        }
-        else {
+        if (objects != null) {
+            searchResultAdapter.swapData(objects, universes, currentUniverse);
+            if (objects.size() == 0) {
+                showNoResultCard();
+            }
+        } else {
             hideNoResultCard();
         }
     }
