@@ -729,8 +729,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     private void selectPlace(PlacePreview preview) {
-//        mapwizeMap.removeMarkers();
-//        mapwizeMap.removePromotedPlaces();
+        mapwizeMap.removeMarkers();
+        mapwizeMap.removePromotedPlaces();
         mapwizeMap.addMarker(preview);
         mapwizeMap.addPromotedPlace(preview);
         fragment.showPlacePreviewInfo(preview, venueLanguage);
