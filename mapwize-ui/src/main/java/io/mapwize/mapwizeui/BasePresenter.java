@@ -15,6 +15,7 @@ interface BasePresenter {
 
     void onMapLoaded(MapwizeMap mapwizeMap);
     void onDirectionButtonClick();
+    void onCloseButtonClick();
     void onQueryClick();
     void onSearchBackButtonClick();
     void onSearchQueryChange(String query);

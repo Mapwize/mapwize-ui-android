@@ -416,6 +416,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
+    public void onCloseButtonClick() {
+        unselectContent();
+    }
+
+    @Override
     public void onQueryClick() {
         state = UIState.SEARCH;
         fragment.showSearch();

@@ -534,6 +534,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
+    public void onCloseButtonClick() {
+        presenter.onCloseButtonClick();
+    }
+
+    @Override
     public void onDirectionBackClick() {
         presenter.onDirectionBackClick();
     }

@@ -85,6 +85,7 @@ public class BottomCardView extends CardView {
         mapwizeCloseButton = findViewById(R.id.mapwizeCloseButton);
         mapwizeCloseButton.setOnClickListener(v -> {
             removeContent();
+            listener.onCloseButtonClick();
         });
 
         informationsButton = findViewById(R.id.mapwizeBottomInformationsButton);
@@ -383,6 +384,7 @@ public class BottomCardView extends CardView {
 
         void onDetailsClose();
 
+        void onCloseButtonClick();
     }
 
 }
