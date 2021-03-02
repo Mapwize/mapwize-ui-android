@@ -114,11 +114,13 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
      */
     public void showData(List<? extends MapwizeObject> objects) {
         searchResultAdapter.swapData(objects);
-        if (objects.size() == 0) {
-            showNoResultCard();
-        }
-        else {
-            hideNoResultCard();
+        if (objects != null) {
+            if (objects.size() == 0) {
+                showNoResultCard();
+            }
+            else {
+                hideNoResultCard();
+            }
         }
     }
 
