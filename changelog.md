@@ -1,6 +1,9 @@
 # UI Components Changelog
 
 
+## 2.5.2
+
+-  Setting occupancy to available if events are null.
 
 ## 2.5.1
 
