@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.activity.OnBackPressedCallback;
@@ -380,7 +381,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                 timezone = TimeZone.getDefault().getID();
             }
             String floorName = "";
-            Double floor = placeDetails.getFloor();
+            Double floor = null;
+            Map<String, Object> floorObject = placeDetails.getFloor();
+            if (floorObject != null && floorObject.containsKey("number")) {
+                Integer integerFloor = (Integer) floorObject.get("number");
+                if (integerFloor != null) {
+                    floor = integerFloor.doubleValue();
+                }
+            }
             if (floor != null) {
                 floorName = "Floor " + floor.intValue();
             }
