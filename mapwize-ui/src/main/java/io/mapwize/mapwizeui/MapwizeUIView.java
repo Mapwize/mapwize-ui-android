@@ -580,7 +580,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     @Override
     public void onClick(CompassView compassView) {
-
+        listener.onCompassButtonClick();
     }
 
 
@@ -740,6 +740,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
 
         default void onClosestExitButtonClick() {
+
+        }
+
+        default  void onCompassButtonClick() {
 
         }
     }
