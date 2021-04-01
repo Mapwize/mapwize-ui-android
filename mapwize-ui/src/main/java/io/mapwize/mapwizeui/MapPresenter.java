@@ -1103,6 +1103,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     public static final String mainSearches_KEY = "mainSearchesKey";
+    public static final String directionModes_KEY = "directionModesKEY";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1118,6 +1119,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         this.to = savedInstanceState.getParcelable(to_KEY);
 
         this.mainSearches = savedInstanceState.getParcelableArrayList(mainSearches_KEY);
+        this.directionModes = savedInstanceState.getParcelableArrayList(directionModes_KEY);
 
 
         if (state == UIState.SEARCH) {
@@ -1128,27 +1130,31 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             fragment.showDirectionSearchBar();
             fragment.hideSearchBar();
             fragment.hideInfo();
+            fragment.showSelectedDirectionMode(directionMode);
             fragment.showAccessibleDirectionModes(directionModes);
-            validateDirectionMode(directionMode);
             fragment.hideSwapButton();
             fragment.showSearchDirectionFrom();
             fragment.invalidateOnBackPressedCallbackState();
+            tryToStartDirection();
         } else if (state == UIState.SEARCH_TO) {
             fragment.showSearch();
             fragment.showDirectionSearchBar();
             fragment.hideSearchBar();
             fragment.hideInfo();
+
+            fragment.showSelectedDirectionMode(directionMode);
             fragment.showAccessibleDirectionModes(directionModes);
-            validateDirectionMode(directionMode);
             fragment.hideSwapButton();
             fragment.showSearchDirectionTo();
             fragment.invalidateOnBackPressedCallbackState();
+            tryToStartDirection();
         } else if (state == UIState.DIRECTION) {
             fragment.showDirectionSearchBar();
+            fragment.showSelectedDirectionMode(directionMode);
             fragment.showAccessibleDirectionModes(directionModes);
-            validateDirectionMode(directionMode);
             fragment.showSwapButton();
             fragment.invalidateOnBackPressedCallbackState();
+            tryToStartDirection();
         }
     }
 
@@ -1159,10 +1165,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         saveInstanceState.putParcelable(universe_KEY, universe);
         saveInstanceState.putSerializable(state_KEY, state);
         saveInstanceState.putSerializable(lastQuery_KEY, lastQuery);
-        saveInstanceState.putSerializable(directionMode_KEY, directionMode);
+        saveInstanceState.putParcelable(directionMode_KEY, directionMode);
         saveDirectionPoint(saveInstanceState, from, from_KEY);
         saveDirectionPoint(saveInstanceState, to, to_KEY);
         saveInstanceState.putParcelableArrayList(mainSearches_KEY, (ArrayList) mainSearches);
+        saveInstanceState.putParcelableArrayList(directionModes_KEY, (ArrayList) directionModes);
 
 
     }
