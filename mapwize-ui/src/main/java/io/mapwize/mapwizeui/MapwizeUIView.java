@@ -934,6 +934,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
 
     public void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            presenter.onCreate(savedInstanceState);
+            searchResultList.onCreate(savedInstanceState);
+        }
         if (mapwizeView != null) {
             mapwizeView.onCreate(savedInstanceState);
         }
@@ -964,6 +968,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     public void onSaveInstanceState(Bundle saveInstanceState) {
+        if (searchResultList != null) {
+            searchResultList.onSaveInstanceState(saveInstanceState);
+        }
+        if (presenter != null) {
+            presenter.onSaveInstanceState(saveInstanceState);
+        }
         if (mapwizeView != null) {
             mapwizeView.onSaveInstanceState(saveInstanceState);
         }
