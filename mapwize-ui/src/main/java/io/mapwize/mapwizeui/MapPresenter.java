@@ -1117,6 +1117,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
         if (state == UIState.SEARCH) {
             fragment.showSearch();
+            fragment.invalidateOnBackPressedCallbackState();
         } else if (state == UIState.SEARCH_FROM) {
             fragment.showSearch();
             fragment.showDirectionSearchBar();
@@ -1126,6 +1127,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             validateDirectionMode(directionMode);
             fragment.hideSwapButton();
             fragment.showSearchDirectionFrom();
+            fragment.invalidateOnBackPressedCallbackState();
         } else if (state == UIState.SEARCH_TO) {
             fragment.showSearch();
             fragment.showDirectionSearchBar();
@@ -1135,11 +1137,13 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             validateDirectionMode(directionMode);
             fragment.hideSwapButton();
             fragment.showSearchDirectionTo();
+            fragment.invalidateOnBackPressedCallbackState();
         } else if (state == UIState.DIRECTION) {
             fragment.showDirectionSearchBar();
             fragment.showAccessibleDirectionModes(directionModes);
             validateDirectionMode(directionMode);
             fragment.showSwapButton();
+            fragment.invalidateOnBackPressedCallbackState();
         }
     }
 
