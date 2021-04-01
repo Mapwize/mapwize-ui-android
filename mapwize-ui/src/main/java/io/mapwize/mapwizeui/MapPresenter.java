@@ -1102,6 +1102,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
+    public static final String mainSearches_KEY = "mainSearchesKey";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         this.venue = savedInstanceState.getParcelable(venue_KEY);
@@ -1114,6 +1116,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         this.directionMode = savedInstanceState.getParcelable(directionMode_KEY);
         this.from = savedInstanceState.getParcelable(from_KEY);
         this.to = savedInstanceState.getParcelable(to_KEY);
+
+        this.mainSearches = savedInstanceState.getParcelableArrayList(mainSearches_KEY);
+
 
         if (state == UIState.SEARCH) {
             fragment.showSearch();
@@ -1157,6 +1162,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         saveInstanceState.putSerializable(directionMode_KEY, directionMode);
         saveDirectionPoint(saveInstanceState, from, from_KEY);
         saveDirectionPoint(saveInstanceState, to, to_KEY);
+        saveInstanceState.putParcelableArrayList(mainSearches_KEY, (ArrayList) mainSearches);
+
+
     }
 
     private void saveDirectionPoint(Bundle saveInstanceState, DirectionPoint directionPoint, String key) {
