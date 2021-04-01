@@ -22,6 +22,8 @@
             android:id="@+id/bigButtonIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:src="@drawable/mapwize_details_ic_baseline_directions_24"
             app:tint="@color/mapwize_main_color" />
     </RelativeLayout>
