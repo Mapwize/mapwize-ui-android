@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
         <ImageButton
             android:id="@+id/hideBottomSheetButton"
             android:layout_width="wrap_content"
@@ -38,26 +39,15 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
+
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/nestedScrollView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/placeTitle"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                 />
-                <androidx.recyclerview.widget.RecyclerView
-                    android:orientation="horizontal"
-                    android:id="@+id/recyclerView"
-                    android:background="#FFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/placeTitle"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/mapwize_details_recycler_item" />
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <FrameLayout
                     android:id="@+id/sheetFrame"
@@ -65,16 +55,6 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/placeTitle" />
-
-                <View
-                    android:id="@+id/dragBar"
-                    android:layout_width="32dp"
-                    android:layout_height="4dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/drag_round"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
                 <TextView
                     android:id="@+id/placeTitle"
@@ -88,6 +68,27 @@
                     android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/recyclerView" />
+
+                <View
+                    android:id="@+id/dragBar"
+                    android:layout_width="32dp"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/drag_round"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:orientation="horizontal"
+                    android:id="@+id/recyclerView"
+                    android:background="#FFF"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/placeTitle"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/mapwize_details_recycler_item" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

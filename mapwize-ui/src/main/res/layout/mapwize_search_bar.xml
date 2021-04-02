@@ -79,7 +79,7 @@
                     android:id="@+id/mapwizeSearchBarRightButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/mapwize_ic_directions_black_24dp"
+                    android:src="@drawable/mapwize_details_ic_baseline_directions_24"
                     android:padding="12dp"
                     android:visibility="gone"/>
 
@@ -87,9 +87,9 @@
                     android:id="@+id/mapwizeSearchBarProgressBar"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:progressTint="@color/mapwize_main_color"
                     android:indeterminateTint="@color/mapwize_main_color"
-                    android:visibility="gone"/>
+                    android:progressTint="@color/mapwize_main_color"
+                    android:visibility="gone" />
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

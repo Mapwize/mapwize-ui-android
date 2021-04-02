@@ -1,11 +1,30 @@
 # UI Components Changelog
 
 
+## 2.5.3
+
+- Using a floor object instead of a number in `PlaceDetails`.
+- Updating sdk to version `3.6.3`.
+
+
+## 2.5.2
+
+-  Setting occupancy to available if events are null.
+
+## 2.5.1
+
+-  Adding preventExpandDetails option to PlaceDetailsConfig.
+
+## 2.5.0
+
+- Adding place details UI.
+- Updating sdk to version 3.6.0.
+
 ## 2.4.2
 
 - Adding Italian translation.
 - Fixing onBackPressedCallback() issue.
-- updating sdk to version 3.5.2.
+- Updating sdk to version 3.5.2.
 
 ## 2.4.1
 

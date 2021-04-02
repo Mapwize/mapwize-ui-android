@@ -14,8 +14,7 @@
     <FrameLayout
         android:id="@+id/mapViewContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"/>
     <FrameLayout
         android:id="@+id/reportIssueViewContainer"
         android:layout_width="match_parent"
@@ -67,52 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerFrameLayout"
         app:layout_goneMarginEnd="16dp"
-        android:visibility="gone"/>
-
-    <io.mapwize.mapwizeui.FollowUserButton
-        android:id="@+id/mapwizeFollowUserButton"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="8dp"
-        android:padding="12dp"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toTopOf="@id/mapwizeBottomCardView"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-    <io.mapwize.mapwizeui.LanguagesButton
-        android:id="@+id/mapwizeLanguagessButton"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:padding="12dp"
-        android:elevation="6dp"
-        android:src="@drawable/mapwize_ic_language_black_24dp"
-        android:background="@drawable/mapwize_circle_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <io.mapwize.mapwizeui.UniversesButton
-        android:id="@+id/mapwizeUniversesButton"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="8dp"
-        app:layout_goneMarginStart="16dp"
-        android:padding="12dp"
-        android:elevation="6dp"
-        android:src="@drawable/mapwize_ic_apps_black_24dp"
-        android:background="@drawable/mapwize_circle_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/mapwizeLanguagessButton"/>
+        android:visibility="gone" />
 
     <io.mapwize.mapwizeui.FloorControllerView
         android:id="@+id/mapwizeFloorController"
@@ -130,6 +84,50 @@
         app:layout_constraintTop_toBottomOf="@id/mapwizeCompassView"
         app:layout_constraintVertical_bias="1.0"
         app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <io.mapwize.mapwizeui.LanguagesButton
+        android:id="@+id/mapwizeLanguagessButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="12dp"
+        android:elevation="6dp"
+        android:src="@drawable/mapwize_ic_language_black_24dp"
+        android:background="@drawable/mapwize_circle_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <io.mapwize.mapwizeui.FollowUserButton
+        android:id="@+id/mapwizeFollowUserButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:padding="12dp"
+        android:elevation="6dp"
+        app:layout_constraintBottom_toTopOf="@id/mapwizeBottomCardView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <io.mapwize.mapwizeui.UniversesButton
+        android:id="@+id/mapwizeUniversesButton"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        app:layout_goneMarginStart="16dp"
+        android:padding="12dp"
+        android:elevation="6dp"
+        android:src="@drawable/mapwize_ic_apps_black_24dp"
+        android:background="@drawable/mapwize_circle_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mapwizeLanguagessButton" />
 
     <io.mapwize.mapwizeui.BottomCardView
         android:id="@+id/mapwizeBottomCardView"
@@ -153,7 +151,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="12dp"
-        android:translationZ="12dp"/>
+        android:translationZ="12dp" />
 
 
     <io.mapwize.mapwizeui.SearchResultList

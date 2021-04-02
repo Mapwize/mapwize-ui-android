@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class OpeningHoursTest3 {
     List<Map<String, Object>> daysMock = new ArrayList<>();
     private Context context;
+
     @Before
     public void setUp() throws Exception {
         context = ApplicationProvider.getApplicationContext();
@@ -85,6 +86,7 @@ public class OpeningHoursTest3 {
         OpeningHours.TimeInWeek minuteInWeek = new OpeningHours.TimeInWeek(1, 13, 54);
         assertEquals(minuteInWeek, getTimeInWeek(getDate(minuteInWeek)));
     }
+
     @Test
     public void getLabelTest() throws ParseException {
 
@@ -92,6 +94,7 @@ public class OpeningHoursTest3 {
         assertEquals("Fermé, ouvre à 09:00", getLabel(context, daysMock, timeInWeek));
 
     }
+
     @Test
     public void changeTimezoneOfDateTest() throws ParseException {
 

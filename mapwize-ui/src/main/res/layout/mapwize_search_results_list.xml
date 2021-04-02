@@ -22,7 +22,7 @@
         android:indeterminateTint="@color/mapwize_main_color"
         android:progressTint="@color/mapwize_main_color"
         android:indeterminate="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/mapwizeCurrentLocationCard"

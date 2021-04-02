@@ -1,8 +1,6 @@
 package io.mapwize.mapwizeui;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.recyclerview.widget.RecyclerView;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
@@ -106,6 +105,38 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     void setLanguage(String language) {
         this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public List<Universe> getUniverses() {
+        return universes;
+    }
+
+    public void setUniverses(List<Universe> universes) {
+        this.universes = universes;
+    }
+
+    public List<Integer> getIndexForUniverses() {
+        return indexForUniverses;
+    }
+
+    public void setIndexForUniverses(List<Integer> indexForUniverses) {
+        this.indexForUniverses = indexForUniverses;
+    }
+
+    public Map<String, Universe> getUniverseById() {
+        return universeById;
+    }
+
+    public void setUniverseById(Map<String, Universe> universeById) {
+        this.universeById = universeById;
+    }
+
+    public List getmSearchSuggestions() {
+        return mSearchSuggestions;
     }
 
     void setListener(OnItemClickListener listener) {

@@ -138,6 +138,21 @@ public class DayCalendar extends ConstraintLayout {
         return calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
     }
 
+    public static boolean occupied(Map<String, Object> adaptedEvent, Date now) {
+        int nowInMinute = getMinuteInDay(now);
+        return (Integer) adaptedEvent.get("start") < nowInMinute && (Integer) adaptedEvent.get("end") > nowInMinute;
+    }
+
+    public static boolean isOccupied(List<Map<String, Object>> events, Date now) {
+        List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
+        for (Map<String, Object> adaptedEvent : adaptedEvents) {
+            if (occupied(adaptedEvent, now)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initLayout(Context context) {
         this.context = context;
         View.inflate(getContext(), R.layout.mapwize_details_day_calendar, this);
@@ -161,22 +176,6 @@ public class DayCalendar extends ConstraintLayout {
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) currentTimeBar.getLayoutParams();
         marginLayoutParams.leftMargin = (int) (((currentHour - 1) * hourUnit - 2) * dp);
         currentTimeBar.setLayoutParams(marginLayoutParams);
-    }
-
-
-    public static boolean occupied(Map<String, Object> adaptedEvent, Date now) {
-        int nowInMinute = getMinuteInDay(now);
-        return (Integer) adaptedEvent.get("start") < nowInMinute && (Integer) adaptedEvent.get("end") > nowInMinute;
-    }
-
-    public static boolean isOccupied(List<Map<String, Object>> events, Date now) {
-        List<Map<String, Object>> adaptedEvents = filterAndAdaptToToday(events, now);
-        for (Map<String, Object> adaptedEvent : adaptedEvents) {
-            if (occupied(adaptedEvent, now)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void setEvents(List<Map<String, Object>> events, boolean available, Date now) {

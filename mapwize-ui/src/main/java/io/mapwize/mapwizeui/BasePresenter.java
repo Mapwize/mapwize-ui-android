@@ -1,5 +1,7 @@
 package io.mapwize.mapwizeui;
 
+import android.os.Bundle;
+
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
@@ -36,14 +38,22 @@ interface BasePresenter {
     void onInformationClick();
     void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode);
     void selectPlace(Place place, boolean centerOn);
+
     void grantAccess(String accessKey, ApiCallback<Boolean> callback);
+
     void refreshSearchData();
+
     void unselectContent();
 
     String getFloor();
 
     MapwizeMap getMapwizeMap();
+
     boolean onBackButtonPressed();
 
     boolean isBackEnabled();
+
+    void onCreate(Bundle savedInstanceState);
+
+    void onSaveInstanceState(Bundle saveInstanceState);
 }
