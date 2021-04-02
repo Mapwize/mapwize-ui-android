@@ -390,7 +390,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                 }
             }
             if (floor != null) {
-                floorName = "Floor " + floor.intValue();
+                floorName = getContext().getString(R.string.mapwize_floor_placeholder, String.valueOf(floor.intValue()));
             }
             this.placeDetailsUI.showDetails(
                     translation.getTitle(),
