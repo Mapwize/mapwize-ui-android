@@ -24,6 +24,8 @@ public class Report extends LinearLayout {
     private GridLayout mapwize_issue_gridLayout;
     private float dp;
     private IssueTypeView selectedIssueType;
+    private ImageView mapwize_issue_sendIcon;
+    private ReportIssueListener reportIssueListener;
 
     public Report(@NonNull Context context) {
         super(context);
@@ -37,7 +39,6 @@ public class Report extends LinearLayout {
 
     public Report(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
         initLayout(context);
     }
 
@@ -45,18 +46,36 @@ public class Report extends LinearLayout {
         inflate(context, R.layout.mapwize_report_issue, this);
         this.context = context;
         this.dp = getResources().getDisplayMetrics().density;
-        EditText editText = findViewById(R.id.mapwize_issue_descriptionEditText);
+        EditText mapwize_issue_summaryEditText = findViewById(R.id.mapwize_issue_summaryEditText);
+        EditText mapwize_issue_descriptionEditText = findViewById(R.id.mapwize_issue_descriptionEditText);
         mapwize_issue_gridLayout = findViewById(R.id.mapwize_issue_gridLayout);
         mapwize_issue_placeLabel = findViewById(R.id.mapwize_issue_placeLabel);
         mapwize_issue_backIcon = findViewById(R.id.mapwize_issue_backIcon);
         mapwize_issue_backIcon.setOnClickListener(v -> {
-            if (selectedIssueType != null) {
-                Toast.makeText(context, "selected IssueType : " + selectedIssueType.getIssueTypeViewId(), Toast.LENGTH_SHORT).show();
-            }
-            setVisibility(GONE);
-            this.mapwize_issue_gridLayout.removeAllViews();
-        }
+                    if (selectedIssueType != null) {
+                        Toast.makeText(context, "selected IssueType : " + selectedIssueType.getIssueTypeViewId(), Toast.LENGTH_SHORT).show();
+                    }
+                    dismiss();
+                }
         );
+
+        mapwize_issue_sendIcon = findViewById(R.id.mapwize_issue_sendIcon);
+        mapwize_issue_sendIcon.setOnClickListener(v -> {
+            if (selectedIssueType == null) {
+                Toast.makeText(context, "You should select an issueType", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String summary = mapwize_issue_summaryEditText.getText().toString();
+            String description = mapwize_issue_descriptionEditText.getText().toString();
+            String issueTypeId = selectedIssueType.getIssueTypeViewId();
+            reportIssueListener.reportIssue(summary, description, issueTypeId);
+
+        });
+    }
+
+    public void dismiss() {
+        this.mapwize_issue_gridLayout.removeAllViews();
+        setVisibility(GONE);
     }
 
     public void setPlaceName(String name) {
@@ -82,6 +101,14 @@ public class Report extends LinearLayout {
             }
             i++;
         }
+    }
+
+    public void setReportListener(ReportIssueListener reportIssueListener) {
+        this.reportIssueListener = reportIssueListener;
+    }
+
+    public interface ReportIssueListener {
+        void reportIssue(String summary, String description, String issueTypeId);
     }
 
 }

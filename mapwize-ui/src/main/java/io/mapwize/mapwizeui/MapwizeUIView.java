@@ -28,7 +28,9 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.Issue;
 import io.mapwize.mapwizesdk.api.IssueType;
+import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.PlaceDetails;
@@ -432,6 +434,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                 }
                             }
 
+                            Row reportRow = new Row(getContext(), "Report", R.drawable.ic_baseline_report_problem_24, true, Row.OTHER, v -> {
+                                reportPlace(place, language);
+                            });
+                            placeDetailsConfig.getRows().add(reportRow);
+
                             Iterator<ButtonSmall> iterSmallButtons = placeDetailsConfig.getButtonsSmall().iterator();
                             while (iterSmallButtons.hasNext()) {
                                 ButtonSmall buttonBig = iterSmallButtons.next();
@@ -450,10 +457,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                     }
                                 }
                             }
-                            ButtonSmall reportButton = new ButtonSmall(getContext(), "Report", R.drawable.ic_baseline_report_problem_24, false, ButtonSmall.OTHER, v -> {
-                                reportPlace(place, language);
-                            } );
-                            placeDetailsConfig.getButtonsSmall().add(reportButton);
+
 
                             if (listener.shouldDisplayInformationButton(place)) {
                                 ButtonSmall buttonSmall = new ButtonSmall(
@@ -519,9 +523,27 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     private void reportPlace(Place place, String language) {
         report.setVisibility(View.VISIBLE);
-        report.setPlaceName(place.getName());
+        report.setPlaceName(place.getTranslation(language).getTitle());
+        MapwizeConfiguration mapwizeConfiguration = new MapwizeConfiguration.Builder(getContext(), getResources().getString(R.string.mapwize_api_key2)).serverUrl(getResources().getString(R.string.mapwize_server_url)).build();
         ApiFilter apiFilter = new ApiFilter.Builder().organizationId("573ef6dd8aa2f00b002d4e39").build();
-        mapwizeMap.getMapwizeApi().getIssueTypes(apiFilter, new ApiCallback<List<IssueType>>() {
+
+        report.setReportListener((summary, description, issueTypeId) -> {
+            Issue issue = new Issue(null, place.getVenueId(), "573ef6dd8aa2f00b002d4e39", place.getId(), null, Issue.ISSUE_STATUS_OPEN, Issue.ISSUE_PRIORITY_MEDIUM, summary, description, issueTypeId);
+            MapwizeApiFactory.getApi(mapwizeConfiguration).reportIssue(apiFilter, issue, new ApiCallback<Issue>() {
+                @Override
+                public void onSuccess(@NonNull Issue object) {
+                    System.out.println("Issue has been created: " + object.toString());
+                    new Handler(Looper.getMainLooper()).post(() -> report.dismiss());
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable t) {
+                    System.out.println("Failed to create an issue: " + t.getMessage());
+
+                }
+            });
+        });
+        MapwizeApiFactory.getApi(mapwizeConfiguration).getIssueTypes(apiFilter, new ApiCallback<List<IssueType>>() {
             @Override
             public void onSuccess(@NonNull List<IssueType> issuesList) {
                 new Handler(Looper.getMainLooper()).post(() -> report.setIssuesTypes(issuesList, language));
