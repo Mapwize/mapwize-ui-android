@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
         <ImageButton
             android:id="@+id/hideBottomSheetButton"
             android:layout_width="wrap_content"
@@ -41,6 +40,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <View
+                    android:id="@+id/dragBar"
+                    android:layout_width="32dp"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/drag_round"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
+
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/nestedScrollView"
                     android:layout_width="match_parent"
@@ -56,6 +65,17 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/placeTitle" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="#FFF"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/placeTitle"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/mapwize_details_recycler_item" />
+
                 <TextView
                     android:id="@+id/placeTitle"
                     android:layout_width="wrap_content"
@@ -68,27 +88,6 @@
                     android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/recyclerView" />
-
-                <View
-                    android:id="@+id/dragBar"
-                    android:layout_width="32dp"
-                    android:layout_height="4dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/drag_round"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:orientation="horizontal"
-                    android:id="@+id/recyclerView"
-                    android:background="#FFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/placeTitle"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/mapwize_details_recycler_item" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

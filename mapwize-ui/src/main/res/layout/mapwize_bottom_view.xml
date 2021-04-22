@@ -67,15 +67,15 @@
                 android:id="@+id/mapwizeBottomTitleTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="#000"
                 android:lines="1"
                 android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/mapwizeBottomImageView"
                 app:layout_constraintEnd_toStartOf="@id/mapwizeCloseDetails"
                 app:layout_constraintStart_toEndOf="@id/mapwizeBottomImageView"
-                app:layout_constraintTop_toTopOf="@id/mapwizeBottomImageView"
-                android:visibility="gone" />
+                app:layout_constraintTop_toTopOf="@id/mapwizeBottomImageView" />
 
             <WebView
                 android:id="@+id/mapwize_details_webview"
@@ -92,8 +92,8 @@
                 app:layout_constraintTop_toBottomOf="@id/mapwizeBottomSubtitleTextView" />
 
             <include
-                layout="@layout/mapwize_information_button"
                 android:id="@+id/mapwizeBottomInformationsButton"
+                layout="@layout/mapwize_information_button"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="16dp"
@@ -105,8 +105,8 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <include
-                layout="@layout/mapwize_direction_button"
                 android:id="@+id/mapwizeBottomDirectionButton"
+                layout="@layout/mapwize_direction_button"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="16dp"

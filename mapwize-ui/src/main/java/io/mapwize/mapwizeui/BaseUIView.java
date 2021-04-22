@@ -23,49 +23,27 @@ interface BaseUIView {
     void hideSearchBar();
     void showDirectionSearchBar();
     void hideDirectionSearchBar();
-
     void showOutOfVenueTitle();
-
     void showVenueTitle(String title);
-
     void showVenueTitleLoading(String title);
-
     void showDirectionButton();
-
     void hideDirectionButton();
-
     void showLanguagesSelector(List<String> languages);
-
     void hideLanguagesSelector();
-
     void showUniversesSelector(List<Universe> universes);
-
     void hideUniversesSelector();
-
     void showPlacePreviewInfo(PlacePreview preview, String language);
-
     void showPlaceInfoFromPreview(Place place, PlaceDetails placeDetails, String language);
-
     void showPlaceInfo(Place place, PlaceDetails placeDetails, String language);
-
     void showPlacelistInfo(Placelist placelist, String language);
-
     void hideInfo();
-
     void showSearchLoading();
-
     void hideSearchLoading();
-
     void showVenueLoading();
-
     void hideVenueLoading();
-
     void showSearch();
-
     void hideSearch();
-
     void showAccessibleFloors(List<Floor> floors);
-
     void showLoadingFloor(Floor floor);
     void showActiveFloor(Floor floor);
     void showSearchResultsList();

@@ -1,6 +1,11 @@
 # UI Components Changelog
 
 
+## 2.6.0
+
+- Using floor translation in search result and place details view
+- Updating sdk to version `3.7.0`.
+
 ## 2.5.3
 
 - Using a floor object instead of a number in `PlaceDetails`.

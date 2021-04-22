@@ -42,7 +42,6 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     public static float peekRatio = 0.3f;
     SheetContent sheetContent;
     RecyclerView.LayoutManager photosLayoutManager;
-    int fakeHeight = 0;
     private float dp;
     private SheetFull sheetFull;
     private NestedScrollView nestedScrollView;
@@ -127,6 +126,8 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         setBottomSheetBehavior(photosRecyclerView);
         cardView.setOnClickListener(this::cardViewClickListener);
     }
+
+    int fakeHeight = 0;
 
     private void cardViewClickListener(View view) {
         if (dontExpand) return;

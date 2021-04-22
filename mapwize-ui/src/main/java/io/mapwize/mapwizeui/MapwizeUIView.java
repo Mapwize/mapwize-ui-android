@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.PhoneNumberUtils;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.activity.OnBackPressedCallback;
@@ -28,6 +28,7 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.FloorDetails;
 import io.mapwize.mapwizesdk.api.Issue;
 import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
@@ -75,7 +76,17 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private BasePresenter presenter;
 
     private BottomCardView bottomCardView;
-    int lastMargin = 0;
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+            if (presenter.onBackButtonPressed()) {
+                return;
+            }
+            if (infoVisible) {
+                presenter.unselectContent();
+            }
+        }
+    };
     private FloorControllerView floorControllerView;
     private UniversesButton universesButton;
     private LanguagesButton languagesButton;
@@ -86,12 +97,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private CompassView compassView;
     private ConstraintLayout mainLayout;
     private FrameLayout headerLayout;
+    int lastMargin = 0;
     private PlaceDetailsUI placeDetailsUI;
     private float dp;
 
     // Component listener
     private OnViewInteractionListener listener;
-    private float marginBottom = 16;
     private boolean infoVisible;
     private Report report;
 
@@ -113,37 +124,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                          MapwizeConfiguration mapwizeConfiguration) {
         super(context);
         setupView(context, mapOptions, settings, mapwizeConfiguration);
-    }
-
-    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(false) {
-        @Override
-        public void handleOnBackPressed() {
-            if (presenter.onBackButtonPressed()) {
-                return;
-            }
-            if (infoVisible) {
-                presenter.unselectContent();
-            }
-        }
-    };
-
-    private void callPhoneNumber(String number) {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + number));
-        getContext().startActivity(callIntent);
-    }
-
-    private void openUrl(String url) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        getContext().startActivity(browserIntent);
-    }
-
-    private FrameLayout reportIssueViewContainer;
-
-    private static void setBottomMargin(View view, int newMargin) {
-        ConstraintLayout.LayoutParams viewLayoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
-        viewLayoutParams.bottomMargin = newMargin;
-        view.setLayoutParams(viewLayoutParams);
     }
 
     private void setupView(Context context,
@@ -224,6 +204,26 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             }
         });
 
+    }
+
+    private FrameLayout reportIssueViewContainer;
+    private float marginBottom = 16;
+
+    private static void setBottomMargin(View view, int newMargin) {
+        ConstraintLayout.LayoutParams viewLayoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        viewLayoutParams.bottomMargin = newMargin;
+        view.setLayoutParams(viewLayoutParams);
+    }
+
+    private void callPhoneNumber(String number) {
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + number));
+        getContext().startActivity(callIntent);
+    }
+
+    private void openUrl(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        getContext().startActivity(browserIntent);
     }
 
     public void setListener(OnViewInteractionListener listener) {
@@ -394,17 +394,18 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                 timezone = TimeZone.getDefault().getID();
             }
             String floorName = "";
-            Double floor = null;
-            Map<String, Object> floorObject = placeDetails.getFloor();
-            if (floorObject != null && floorObject.containsKey("number")) {
-                Integer integerFloor = (Integer) floorObject.get("number");
-                if (integerFloor != null) {
-                    floor = integerFloor.doubleValue();
+            FloorDetails floorObject = placeDetails.getFloor();
+            if (floorObject != null) {
+                if (placeDetails.getFloor() != null) {
+                    floorName = placeDetails.getFloor().getTranslation(language).getTitle();
+                    if (TextUtils.isDigitsOnly(floorName)) {
+                        floorName = getContext().getString(R.string.mapwize_floor_placeholder, String.valueOf(Math.round(placeDetails.getFloor().getNumber())));
+                    }
+                } else {
+                    floorName = getContext().getString(R.string.mapwize_floor_placeholder, String.valueOf(Math.round(placeDetails.getFloor().getNumber())));
                 }
             }
-            if (floor != null) {
-                floorName = getContext().getString(R.string.mapwize_floor_placeholder, String.valueOf(floor.intValue()));
-            }
+
             this.placeDetailsUI.showDetails(
                     translation.getTitle(),
                     translation.getSubtitle(),
@@ -439,6 +440,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                             });
                             placeDetailsConfig.getRows().add(reportRow);
 
+
                             Iterator<ButtonSmall> iterSmallButtons = placeDetailsConfig.getButtonsSmall().iterator();
                             while (iterSmallButtons.hasNext()) {
                                 ButtonSmall buttonBig = iterSmallButtons.next();
@@ -457,7 +459,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                     }
                                 }
                             }
-
 
                             if (listener.shouldDisplayInformationButton(place)) {
                                 ButtonSmall buttonSmall = new ButtonSmall(
