@@ -43,7 +43,7 @@ public class OpeningHoursFormat {
         return timeOfWeek;
     }
 
-    static boolean isOpen(List<Map<String, Object>> daysMock, OpeningHours.TimeInWeek timeInWeek) {
+    static boolean isOpen(List<Map<String, Object>> daysMock,  OpeningHours.TimeInWeek timeInWeek) {
         List<Integer> openTimes = convertDaysToTimeOfWeek(daysMock, true);
         List<Integer> closeTimes = convertDaysToTimeOfWeek(daysMock, false);
         int timeNow = getTimeOfWeek(timeInWeek);

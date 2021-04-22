@@ -76,17 +76,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private BasePresenter presenter;
 
     private BottomCardView bottomCardView;
-    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(false) {
-        @Override
-        public void handleOnBackPressed() {
-            if (presenter.onBackButtonPressed()) {
-                return;
-            }
-            if (infoVisible) {
-                presenter.unselectContent();
-            }
-        }
-    };
+    private PlaceDetailsUI placeDetailsUI;
     private FloorControllerView floorControllerView;
     private UniversesButton universesButton;
     private LanguagesButton languagesButton;
@@ -97,8 +87,8 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private CompassView compassView;
     private ConstraintLayout mainLayout;
     private FrameLayout headerLayout;
-    int lastMargin = 0;
-    private PlaceDetailsUI placeDetailsUI;
+    private FrameLayout reportIssueViewContainer;
+    private float marginBottom = 16;
     private float dp;
 
     // Component listener
@@ -206,15 +196,6 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     }
 
-    private FrameLayout reportIssueViewContainer;
-    private float marginBottom = 16;
-
-    private static void setBottomMargin(View view, int newMargin) {
-        ConstraintLayout.LayoutParams viewLayoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
-        viewLayoutParams.bottomMargin = newMargin;
-        view.setLayoutParams(viewLayoutParams);
-    }
-
     private void callPhoneNumber(String number) {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:" + number));
@@ -224,6 +205,26 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private void openUrl(String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         getContext().startActivity(browserIntent);
+    }
+
+    int lastMargin = 0;
+
+    private static void setBottomMargin(View view, int newMargin) {
+        ConstraintLayout.LayoutParams viewLayoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        viewLayoutParams.bottomMargin = newMargin;
+        view.setLayoutParams(viewLayoutParams);
+    }
+
+    private void setMarginBottom(int margin) {
+        if (margin == lastMargin) {
+            return;
+        }
+        lastMargin = margin;
+        float logoMargin = (marginBottom + 16) * dp;
+        int newMargin = (int) (margin < logoMargin ? logoMargin : margin + marginBottom * dp);
+        setBottomMargin(languagesButton, newMargin);
+        setBottomMargin(followUserButton, newMargin);
+        setBottomMargin(universesButton, newMargin);
     }
 
     public void setListener(OnViewInteractionListener listener) {
@@ -269,16 +270,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         searchBarView.showVenueTitleLoading(title);
     }
 
-    private void setMarginBottom(int margin) {
-        if (margin == lastMargin) {
-            return;
-        }
-        lastMargin = margin;
-        float logoMargin = (marginBottom + 16) * dp;
-        int newMargin = (int) (margin < logoMargin ? logoMargin : margin + marginBottom * dp);
-        setBottomMargin(languagesButton, newMargin);
-        setBottomMargin(followUserButton, newMargin);
-        setBottomMargin(universesButton, newMargin);
+    @Override
+    public void showUniversesSelector(List<Universe> universes) {
+        universesButton.setUniverses(universes);
+        universesButton.showIfNeeded();
+        universesButton.setListener(universe -> {
+            searchBarView.showLoading();
+            presenter.onUniverseClick(universe);
+        });
     }
 
     @Override
@@ -296,15 +295,18 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         searchResultList.hideLoading();
     }
 
-    @Override
-    public void showUniversesSelector(List<Universe> universes) {
-        universesButton.setUniverses(universes);
-        universesButton.showIfNeeded();
-        universesButton.setListener(universe -> {
-            searchBarView.showLoading();
-            presenter.onUniverseClick(universe);
-        });
-    }
+
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+            if (presenter.onBackButtonPressed()) {
+                return;
+            }
+            if (infoVisible) {
+                presenter.unselectContent();
+            }
+        }
+    };
 
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
@@ -918,12 +920,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
 
+
     /**
      * Set a direction on Mapwize UI will display the direction and the user interface
-     *
-     * @param direction     to display
-     * @param from          the starting point
-     * @param to            the destination point
+     * @param direction to display
+     * @param from the starting point
+     * @param to the destination point
      * @param directionMode used to find the direction
      */
     public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {

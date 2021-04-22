@@ -87,9 +87,9 @@
                     android:id="@+id/mapwizeSearchBarProgressBar"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:indeterminateTint="@color/mapwize_main_color"
                     android:progressTint="@color/mapwize_main_color"
-                    android:visibility="gone" />
+                    android:indeterminateTint="@color/mapwize_main_color"
+                    android:visibility="gone"/>
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

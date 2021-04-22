@@ -198,18 +198,16 @@ public class OpeningHours extends Row {
 
     protected static Date getDate(TimeInWeek minuteInWeek) throws ParseException {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, (minuteInWeek.getDay() + 2) % 7);
+        calendar.set(Calendar.DAY_OF_WEEK, (minuteInWeek.getDay() + 2 ) % 7 );
         calendar.set(Calendar.HOUR_OF_DAY, minuteInWeek.getHour());
         calendar.set(Calendar.MINUTE, minuteInWeek.getMinute());
         return calendar.getTime();
     }
-
     protected static TimeInWeek getTimeInWeek(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return getTimeInWeek(calendar);
     }
-
     protected static TimeInWeek getTimeInWeek(Calendar calendar) {
         int day = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

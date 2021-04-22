@@ -53,7 +53,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
 
     private String lastPlacePreviewId = "";
-    public static final String venue_KEY = "venueKey";
+    private PlacePreview selectedPlacePreview = null;
 
     private enum UIState {
         DEFAULT, SEARCH, SEARCH_FROM, SEARCH_TO, DIRECTION
@@ -88,7 +88,15 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     private Direction direction;
 
     private List<MapwizeObject> preloadedSearchResults;
-    public static final String universes_KEY = "universesKey";
+
+    MapPresenter(BaseUIView fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
+        this.fragment = fragment;
+        this.mapwizeConfiguration = mapwizeConfiguration;
+        this.mapOptions = mapOptions;
+        api = MapwizeApiFactory.getApi(mapwizeConfiguration);
+        setState(UIState.DEFAULT);
+        preloadVenueSearchResults();
+    }
 
     private void preloadVenueSearchResults() {
         SearchParams.Builder builder = new SearchParams.Builder();
@@ -116,7 +124,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
         });
     }
-    public static final String universe_KEY = "universeKey";
+
+    public static final String venue_KEY = "venueKey";
 
     @Override
     public void onVenueEnter(@NonNull Venue venue) {
@@ -216,7 +225,13 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         this.floors = floors;
         fragment.showAccessibleFloors(floors);
     }
-    public static final String state_KEY = "stateKey";
+
+    @Override
+    public void onLanguageChange(@NonNull String language) {
+        this.venueLanguage = language;
+        fragment.setLanguage(language);
+        //searchResultList.setListener(this);
+    }
 
     @Override
     public void onUniversesChange(@NonNull List<Universe> universes) {
@@ -275,7 +290,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
         }
     }
-    public static final String from_KEY = "fromKey";
+
+    @Override
+    public void onFollowUserModeChange(@NonNull FollowUserMode followUserMode) {
+        fragment.showFollowUserMode(followUserMode);
+    }
 
     public void onFollowUserModeButtonClick() {
         if (mapwizeMap == null) {
@@ -295,11 +314,76 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    public static final String to_KEY = "toKey";
-    public static final String directionMode_KEY = "directionModeKey";
-    public static final String lastQuery_KEY = "lastQueryKey";
-    public static final String mainSearches_KEY = "mainSearchesKey";
-    public static final String directionModes_KEY = "directionModesKEY";
+    @Override
+    public void onInformationClick() {
+        fragment.dispatchInformationButtonClick(selectedContent);
+    }
+
+    @Override
+    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
+        this.from = from;
+        this.to = to;
+        this.directionMode = directionMode;
+        fragment.showSelectedDirectionFrom(from, venueLanguage);
+        fragment.showSelectedDirectionTo(to, venueLanguage);
+        fragment.showAccessibleDirectionModes(directionModes);
+        fragment.showSelectedDirectionMode(directionMode);
+        fragment.hideSearchBar();
+        fragment.showDirectionSearchBar();
+        fragment.hideUniversesSelector();
+        fragment.hideLanguagesSelector();
+        startDirection();
+    }
+
+    @Override
+    public void selectPlace(Place place, boolean centerOn) {
+        mapwizeMap.removeMarkers();
+        if (!place.getUniverses().contains(this.universe)) {
+            mapwizeMap.setUniverse(place.getUniverses().get(0));
+        }
+        selectedContent = place;
+        mapwizeMap.centerOnPlace(place, 0);
+        mapwizeMap.selectPlace(place);
+        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>(){
+            @Override
+            public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                new Handler(Looper.getMainLooper()).post(
+                        ()-> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(
+                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
+            }
+        });
+    }
+
+    @Override
+    public void grantAccess(String accessKey, ApiCallback<Boolean> callback) {
+        mapwizeMap.grantAccess(accessKey, new ApiCallback<Boolean>() {
+            @Override
+            public void onSuccess(@Nullable Boolean object) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    callback.onSuccess(object);
+                    preloadVenueSearchResults();
+                });
+            }
+
+            @Override
+            public void onFailure(@Nullable Throwable t) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    callback.onFailure(t);
+                });
+            }
+        });
+    }
+
+    @Override
+    public void refreshSearchData() {
+        preloadVenueSearchResults();
+    }
 
     @Override
     public boolean onBackButtonPressed() {
@@ -335,7 +419,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    static boolean notified = false;
+    public static final String universes_KEY = "universesKey";
 
     @Override
     public void onSearchBackButtonClick() {
@@ -343,7 +427,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         setState(UIState.DEFAULT);
     }
 
-    private PlacePreview selectedPlacePreview = null;
+    public static final String universe_KEY = "universeKey";
 
     @Override
     public void onSearchResultPlaceClick(Place place, Universe universe) {
@@ -416,25 +500,19 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         fragment.showSelectedDirectionFrom(from, venueLanguage);
     }
 
-    MapPresenter(BaseUIView fragment, MapwizeConfiguration mapwizeConfiguration, MapOptions mapOptions) {
-        this.fragment = fragment;
-        this.mapwizeConfiguration = mapwizeConfiguration;
-        this.mapOptions = mapOptions;
-        api = MapwizeApiFactory.getApi(mapwizeConfiguration);
-        setState(UIState.DEFAULT);
-        preloadVenueSearchResults();
+    @Override
+    public void onFloorClick(Floor floor) {
+        mapwizeMap.setFloor(floor != null ? floor.getNumber() : null);
     }
 
     @Override
-    public void onLanguageChange(@NonNull String language) {
-        this.venueLanguage = language;
-        fragment.setLanguage(language);
-        //searchResultList.setListener(this);
+    public void onLanguageClick(String language) {
+        mapwizeMap.setLanguageForVenue(language, venue);
     }
 
     @Override
-    public void onFollowUserModeChange(@NonNull FollowUserMode followUserMode) {
-        fragment.showFollowUserMode(followUserMode);
+    public void onUniverseClick(Universe universe) {
+        mapwizeMap.setUniverseForVenue(universe, venue);
     }
 
     @Override
@@ -454,104 +532,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     }
 
     @Override
-    public void onInformationClick() {
-        fragment.dispatchInformationButtonClick(selectedContent);
-    }
-
-    @Override
-    public void setDirection(Direction direction, DirectionPoint from, DirectionPoint to, DirectionMode directionMode) {
-        this.from = from;
-        this.to = to;
-        this.directionMode = directionMode;
-        fragment.showSelectedDirectionFrom(from, venueLanguage);
-        fragment.showSelectedDirectionTo(to, venueLanguage);
-        fragment.showAccessibleDirectionModes(directionModes);
-        fragment.showSelectedDirectionMode(directionMode);
-        fragment.hideSearchBar();
-        fragment.showDirectionSearchBar();
-        fragment.hideUniversesSelector();
-        fragment.hideLanguagesSelector();
-        startDirection();
-    }
-
-    @Override
-    public void selectPlace(Place place, boolean centerOn) {
-        mapwizeMap.removeMarkers();
-        if (!place.getUniverses().contains(this.universe)) {
-            mapwizeMap.setUniverse(place.getUniverses().get(0));
-        }
-        selectedContent = place;
-        mapwizeMap.centerOnPlace(place, 0);
-        mapwizeMap.selectPlace(place);
-        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>() {
-            @Override
-            public void onSuccess(@NonNull PlaceDetails placeDetails) {
-                new Handler(Looper.getMainLooper()).post(
-                        () -> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                t.printStackTrace();
-                new Handler(Looper.getMainLooper()).post(
-                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
-            }
-        });
-    }
-
-    @Override
-    public void grantAccess(String accessKey, ApiCallback<Boolean> callback) {
-        mapwizeMap.grantAccess(accessKey, new ApiCallback<Boolean>() {
-            @Override
-            public void onSuccess(@Nullable Boolean object) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    callback.onSuccess(object);
-                    preloadVenueSearchResults();
-                });
-            }
-
-            @Override
-            public void onFailure(@Nullable Throwable t) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    callback.onFailure(t);
-                });
-            }
-        });
-    }
-
-    @Override
-    public void refreshSearchData() {
-        preloadVenueSearchResults();
-    }
-
-    @Override
-    public void onFloorClick(Floor floor) {
-        mapwizeMap.setFloor(floor != null ? floor.getNumber() : null);
-    }
-
-    @Override
-    public void unselectContent() {
-        mapwizeMap.removeMarkers();
-        mapwizeMap.unselectPlace();
-        selectedContent = null;
-        selectedPlacePreview = null;
-        fragment.hideInfo();
-    }
-
-    @Override
-    public void onLanguageClick(String language) {
-        mapwizeMap.setLanguageForVenue(language, venue);
-    }
-
-    @Override
-    public void onUniverseClick(Universe universe) {
-        mapwizeMap.setUniverseForVenue(universe, venue);
-    }
-
-    @Override
     public void onDirectionSwapClick() {
         swap();
     }
+
+    public static final String state_KEY = "stateKey";
+    public static final String from_KEY = "fromKey";
 
     @Override
     public void onDirectionModeChange(DirectionMode mode) {
@@ -569,30 +555,6 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    private void selectPlacelist(Placelist placelist) {
-        mapwizeMap.removeMarkers();
-        mapwizeMap.unselectPlace();
-        selectedContent = placelist;
-        mapwizeMap.getMapwizeApi().getPlacesForPlacelist(placelist.getId(), new ApiCallback<List<Place>>() {
-            @Override
-            public void onSuccess(@NonNull List<Place> places) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    List<Marker> markers = new ArrayList<>();
-                    for (Place place : places) {
-                        markers.add(Marker.createMarker(place, new MarkerOptions.Builder().build()));
-                    }
-                    mapwizeMap.addMarkers(markers);
-                });
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                t.printStackTrace();
-            }
-        });
-        fragment.showPlacelistInfo(placelist, venueLanguage);
-    }
-
     @Override
     public void onDirectionToFieldGetFocus() {
         if (state != UIState.SEARCH_TO) {
@@ -601,22 +563,13 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    void requestDirectionFrom() {
-        setState(UIState.SEARCH_FROM);
-        fragment.hideSwapButton();
-        fragment.showSearchResultsList();
-        if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
-            fragment.showCurrentLocationInResult();
-        }
-        fragment.showSearchDirectionFrom();
-    }
-
-    void requestDirectionTo() {
-        setState(UIState.SEARCH_TO);
-        fragment.hideSwapButton();
-        fragment.hideCurrentLocationInResult();
-        fragment.showSearchResultsList();
-        fragment.showSearchDirectionTo();
+    @Override
+    public void unselectContent() {
+        mapwizeMap.removeMarkers();
+        mapwizeMap.unselectPlace();
+        selectedContent = null;
+        selectedPlacePreview = null;
+        fragment.hideInfo();
     }
 
     @Override
@@ -632,6 +585,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         return mapwizeMap;
     }
 
+    static boolean notified = false;
     private void selectPlace(PlacePreview preview) {
         selectedPlacePreview = preview;
         mapwizeMap.removeMarkers();
@@ -640,7 +594,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         preview.getFullObjectAsync(new PreviewCallback<Place>() {
             @Override
             public void getObjectAsync(Place object) {
-                api.getPlaceDetails(object.getId(), new ApiCallback<PlaceDetails>() {
+                api.getPlaceDetails(object.getId(), new ApiCallback<PlaceDetails>(){
                     @Override
                     public void onSuccess(@NonNull PlaceDetails placeDetails) {
                         fragment.showPlaceInfoFromPreview(object, placeDetails, venueLanguage);
@@ -683,6 +637,94 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         });
     }
 
+    private void selectPlace(Place place, Universe universe) {
+        mapwizeMap.removeMarkers();
+        selectedContent = place;
+        mapwizeMap.centerOnPlace(place, 0);
+        if (universe != null && !universe.equals(this.universe)) {
+            mapwizeMap.setUniverse(universe);
+        } else if (!place.getUniverses().contains(this.universe)) {
+            mapwizeMap.setUniverse(place.getUniverses().get(0));
+        }
+        mapwizeMap.selectPlace(place);
+        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>(){
+            @Override
+            public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                new Handler(Looper.getMainLooper()).post(
+                        ()-> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(
+                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
+            }
+        });
+    }
+
+    private void selectPlacelist(Placelist placelist) {
+        mapwizeMap.removeMarkers();
+        mapwizeMap.unselectPlace();
+        selectedContent = placelist;
+        mapwizeMap.getMapwizeApi().getPlacesForPlacelist(placelist.getId(), new ApiCallback<List<Place>>() {
+            @Override
+            public void onSuccess(@NonNull List<Place> places) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    List<Marker> markers = new ArrayList<>();
+                    for (Place place : places) {
+                        markers.add(Marker.createMarker(place, new MarkerOptions.Builder().build()));
+                    }
+                    mapwizeMap.addMarkers(markers);
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
+        fragment.showPlacelistInfo(placelist, venueLanguage);
+    }
+
+    public static final String to_KEY = "toKey";
+
+    void requestDirectionFrom() {
+        setState(UIState.SEARCH_FROM);
+        fragment.hideSwapButton();
+        fragment.showSearchResultsList();
+        if (mapwizeMap.getUserLocation() != null && mapwizeMap.getUserLocation().getFloor() != null) {
+            fragment.showCurrentLocationInResult();
+        }
+        fragment.showSearchDirectionFrom();
+    }
+
+    void requestDirectionTo() {
+        setState(UIState.SEARCH_TO);
+        fragment.hideSwapButton();
+        fragment.hideCurrentLocationInResult();
+        fragment.showSearchResultsList();
+        fragment.showSearchDirectionTo();
+    }
+
+    void validateDirectionFrom(DirectionPoint point) {
+        from = point;
+        fragment.showSelectedDirectionFrom(point, venueLanguage);
+        tryToStartDirection();
+    }
+
+    void validateDirectionTo(DirectionPoint point) {
+        to = point;
+        fragment.showSelectedDirectionTo(point, venueLanguage);
+        tryToStartDirection();
+    }
+
+    void validateDirectionMode(DirectionMode mode) {
+        directionMode = mode;
+        fragment.showSelectedDirectionMode(mode);
+        tryToStartDirection();
+    }
+
     void swap() {
         DirectionPoint tmpTo = from;
         DirectionPoint tmpFrom = to;
@@ -695,30 +737,10 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    private void selectPlace(Place place, Universe universe) {
-        mapwizeMap.removeMarkers();
-        selectedContent = place;
-        mapwizeMap.centerOnPlace(place, 0);
-        if (universe != null && !universe.equals(this.universe)) {
-            mapwizeMap.setUniverse(universe);
-        } else if (!place.getUniverses().contains(this.universe)) {
-            mapwizeMap.setUniverse(place.getUniverses().get(0));
+    void tryToStartDirection() {
+        if (from != null && to != null) {
+            startDirection();
         }
-        mapwizeMap.selectPlace(place);
-        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>() {
-            @Override
-            public void onSuccess(@NonNull PlaceDetails placeDetails) {
-                new Handler(Looper.getMainLooper()).post(
-                        () -> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                t.printStackTrace();
-                new Handler(Looper.getMainLooper()).post(
-                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
-            }
-        });
     }
 
     void quitDirection() {
@@ -758,17 +780,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         return state == MapPresenter.UIState.SEARCH_FROM || state == MapPresenter.UIState.SEARCH_TO || state == MapPresenter.UIState.DIRECTION || state == MapPresenter.UIState.SEARCH;
     }
 
-    void validateDirectionFrom(DirectionPoint point) {
-        from = point;
-        fragment.showSelectedDirectionFrom(point, venueLanguage);
-        tryToStartDirection();
-    }
-
-    void validateDirectionTo(DirectionPoint point) {
-        to = point;
-        fragment.showSelectedDirectionTo(point, venueLanguage);
-        tryToStartDirection();
-    }
+    public static final String directionMode_KEY = "directionModeKey";
+    public static final String lastQuery_KEY = "lastQueryKey";
 
     @Override
     public void onMapLoaded(MapwizeMap mapwizeMap) {
@@ -1089,17 +1102,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         }
     }
 
-    void validateDirectionMode(DirectionMode mode) {
-        directionMode = mode;
-        fragment.showSelectedDirectionMode(mode);
-        tryToStartDirection();
-    }
-
-    void tryToStartDirection() {
-        if (from != null && to != null) {
-            startDirection();
-        }
-    }
+    public static final String mainSearches_KEY = "mainSearchesKey";
+    public static final String directionModes_KEY = "directionModesKEY";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
