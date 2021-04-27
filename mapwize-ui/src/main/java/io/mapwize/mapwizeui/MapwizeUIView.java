@@ -438,9 +438,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                 }
                             }
 
-                            Row reportRow = new Row(getContext(), "Report", R.drawable.ic_baseline_report_problem_24, true, Row.REPORT_ROW, v -> {
-                                reportPlace(place, placeDetails, language);
-                            });
+                            Row reportRow = new Row(getContext(),
+                                    "Report",
+                                    R.drawable.ic_baseline_report_problem_24,
+                                    true,
+                                    Row.REPORT_ROW,
+                                    v -> presenter.reportPlace(place, placeDetails.getIssueTypes()));
                             placeDetailsConfig.getRows().add(reportRow);
 
 
@@ -525,64 +528,43 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         showPlaceDetails(place, placeDetails, language);
     }
 
-    private void reportPlace(Place place, PlaceDetails placeDetails, String language) {
-        Venue venue = mapwizeMap.getVenue();
-        if (venue == null) {
-            return;
-        }
+    @Override
+    public void reportPlace(String placeTitle, String venueTitle, List<IssueType> issueTypes, String venueLanguage, Report.ReportIssueListener reportIssueListener) {
         report.setVisibility(View.VISIBLE);
-        report.setPlaceName(place.getTranslation(language).getTitle());
-        report.setVenueName(venue.getTranslation(language).getTitle());
-        report.setIssuesTypes(placeDetails.getIssueTypes(), language);
-
-
-        final String[] reporterEmail = {null};
-        MapwizeApiFactory.getApi(mapwizeConfiguration).getUserInfo(new ApiCallback<UserInfo>() {
-            @Override
-            public void onSuccess(@NonNull UserInfo object) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    report.setDisplayNameVisibility(true);
-                    report.setDisplayName(object.getDisplayName());
-                    reporterEmail[0] = object.getEmail();
-                });
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                new Handler(Looper.getMainLooper()).post(() -> report.setDisplayNameVisibility(false));
-            }
-        });
-
-        report.setReportListener((summary, description, issueTypeId) -> {
-            Issue issue = new Issue(null,
-                    place.getVenueId(),
-                    venue.getOwner(),
-                    place.getId(),
-                    reporterEmail[0],
-                    Issue.ISSUE_STATUS_OPEN,
-                    Issue.ISSUE_PRIORITY_MEDIUM,
-                    summary,
-                    description,
-                    issueTypeId);
-            MapwizeApiFactory.getApi(mapwizeConfiguration).reportIssue(issue, new ApiCallback<Issue>() {
-                @Override
-                public void onSuccess(@NonNull Issue object) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        Toast.makeText(getContext(), getResources().getString(R.string.issue_reported), Toast.LENGTH_LONG).show();
-                        report.dismiss();
-                    });
-                }
-
-                @Override
-                public void onFailure(@NonNull Throwable t) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        Toast.makeText(getContext(), getResources().getString(R.string.issue_error)  + "\n" + t.getMessage(), Toast.LENGTH_LONG).show();
-                    });
-                }
-            });
-        });
-
+        report.setPlaceName(placeTitle);
+        report.setVenueName(venueTitle);
+        report.setIssuesTypes(issueTypes, venueLanguage);
+        report.setReportListener(reportIssueListener);
     }
+
+    @Override
+    public void onIssueReported(Issue issue) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(getContext(), getResources().getString(R.string.issue_reported), Toast.LENGTH_LONG).show();
+            report.dismiss();
+        });
+    }
+
+    @Override
+    public void onReportFailed(Throwable t) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(getContext(), getResources().getString(R.string.issue_error)  + "\n" + t.getMessage(), Toast.LENGTH_LONG).show();
+        });
+    }
+
+    @Override
+    public void showReporterName(String displayName) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            report.setDisplayNameVisibility(true);
+            report.setDisplayName(displayName);
+        });
+    }
+
+    @Override
+    public void hideReporterName() {
+        new Handler(Looper.getMainLooper()).post(() -> report.setDisplayNameVisibility(false));
+    }
+
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
         placeDetailsUI.show();
