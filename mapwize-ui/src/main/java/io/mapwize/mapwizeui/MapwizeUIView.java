@@ -303,6 +303,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             if (presenter.onBackButtonPressed()) {
                 return;
             }
+            if (report.getVisibility() == VISIBLE) {
+                report.dismiss();
+                return;
+            }
             if (infoVisible) {
                 presenter.unselectContent();
             }
