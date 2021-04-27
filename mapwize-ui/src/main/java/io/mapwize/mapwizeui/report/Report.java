@@ -2,6 +2,7 @@ package io.mapwize.mapwizeui.report;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import io.mapwize.mapwizeui.R;
 
 public class Report extends LinearLayout {
     Context context;
+    private TextView mapwize_issue_venueLabel;
     private TextView mapwize_issue_placeLabel;
     private ImageView mapwize_issue_backIcon;
     private GridLayout mapwize_issue_gridLayout;
@@ -26,6 +28,8 @@ public class Report extends LinearLayout {
     private IssueTypeView selectedIssueType;
     private ImageView mapwize_issue_sendIcon;
     private ReportIssueListener reportIssueListener;
+    private View mapwize_issue_display_name_layout;
+    private TextView mapwize_issue_userLabel;
 
     public Report(@NonNull Context context) {
         super(context);
@@ -49,16 +53,12 @@ public class Report extends LinearLayout {
         EditText mapwize_issue_summaryEditText = findViewById(R.id.mapwize_issue_summaryEditText);
         EditText mapwize_issue_descriptionEditText = findViewById(R.id.mapwize_issue_descriptionEditText);
         mapwize_issue_gridLayout = findViewById(R.id.mapwize_issue_gridLayout);
+        mapwize_issue_display_name_layout = findViewById(R.id.mapwize_issue_display_name_layout);
+        mapwize_issue_userLabel = findViewById(R.id.mapwize_issue_userLabel);
+        mapwize_issue_venueLabel = findViewById(R.id.mapwize_issue_venueLabel);
         mapwize_issue_placeLabel = findViewById(R.id.mapwize_issue_placeLabel);
         mapwize_issue_backIcon = findViewById(R.id.mapwize_issue_backIcon);
-        mapwize_issue_backIcon.setOnClickListener(v -> {
-                    if (selectedIssueType != null) {
-                        Toast.makeText(context, "selected IssueType : " + selectedIssueType.getIssueTypeViewId(), Toast.LENGTH_SHORT).show();
-                    }
-                    dismiss();
-                }
-        );
-
+        mapwize_issue_backIcon.setOnClickListener(v -> dismiss());
         mapwize_issue_sendIcon = findViewById(R.id.mapwize_issue_sendIcon);
         mapwize_issue_sendIcon.setOnClickListener(v -> {
             if (selectedIssueType == null) {
@@ -105,6 +105,24 @@ public class Report extends LinearLayout {
 
     public void setReportListener(ReportIssueListener reportIssueListener) {
         this.reportIssueListener = reportIssueListener;
+    }
+
+    public void setVenueName(String title) {
+        if (mapwize_issue_venueLabel != null) {
+            mapwize_issue_venueLabel.setText(title);
+        }
+    }
+
+    public void setDisplayNameVisibility(boolean visibility) {
+        if (mapwize_issue_display_name_layout != null) {
+            mapwize_issue_display_name_layout.setVisibility(visibility ? VISIBLE : GONE);
+        }
+    }
+
+    public void setDisplayName(String displayName) {
+        if (mapwize_issue_userLabel != null) {
+            mapwize_issue_userLabel.setText(displayName);
+        }
     }
 
     public interface ReportIssueListener {

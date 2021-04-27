@@ -85,7 +85,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
-            android:text="Blanchemaille"
             android:textColor="@color/mapwize_details_row_text_color"
             android:textSize="@dimen/mapwize_details_row_text_size" />
     </LinearLayout>
@@ -124,8 +123,10 @@
             android:layout_height="1dp"
             android:background="#eee" />
     <LinearLayout
+        android:id="@+id/mapwize_issue_display_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:paddingVertical="16dp">
 
         <ImageView
@@ -190,20 +191,6 @@
         android:gravity="center"
         android:useDefaultMargins="true"
         android:paddingBottom="16dp">
-
-<!--        <TextView-->
-<!--            android:id="@+id/mapwize_issue_issueType_4"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:minWidth="72dp"-->
-<!--            android:gravity="center"-->
-<!--            android:text="Place name is incorrect"-->
-<!--            android:layout_gravity="start|fill"-->
-<!--            android:paddingVertical="8dp"-->
-<!--            android:paddingHorizontal="16dp"-->
-<!--            android:textColor="@color/mapwize_details_row_text_color"-->
-<!--            android:background="@drawable/mapwize_details_ripple_button_voided"-->
-<!--            android:textSize="@dimen/mapwize_details_row_text_size" />-->
     </GridLayout>
     <LinearLayout
         android:layout_width="match_parent"

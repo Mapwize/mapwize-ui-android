@@ -38,6 +38,7 @@ import io.mapwize.mapwizesdk.api.PlaceDetails;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Translation;
 import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.UserInfo;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
@@ -437,8 +438,8 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                 }
                             }
 
-                            Row reportRow = new Row(getContext(), "Report", R.drawable.ic_baseline_report_problem_24, true, Row.OTHER, v -> {
-                                reportPlace(place, language);
+                            Row reportRow = new Row(getContext(), "Report", R.drawable.ic_baseline_report_problem_24, true, Row.REPORT_ROW, v -> {
+                                reportPlace(place, placeDetails, language);
                             });
                             placeDetailsConfig.getRows().add(reportRow);
 
@@ -524,39 +525,63 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         showPlaceDetails(place, placeDetails, language);
     }
 
-    private void reportPlace(Place place, String language) {
+    private void reportPlace(Place place, PlaceDetails placeDetails, String language) {
+        Venue venue = mapwizeMap.getVenue();
+        if (venue == null) {
+            return;
+        }
         report.setVisibility(View.VISIBLE);
         report.setPlaceName(place.getTranslation(language).getTitle());
-        MapwizeConfiguration mapwizeConfiguration = new MapwizeConfiguration.Builder(getContext(), getResources().getString(R.string.mapwize_api_key2)).serverUrl(getResources().getString(R.string.mapwize_server_url)).build();
-        ApiFilter apiFilter = new ApiFilter.Builder().organizationId("573ef6dd8aa2f00b002d4e39").build();
+        report.setVenueName(venue.getTranslation(language).getTitle());
+        report.setIssuesTypes(placeDetails.getIssueTypes(), language);
 
-        report.setReportListener((summary, description, issueTypeId) -> {
-            Issue issue = new Issue(null, place.getVenueId(), "573ef6dd8aa2f00b002d4e39", place.getId(), null, Issue.ISSUE_STATUS_OPEN, Issue.ISSUE_PRIORITY_MEDIUM, summary, description, issueTypeId);
-            MapwizeApiFactory.getApi(mapwizeConfiguration).reportIssue(apiFilter, issue, new ApiCallback<Issue>() {
-                @Override
-                public void onSuccess(@NonNull Issue object) {
-                    System.out.println("Issue has been created: " + object.toString());
-                    new Handler(Looper.getMainLooper()).post(() -> report.dismiss());
-                }
 
-                @Override
-                public void onFailure(@NonNull Throwable t) {
-                    System.out.println("Failed to create an issue: " + t.getMessage());
-
-                }
-            });
-        });
-        MapwizeApiFactory.getApi(mapwizeConfiguration).getIssueTypes(apiFilter, new ApiCallback<List<IssueType>>() {
+        final String[] reporterEmail = {null};
+        MapwizeApiFactory.getApi(mapwizeConfiguration).getUserInfo(new ApiCallback<UserInfo>() {
             @Override
-            public void onSuccess(@NonNull List<IssueType> issuesList) {
-                new Handler(Looper.getMainLooper()).post(() -> report.setIssuesTypes(issuesList, language));
+            public void onSuccess(@NonNull UserInfo object) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    report.setDisplayNameVisibility(true);
+                    report.setDisplayName(object.getDisplayName());
+                    reporterEmail[0] = object.getEmail();
+                });
             }
 
             @Override
             public void onFailure(@NonNull Throwable t) {
-                System.out.println("Failed");
+                new Handler(Looper.getMainLooper()).post(() -> report.setDisplayNameVisibility(false));
             }
         });
+
+        report.setReportListener((summary, description, issueTypeId) -> {
+            Issue issue = new Issue(null,
+                    place.getVenueId(),
+                    venue.getOwner(),
+                    place.getId(),
+                    reporterEmail[0],
+                    Issue.ISSUE_STATUS_OPEN,
+                    Issue.ISSUE_PRIORITY_MEDIUM,
+                    summary,
+                    description,
+                    issueTypeId);
+            MapwizeApiFactory.getApi(mapwizeConfiguration).reportIssue(issue, new ApiCallback<Issue>() {
+                @Override
+                public void onSuccess(@NonNull Issue object) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(getContext(), getResources().getString(R.string.issue_reported), Toast.LENGTH_LONG).show();
+                        report.dismiss();
+                    });
+                }
+
+                @Override
+                public void onFailure(@NonNull Throwable t) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(getContext(), getResources().getString(R.string.issue_error)  + "\n" + t.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+                }
+            });
+        });
+
     }
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
