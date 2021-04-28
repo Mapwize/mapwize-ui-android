@@ -96,8 +96,8 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/mapwize_direction_start_white"
-                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
                 app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionFromEditTextLayout"
+                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
                 app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionFromEditTextLayout" />
 
             <ImageView
@@ -105,8 +105,8 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/mapwize_direction_end_white"
-                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
                 app:layout_constraintBottom_toBottomOf="@+id/mapwizeDirectionToEditTextLayout"
+                app:layout_constraintStart_toEndOf="@+id/mapwizeDirectionBarBackButton"
                 app:layout_constraintTop_toTopOf="@+id/mapwizeDirectionToEditTextLayout" />
 
             <ImageView
@@ -136,8 +136,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/mapwizeDirectionToEditTextLayout"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mapwizeDirectionToEditTextLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

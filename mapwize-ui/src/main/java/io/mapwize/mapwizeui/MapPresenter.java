@@ -18,6 +18,7 @@ import io.mapwize.mapwizesdk.api.MapwizeApi;
 import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
+import io.mapwize.mapwizesdk.api.PlaceDetails;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.SearchParams;
 import io.mapwize.mapwizesdk.api.Universe;
@@ -36,6 +37,7 @@ import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.OnNavigationUpdateListener;
 import io.mapwize.mapwizesdk.map.PlacePreview;
 import io.mapwize.mapwizesdk.map.PreviewCallback;
+import io.mapwize.mapwizesdk.map.VenuePreview;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
 
@@ -47,6 +49,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         MapwizeMap.OnFloorsChangeListener, MapwizeMap.OnDirectionModesChangeListener, MapwizeMap.OnLanguageChangeListener,
         MapwizeMap.OnFollowUserModeChangeListener, MapwizeMap.OnClickListener {
 
+
+    private String lastPlacePreviewId = "";
+    private PlacePreview selectedPlacePreview = null;
 
     private enum UIState {
         DEFAULT, SEARCH, SEARCH_FROM, SEARCH_TO, DIRECTION
@@ -294,14 +299,26 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             return;
         }
         if (clickEvent.getEventType() == ClickEvent.VENUE_CLICK) {
-            mapwizeMap.centerOnVenue(clickEvent.getVenuePreview(), 300);
+            VenuePreview venuePreview = clickEvent.getVenuePreview();
+            if (venuePreview != null) {
+                mapwizeMap.centerOnVenue(venuePreview, 300);
+            }
         }
         if (clickEvent.getEventType() == ClickEvent.PLACE_CLICK) {
-            selectPlace(clickEvent.getPlacePreview());
+            selectedPlacePreview = clickEvent.getPlacePreview();
+            if (selectedPlacePreview != null) {
+                String newId = selectedPlacePreview.getId();
+                if (selectedContent == null || !lastPlacePreviewId.equals(newId)) {
+                    lastPlacePreviewId = selectedPlacePreview.getId();
+                    selectPlace(selectedPlacePreview);
+                }
+            }
 
         }
         if (clickEvent.getEventType() == ClickEvent.MAP_CLICK) {
             if (selectedContent != null) {
+                unselectContent();
+            } else if (selectedPlacePreview != null) {
                 unselectContent();
             }
         }
@@ -360,7 +377,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         selectedContent = place;
         mapwizeMap.centerOnPlace(place, 0);
         mapwizeMap.selectPlace(place);
-        fragment.showPlaceInfo(place, venueLanguage);
+        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>(){
+            @Override
+            public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                new Handler(Looper.getMainLooper()).post(
+                        ()-> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(
+                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
+            }
+        });
     }
 
     @Override
@@ -408,15 +438,16 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             validateDirectionFrom(mapwizeMap.getUserLocation());
         }
         if (selectedContent != null) {
-            validateDirectionTo((DirectionPoint)selectedContent);
+            validateDirectionTo((DirectionPoint) selectedContent);
+        } else if (selectedPlacePreview != null) {
+            validateDirectionTo((DirectionPoint) selectedPlacePreview);
         }
         fragment.hideInfo();
         fragment.showAccessibleDirectionModes(directionModes);
         validateDirectionMode(directionMode);
         if (from == null) {
             requestDirectionFrom();
-        }
-        else if (to == null) {
+        } else if (to == null) {
             requestDirectionTo();
         }
     }
@@ -505,7 +536,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 public void onSuccess(@NonNull final List<MapwizeObject> mapwizeObjects) {
                     // Display the result
                     new Handler(Looper.getMainLooper()).post(() -> {
-                       fragment.showSearchResults(mapwizeObjects);
+                        fragment.showSearchResults(mapwizeObjects);
                         fragment.hideSearchLoading();
                     });
                 }
@@ -532,21 +563,18 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             from = place;
             if (to == null) {
                 requestDirectionTo();
-            }
-            else {
+            } else {
                 setState(UIState.DIRECTION);
                 startDirection();
             }
             fragment.showSelectedDirectionFrom(from, venueLanguage);
 
-        }
-        else if (state == UIState.SEARCH_TO) {
+        } else if (state == UIState.SEARCH_TO) {
             to = place;
             if (from != null) {
                 setState(UIState.DIRECTION);
                 startDirection();
-            }
-            else {
+            } else {
                 requestDirectionFrom();
             }
             fragment.showSelectedDirectionTo(to, venueLanguage);
@@ -575,8 +603,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             if (from != null) {
                 setState(UIState.DIRECTION);
                 startDirection();
-            }
-            else {
+            } else {
                 requestDirectionFrom();
             }
             fragment.showSelectedDirectionTo(to, venueLanguage);
@@ -588,8 +615,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         from = mapwizeMap.getUserLocation();
         if (to == null) {
             requestDirectionTo();
-        }
-        else {
+        } else {
             setState(UIState.DIRECTION);
             startDirection();
         }
@@ -619,12 +645,10 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 fragment.hideSearchResultsList();
                 fragment.showSelectedDirectionFrom(from, venueLanguage);
                 fragment.showSelectedDirectionTo(to, venueLanguage);
-            }
-            else {
+            } else {
                 quitDirection();
             }
-        }
-        else if (state == UIState.DIRECTION) {
+        } else if (state == UIState.DIRECTION) {
             quitDirection();
         }
     }
@@ -737,27 +761,71 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.removeMarkers();
         mapwizeMap.unselectPlace();
         selectedContent = null;
+        selectedPlacePreview = null;
         fragment.hideInfo();
     }
+
+    @Override
+    public String getFloor() {
+        if (mapwizeMap != null && mapwizeMap.getFloor() != null) {
+            return mapwizeMap.getFloor().getName();
+        }
+        return "";
+    }
+
+    @Override
+    public MapwizeMap getMapwizeMap() {
+        return mapwizeMap;
+    }
+
+    static boolean notified = false;
     private void selectPlace(PlacePreview preview) {
+        selectedPlacePreview = preview;
         mapwizeMap.removeMarkers();
         mapwizeMap.selectPlace(preview);
         fragment.showPlacePreviewInfo(preview, venueLanguage);
         preview.getFullObjectAsync(new PreviewCallback<Place>() {
             @Override
             public void getObjectAsync(Place object) {
-                selectedContent = object;
-                fragment.showPlaceInfoFromPreview(object, venueLanguage);
-                EventManager.getInstance().triggerOnContentSelect(
-                        object, mapwizeMap.getUniverse(),
-                        mapwizeMap.getUniverse(),
-                        Channel.MAP_CLICK,
-                        null);
+                api.getPlaceDetails(object.getId(), new ApiCallback<PlaceDetails>(){
+                    @Override
+                    public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                        fragment.showPlaceInfoFromPreview(object, placeDetails, venueLanguage);
+                        selectedContent = object;
+                        EventManager.getInstance().triggerOnContentSelect(
+                                object, mapwizeMap.getUniverse(),
+                                mapwizeMap.getUniverse(),
+                                Channel.MAP_CLICK,
+                                null);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Throwable t) {
+                        if (!notified) {
+                            notified = true;
+                            fragment.showErrorMessage("Can't get more details");
+                        }
+                        t.printStackTrace();
+                        fragment.showPlaceInfoFromPreview(object, null, venueLanguage);
+                        selectedContent = object;
+                        EventManager.getInstance().triggerOnContentSelect(
+                                object, mapwizeMap.getUniverse(),
+                                mapwizeMap.getUniverse(),
+                                Channel.MAP_CLICK,
+                                null);
+                    }
+                });
+
             }
 
             @Override
             public void error(Throwable t) {
-
+                if (!notified) {
+                    notified = true;
+                    fragment.showErrorMessage("Can't get more details");
+                }
+                t.printStackTrace();
+                fragment.showPreviewOnly(selectedPlacePreview);
             }
         });
     }
@@ -768,12 +836,24 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.centerOnPlace(place, 0);
         if (universe != null && !universe.equals(this.universe)) {
             mapwizeMap.setUniverse(universe);
-        }
-        else if (!place.getUniverses().contains(this.universe)) {
+        } else if (!place.getUniverses().contains(this.universe)) {
             mapwizeMap.setUniverse(place.getUniverses().get(0));
         }
         mapwizeMap.selectPlace(place);
-        fragment.showPlaceInfo(place, venueLanguage);
+        api.getPlaceDetails(place.getId(), new ApiCallback<PlaceDetails>(){
+            @Override
+            public void onSuccess(@NonNull PlaceDetails placeDetails) {
+                new Handler(Looper.getMainLooper()).post(
+                        ()-> fragment.showPlaceInfo(place, placeDetails, venueLanguage));
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(
+                        () -> fragment.showPlaceInfo(place, null, venueLanguage));
+            }
+        });
     }
 
     private void selectPlacelist(Placelist placelist) {
@@ -791,9 +871,10 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                     mapwizeMap.addMarkers(markers);
                 });
             }
+
             @Override
             public void onFailure(@NonNull Throwable t) {
-                //TODO handle failure
+                t.printStackTrace();
             }
         });
         fragment.showPlacelistInfo(placelist, venueLanguage);
@@ -873,8 +954,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             } catch (NavigationException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             fragment.showDirectionLoading();
             MarkerOptions finalStartMarkerOptions = startMarkerOptions;
             MarkerOptions finalEndMarkerOptions = endMarkerOptions;
@@ -968,7 +1048,9 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         mapwizeMap.stopNavigation();
         mapwizeMap.removeMarkers();
         if (to instanceof Place || to instanceof Placelist) {
-            selectedContent = (MapwizeObject)to;
+            selectedContent = (MapwizeObject) to;
+        } else if (to instanceof PlacePreview) {
+            selectedPlacePreview = (PlacePreview) to;
         }
         from = null;
         to = null;
@@ -985,11 +1067,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         setState(UIState.DEFAULT);
         if (selectedContent != null) {
             if (selectedContent instanceof Place) {
-                selectPlace((Place)selectedContent, universe);
+                selectPlace((Place) selectedContent, universe);
+            } else {
+                selectPlacelist((Placelist) selectedContent);
             }
-            else {
-                selectPlacelist((Placelist)selectedContent);
-            }
+        } else if (selectedPlacePreview != null) {
+            selectPlace(selectedPlacePreview);
         }
     }
 

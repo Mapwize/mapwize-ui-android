@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="25dp"
+    android:background="@drawable/mapwize_details_radius_top"
+    android:backgroundTint="@color/mapwize_main_color"/>

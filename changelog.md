@@ -1,11 +1,16 @@
 # UI Components Changelog
 
 
+## 2.5.0
+
+- Adding place details UI.
+- Updating sdk to version 3.6.0.
+
 ## 2.4.2
 
 - Adding Italian translation.
 - Fixing onBackPressedCallback() issue.
-- updating sdk to version 3.5.2.
+- Updating sdk to version 3.5.2.
 
 ## 2.4.1
 

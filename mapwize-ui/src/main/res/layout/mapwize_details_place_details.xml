@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    tools:context="io.mapwize.mapwizeui.details.PlaceDetailsUI">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        <ImageButton
+            android:id="@+id/hideBottomSheetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:padding="8dp"
+            android:src="@drawable/mapwize_details_ic_baseline_arrow_back_24"
+            android:background="@drawable/mapwize_details_ripple_button_gray"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:elevation="16dp"
+            android:tint="#FFF"
+            />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="4dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/nestedScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/placeTitle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                 />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:orientation="horizontal"
+                    android:id="@+id/recyclerView"
+                    android:background="#FFF"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/placeTitle"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/mapwize_details_recycler_item" />
+
+                <FrameLayout
+                    android:id="@+id/sheetFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/placeTitle" />
+
+                <View
+                    android:id="@+id/dragBar"
+                    android:layout_width="32dp"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/drag_round"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
+
+                <TextView
+                    android:id="@+id/placeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="4dp"
+                    android:text=""
+                    android:textAlignment="textStart"
+                    android:textColor="#333"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout >

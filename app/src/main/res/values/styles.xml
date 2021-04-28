@@ -8,5 +8,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="AppTheme.TranslucentStatus" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 
 </resources>

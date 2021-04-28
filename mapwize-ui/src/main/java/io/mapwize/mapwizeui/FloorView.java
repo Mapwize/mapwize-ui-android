@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-
 import io.mapwize.mapwizesdk.api.Floor;
 
 public class FloorView extends FrameLayout {
@@ -26,6 +25,7 @@ public class FloorView extends FrameLayout {
     private ObjectAnimator scale;
     private ColorStateList oldTvColors;
     private ObjectAnimator colorAnim;
+    private boolean selected;
 
     public FloorView(@NonNull Context context, @NonNull Floor floor) {
         super(context);
@@ -55,7 +55,12 @@ public class FloorView extends FrameLayout {
         return floor;
     }
 
+    public boolean getSelected() {
+        return selected;
+    }
+
     public void setSelected(boolean selected) {
+        this.selected = selected;
         if (colorAnim != null) {
             colorAnim.end();
         }

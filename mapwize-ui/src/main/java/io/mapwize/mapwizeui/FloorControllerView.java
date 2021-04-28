@@ -114,6 +114,16 @@ public class FloorControllerView extends ScrollView {
         }
     }
 
+    public void smoothScroll() {
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            FloorView tv = (FloorView) linearLayout.getChildAt(i);
+            if (tv.getSelected() && !isViewVisible(tv)) {
+                post(() -> smoothScrollTo(0, tv.getTop()));
+                return;
+            }
+        }
+    }
+
     private boolean isViewVisible(View view) {
         Rect scrollBounds = new Rect();
         getDrawingRect(scrollBounds);
