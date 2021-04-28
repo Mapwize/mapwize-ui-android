@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.PhoneNumberUtils;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +20,6 @@ import androidx.annotation.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.activity.OnBackPressedCallback;
@@ -29,6 +29,7 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.FloorDetails;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.PlaceDetails;
@@ -392,17 +393,18 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                 timezone = TimeZone.getDefault().getID();
             }
             String floorName = "";
-            Double floor = null;
-            Map<String, Object> floorObject = placeDetails.getFloor();
-            if (floorObject != null && floorObject.containsKey("number")) {
-                Integer integerFloor = (Integer) floorObject.get("number");
-                if (integerFloor != null) {
-                    floor = integerFloor.doubleValue();
+            FloorDetails floorObject = placeDetails.getFloor();
+            if (floorObject != null) {
+                if (placeDetails.getFloor() != null) {
+                    floorName = placeDetails.getFloor().getTranslation(language).getTitle();
+                    if (TextUtils.isDigitsOnly(floorName)) {
+                        floorName = getContext().getString(R.string.mapwize_floor_placeholder, String.valueOf(Math.round(placeDetails.getFloor().getNumber())));
+                    }
+                } else {
+                    floorName = getContext().getString(R.string.mapwize_floor_placeholder, String.valueOf(Math.round(placeDetails.getFloor().getNumber())));
                 }
             }
-            if (floor != null) {
-                floorName = "Floor " + floor.intValue();
-            }
+
             this.placeDetailsUI.showDetails(
                     translation.getTitle(),
                     translation.getSubtitle(),
@@ -957,6 +959,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
 
     public void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            presenter.onCreate(savedInstanceState);
+            searchResultList.onCreate(savedInstanceState);
+        }
         if (mapwizeView != null) {
             mapwizeView.onCreate(savedInstanceState);
         }
@@ -987,6 +993,12 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     public void onSaveInstanceState(Bundle saveInstanceState) {
+        if (searchResultList != null) {
+            searchResultList.onSaveInstanceState(saveInstanceState);
+        }
+        if (presenter != null) {
+            presenter.onSaveInstanceState(saveInstanceState);
+        }
         if (mapwizeView != null) {
             mapwizeView.onSaveInstanceState(saveInstanceState);
         }

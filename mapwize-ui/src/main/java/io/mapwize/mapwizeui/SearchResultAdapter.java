@@ -1,8 +1,7 @@
 package io.mapwize.mapwizeui;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.recyclerview.widget.RecyclerView;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
@@ -108,6 +108,38 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         this.language = language;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public List<Universe> getUniverses() {
+        return universes;
+    }
+
+    public void setUniverses(List<Universe> universes) {
+        this.universes = universes;
+    }
+
+    public List<Integer> getIndexForUniverses() {
+        return indexForUniverses;
+    }
+
+    public void setIndexForUniverses(List<Integer> indexForUniverses) {
+        this.indexForUniverses = indexForUniverses;
+    }
+
+    public Map<String, Universe> getUniverseById() {
+        return universeById;
+    }
+
+    public void setUniverseById(Map<String, Universe> universeById) {
+        this.universeById = universeById;
+    }
+
+    public List getmSearchSuggestions() {
+        return mSearchSuggestions;
+    }
+
     void setListener(OnItemClickListener listener) {
         mListener = listener;
     }
@@ -145,9 +177,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.floorView.setVisibility(View.VISIBLE);
             holder.leftIcon.setVisibility(View.VISIBLE);
             if (place.getFloor() != null) {
-                NumberFormat nf = new DecimalFormat("###.###");
-                holder.floorView.setText(String.format(context.getResources().getString(R.string.mapwize_floor_placeholder), nf.format(place.getFloor())));
+                if (place.getFloorDetails() != null) {
+                    String floorName = place.getFloorDetails().getTranslation(language).getTitle();
+                    if (TextUtils.isDigitsOnly(floorName)) {
+                        NumberFormat nf = new DecimalFormat("###.###");
+                        holder.floorView.setText(String.format(context.getResources().getString(R.string.mapwize_floor_placeholder), nf.format(place.getFloor())));
+                    } else {
+                        holder.floorView.setText(floorName);
+                    }
+                } else {
+                    NumberFormat nf = new DecimalFormat("###.###");
+                    holder.floorView.setText(String.format(context.getResources().getString(R.string.mapwize_floor_placeholder), nf.format(place.getFloor())));
+                }
                 holder.floorView.setVisibility(View.VISIBLE);
+
             }
             else {
                 holder.floorView.setVisibility(View.GONE);

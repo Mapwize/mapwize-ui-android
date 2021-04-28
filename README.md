@@ -10,7 +10,7 @@ For documentation about Mapwize SDK objects like Venue, Place, MapOptions... Ple
 
 The Mapwize UI fragment comes with the following components:
 
-- Mapwize SDK intégration
+- Mapwize SDK
 - Floor controller
 - Follow user button
 - Search module
@@ -45,7 +45,7 @@ implementation 'com.github.Mapwize:mapwize-ui-android:${lib-version}'
 
 ## Initialization
 
-The activity that embeds the Fragment must implement `OnFragmentInteractionListener` with the followings methods :
+The activity that embeds the Fragment must implement `MapwizeUIView.OnViewInteractionListener` with the followings methods :
 
 ```java
 // The user clicked on the menu button (left button on the search bar).

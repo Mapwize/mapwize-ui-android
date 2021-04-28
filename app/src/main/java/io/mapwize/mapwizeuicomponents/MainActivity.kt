@@ -47,11 +47,15 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
                 .floorControllerHidden(true)
                 .compassHidden(true)*/
                 .build()
-        mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
+
         val fm = supportFragmentManager
-        val ft = fm.beginTransaction()
-        ft.add(fragmentContainer.id, mapwizeFragment!!)
-        ft.commit()
+        mapwizeFragment = fm.findFragmentByTag("TestFragment") as MapwizeFragment?
+        if (mapwizeFragment == null) {
+            mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
+            val ft = fm.beginTransaction()
+            ft.add(fragmentContainer.id, mapwizeFragment!!, "TestFragment")
+            ft.commit()
+        }
 
         EventManager.configure(this)
 

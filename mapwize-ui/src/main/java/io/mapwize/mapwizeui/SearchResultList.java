@@ -4,18 +4,20 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
@@ -47,6 +49,45 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
     public SearchResultList(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
+    }
+
+    public static final String suggestionList_KEY = "suggestionListKey";
+    public static final String language_KEY = "languageState";
+    public static final String indexForUniverses_KEY = "indexForUniversesKey";
+    public static final String universeById_KEY = "universeByIdKey";
+    public static final String universes_KEY = "universesKey";
+
+    public void onCreate(Bundle savedInstanceState) {
+        ArrayList suggestionList = savedInstanceState.getParcelableArrayList(suggestionList_KEY);
+        String language = (String) savedInstanceState.getSerializable(language_KEY);
+        searchResultAdapter.setLanguage(language);
+        searchResultAdapter.swapData(suggestionList);
+
+        ArrayList indexForUniverses = savedInstanceState.getParcelableArrayList(indexForUniverses_KEY);
+        searchResultAdapter.setIndexForUniverses(indexForUniverses);
+
+        HashMap universeById = (HashMap) savedInstanceState.getSerializable(universeById_KEY);
+        searchResultAdapter.setUniverseById(universeById);
+
+        ArrayList universes = savedInstanceState.getParcelableArrayList(universes_KEY);
+        searchResultAdapter.setUniverses(universes);
+
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        String language = searchResultAdapter.getLanguage();
+        outState.putSerializable(language_KEY, language);
+        ArrayList suggestionList = (ArrayList) searchResultAdapter.getmSearchSuggestions();
+        outState.putParcelableArrayList(suggestionList_KEY, suggestionList);
+
+        ArrayList indexForUniverses = (ArrayList) searchResultAdapter.getIndexForUniverses();
+        outState.putParcelableArrayList(indexForUniverses_KEY, indexForUniverses);
+
+        HashMap universeById = (HashMap) searchResultAdapter.getUniverseById();
+        outState.putSerializable(universeById_KEY, universeById);
+
+        ArrayList universes = (ArrayList) searchResultAdapter.getUniverses();
+        outState.putParcelableArrayList(universes_KEY, universes);
     }
 
     private void initialize(Context context) {
@@ -179,7 +220,7 @@ public class SearchResultList extends ConstraintLayout implements SearchResultAd
      */
     public void show() {
         setVisibility(View.VISIBLE);
-        searchResultAdapter.swapData(new ArrayList());
+//        searchResultAdapter.swapData(new ArrayList());// TODO see  why this is needed
         setBackgroundColor(Color.argb(255, 238, 238, 238));
     }
 
