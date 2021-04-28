@@ -194,34 +194,43 @@ You can use the following callback to control the Buttons and the Rows of the De
 ```java
 /**
 * Setup the UI to display details about the selected place
-* @param place the selected place
-* @param buttonsSmall the buttons shown in the small view
-* @param buttonsBig the buttons shown in the full view
-* @param rows the rows that contains the details of the place
+* @param mapwizeObject the selected place/placelist
+* @param placeDetailsConfig the place details configuration
 */
-boolean onPlaceSelected(MapwizeObject place, List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
-            return false;
+boolean onPlaceSelected(MapwizeObject mapwizeObject, PlaceDetailsConfig placeDetailsConfig) {
+            return placeDetailsConfig;
         }
 ```
 
-You will receive a list of Buttons, you can modify them, change their order or remove some of them.
+The `placeDetailsConfig` object contains:
+
+```java
+List<ButtonSmall> buttonsSmall;
+List<ButtonBig> buttonsBig;
+List<Row> rows;
+boolean preventExpandDetails = false;
+```
+
+You have full control over these objects. You can modify them, change their order or remove some of them.
 
 
 The `shouldDisplayInformationButton` callback is called before the `onPlaceSelected`.
 The `onPlaceSelected` callback will have the last word on the display of the Rows or Buttons.
 
+You can set `preventExpandDetails` to `true` in order to display the legacy place details (without the new Rows and Buttons).
+
 ### Managing Buttons
 
 You can create a Small Button object using the `ButtonSmall(@NonNull Context context, String label, int icon, boolean highlighted, int buttonType, OnClickListener clickListener)` constructor.
 
-To change the label of a particular Button, you can find it using its category with the (`getButtonType`) method that returns one of the following values: `ButtonSmall.DIRECTION_BUTTON`, `Row.CALL_BUTTON`, `Row.WEBSITE_BUTTON`, `Row.SHARE_BUTTON`, `Row.INFORMATION_BUTTON`, `Row.OTHER`.
+To change the label of a particular Button, you can find it using its category with the `getButtonType` method that returns one of the following values: `ButtonSmall.DIRECTION_BUTTON`, `Row.CALL_BUTTON`, `Row.WEBSITE_BUTTON`, `Row.SHARE_BUTTON`, `Row.INFORMATION_BUTTON`, `Row.OTHER`.
 
-You can also manage Big Buttons the same way as the Small Buttons.
+The **Big Buttons** also can be managed the same way as the Small Buttons.
 
 ### Managing Rows
 You can create a Row object using: `Row(@NonNull Context context, String label, int icon, boolean available, int rowType, OnClickListener clickListener)` constructor.
 
-To change the label of a particular Row,  you can find it using its category with the (`getRowType`) method that returns: `Row.FLOOR_ROW`, `Row.OPENING_TIME_ROW`, `Row.PHONE_NUMBER_ROW`, `Row.WEBSITE_ROW`, `Row.CAPACITY_ROW`, `Row.OCCUPANCY_ROW`,  `Row.OTHER`.
+To change the label of a particular Row,  you can find it using its category with the `getRowType` method that returns: `Row.FLOOR_ROW`, `Row.OPENING_TIME_ROW`, `Row.PHONE_NUMBER_ROW`, `Row.WEBSITE_ROW`, `Row.CAPACITY_ROW`, `Row.OCCUPANCY_ROW`,  `Row.OTHER`.
 
 
 ## Information button

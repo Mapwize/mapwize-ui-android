@@ -57,7 +57,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     private DetailsStateListener detailsStateListener;
     private View bottomSheet;
     private boolean didImageExpand = false;
-    private boolean placeListSelected = false;
+    private boolean dontExpand = false;
     private CardView cardView;
     private View dragBar;
 
@@ -130,7 +130,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     int fakeHeight = 0;
 
     private void cardViewClickListener(View view) {
-        if (placeListSelected) return;
+        if (dontExpand) return;
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HALF_EXPANDED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
@@ -336,9 +336,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
     public void show() {
         reset();
-        if (this.bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HALF_EXPANDED
-//                && this.bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED
-        ) {
+        if (this.bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HALF_EXPANDED) {
             this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         invalidate();
@@ -358,7 +356,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     public void reset() {
         dragBar.setVisibility(INVISIBLE);
         bottomSheetBehavior.setDraggable(true);
-        placeListSelected = false;
+        dontExpand = false;
         imageViewAdapter.setPhotos(getPlaceHolderImages(new ArrayList<>()));
         this.sheetFull.reset();
         this.sheetContent.reset();
@@ -416,7 +414,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         sheetContent.showPlacelist(distances, distanceItemClickListener);
         bottomSheetBehavior.setDraggable(false);
-        placeListSelected = true;
+        dontExpand = true;
         sheetContent.setDistancesVisibility(true);
         invalidate();
         requestLayout();
@@ -431,32 +429,67 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     }
 
     public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, String sharingLink, String timezone, List<Map<String, Object>> events, Integer capacity, DetailsReadyListener detailsReadyListener) {
+
+        PlaceDetailsConfig placeDetailsConfig = createDetailsConfig(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
+
+        if (this.initalDetailsReadyListener != null) {
+            placeDetailsConfig = this.initalDetailsReadyListener.onReady(placeDetailsConfig);
+        }
+        if (detailsReadyListener != null) {
+            placeDetailsConfig = detailsReadyListener.onReady(placeDetailsConfig);
+        }
+
         setTitle(title);
         setSubTitle(subTitle);
-        setDetails(details);
-        setPhotos(photos);
-        setOpeningLabel(openingHours, timezone);
-        setOccupiedLabel(events, timezone);
-        dragBar.setVisibility(VISIBLE);
-        updateLayer(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
+        setSmallButtons(placeDetailsConfig.getButtonsSmall());
+
+        if (!placeDetailsConfig.isPreventExpandDetails()) {
+            setDetails(details);
+            setPhotos(photos);
+            setOpeningLabel(openingHours, timezone);
+            setOccupiedLabel(events, timezone);
+            setBigButtons(placeDetailsConfig.getButtonsBig());
+            setRows(placeDetailsConfig.getRows());
+            dragBar.setVisibility(VISIBLE);
+        } else {
+            dragBar.setVisibility(INVISIBLE);
+            sheetContent.setCalendarLabelVisibility(false);
+            sheetContent.setOpeningLabelVisibility(false);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            bottomSheetBehavior.setDraggable(false);
+            dontExpand = true;
+        }
+
+        setSmallButtonsVisibility(true);
         this.onLayoutChange(null, -1, -1, -1, -1, -1, -1, -1, -1);
+
         invalidate();
         requestLayout();
     }
 
     public void showUnexpandedDetails(String title, String subTitle, DetailsReadyListener detailsReadyListener) {
+
+        PlaceDetailsConfig placeDetailsConfig = createUnexpandedDetailsConfig(detailsReadyListener);//Ignore return value as it is always unexpanded
+
+        if (this.initalDetailsReadyListener != null) {
+            placeDetailsConfig = this.initalDetailsReadyListener.onReady(placeDetailsConfig);
+        }
+        if (detailsReadyListener != null) {
+            placeDetailsConfig = detailsReadyListener.onReady(placeDetailsConfig);
+        }
+
         setTitle(title != null ? title : "");
         setSubTitle(subTitle != null ? subTitle : "");
+
+        setSmallButtons(placeDetailsConfig.getButtonsSmall());
+        setSmallButtonsVisibility(true);
 
         dragBar.setVisibility(INVISIBLE);
         sheetContent.setCalendarLabelVisibility(false);
         sheetContent.setOpeningLabelVisibility(false);
-
-        updateLayerPlaceList(detailsReadyListener);
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setDraggable(false);
-        placeListSelected = true;
+        dontExpand = true;
 
         invalidate();
         requestLayout();
@@ -499,38 +532,19 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         this.sheetContent.setSmallButtonsVisibility(visible);
     }
 
-    public void updateLayerPlaceList(DetailsReadyListener detailsReadyListener) {
+    public PlaceDetailsConfig createUnexpandedDetailsConfig(DetailsReadyListener detailsReadyListener) {
         List<Row> rows = new ArrayList<>();
         List<ButtonBig> buttonsBig = new ArrayList<>();
-
 
         List<ButtonSmall> buttonsSmall = new ArrayList<>();
         ButtonSmall directionSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
         buttonsSmall.add(directionSmallButton);
 
-        if (this.initalDetailsReadyListener != null) {
-            boolean change = initalDetailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
-            if (change) {
-                setSmallButtons(buttonsSmall);
-                setBigButtons(buttonsBig);
-                setRows(rows);
-            }
-        }
-        if (detailsReadyListener != null) {
-            boolean change = detailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
-            if (change) {
-                setSmallButtons(buttonsSmall);
-                setBigButtons(buttonsBig);
-                setRows(rows);
-            }
-        }
-
-
-        setSmallButtonsVisibility(true);
+        return new PlaceDetailsConfig(buttonsSmall, buttonsBig, rows);
     }
 
-    public void updateLayer(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, List<Map<String, Object>> events, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
-//        View.OnClickListener clickListener = view -> Toast.makeText(context, "default", Toast.LENGTH_SHORT).show();
+
+    public PlaceDetailsConfig createDetailsConfig(String name, String floor, List<String> photos, List<Map<String, Object>> openingHours, String timezone, String phone, String website, String sharingLink, List<Map<String, Object>> events, @Nullable Integer capacity, DetailsReadyListener detailsReadyListener) {
         List<Row> rows = new ArrayList<>();
         Row floorRow = new Row(context, floor, R.drawable.mapwize_details_ic_floor, !floor.equals(""), Row.FLOOR_ROW, null);
         rows.add(floorRow);
@@ -585,7 +599,6 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         if (!sharingLink.equals("")) {
             OnClickListener shareButtonClickListener = view -> {
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
-//                String message = context.getString(R.string.share_place_text, name);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, sharingLink);
 
                 sendIntent.putExtra(Intent.EXTRA_TITLE, "Share " + name);
@@ -616,26 +629,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
             buttonsBig.add(sharingLinkButtonBig);
         }
 
-
-        if (this.initalDetailsReadyListener != null) {
-            boolean change = initalDetailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
-            if (change) {
-                setSmallButtons(buttonsSmall);
-                setBigButtons(buttonsBig);
-                setRows(rows);
-            }
-        }
-        if (detailsReadyListener != null) {
-            boolean change = detailsReadyListener.onReady(buttonsSmall, buttonsBig, rows);
-            if (change) {
-                setSmallButtons(buttonsSmall);
-                setBigButtons(buttonsBig);
-                setRows(rows);
-            }
-        }
-
-
-        setSmallButtonsVisibility(true);
+        return new PlaceDetailsConfig(buttonsSmall, buttonsBig, rows);
     }
 
     @Override
@@ -658,8 +652,8 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     }
 
     public interface DetailsReadyListener {
-        default boolean onReady(List<ButtonSmall> buttonsSmall, List<ButtonBig> buttonsBig, List<Row> rows) {
-            return false;
+        default PlaceDetailsConfig onReady(PlaceDetailsConfig placeDetailsConfig) {
+            return placeDetailsConfig;
         }
     }
 

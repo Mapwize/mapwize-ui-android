@@ -1,6 +1,11 @@
 # UI Components Changelog
 
 
+
+## 2.5.1
+
+-  Adding preventExpandDetails option to PlaceDetailsConfig.
+
 ## 2.5.0
 
 - Adding place details UI.
