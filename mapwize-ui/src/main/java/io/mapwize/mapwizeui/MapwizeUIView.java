@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.activity.OnBackPressedCallback;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
@@ -217,31 +218,31 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     @Override
     public void showPlacePreviewInfo(PlacePreview preview, String language) {
         bottomCardView.setContent(preview);
-        infoVisible = true;
+        setInfoVisible(true);
     }
 
     @Override
     public void showPlaceInfoFromPreview(Place place, String language) {
         bottomCardView.setContentFromPreview(place, language, listener.shouldDisplayInformationButton(place));
-        infoVisible = true;
+        setInfoVisible(true);
     }
 
     @Override
     public void showPlaceInfo(Place place, String language) {
         bottomCardView.setContent(place, language, listener.shouldDisplayInformationButton(place));
-        infoVisible = true;
+        setInfoVisible(true);
     }
 
     @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
         bottomCardView.setContent(placelist, language, listener.shouldDisplayInformationButton(placelist));
-        infoVisible = true;
+        setInfoVisible(true);
     }
 
     @Override
     public void hideInfo() {
         bottomCardView.removeContent();
-        infoVisible = false;
+        setInfoVisible(false);
     }
 
     @Override
@@ -704,16 +705,30 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
     }
 
-    public boolean backButtonClick() {
-        if (presenter.onBackButtonPressed()) {
-            return true;
-        }
-        if (infoVisible) {
-            presenter.unselectContent();
-            return true;
-        }
-        return false;
+    public void setInfoVisible(boolean infoVisible) {
+        this.infoVisible = infoVisible;
+        invalidateOnBackPressedCallbackState();
     }
+
+    public void invalidateOnBackPressedCallbackState() {
+        onBackPressedCallback.setEnabled((presenter != null && presenter.isBackEnabled()) || infoVisible);
+    }
+
+    public OnBackPressedCallback getOnBackPressedCallback() {
+        return onBackPressedCallback;
+    }
+
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+            if (presenter.onBackButtonPressed()) {
+                return;
+            }
+            if (infoVisible) {
+                presenter.unselectContent();
+            }
+        }
+    };
 
     @Override
     public void onClosestSortieClick() {

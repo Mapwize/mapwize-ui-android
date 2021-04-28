@@ -41,4 +41,5 @@ interface BasePresenter {
     void refreshSearchData();
     boolean onBackButtonPressed();
     void unselectContent();
+    boolean isBackEnabled();
 }
