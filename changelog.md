@@ -1,6 +1,12 @@
 # UI Components Changelog
 
 
+## 2.5.3
+
+- Using a floor object instead of a number in `PlaceDetails`.
+- Updating sdk to version `3.6.3`.
+
+
 ## 2.5.2
 
 -  Setting occupancy to available if events are null.
