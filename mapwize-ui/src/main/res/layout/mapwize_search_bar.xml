@@ -72,14 +72,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/mapwizeSearchBarRightQrCodeFrame"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:id="@+id/mapwizeSearchBarRightButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/mapwize_ic_directions_black_24dp"
+                    android:src="@drawable/mapwize_details_ic_baseline_directions_24"
                     android:padding="12dp"
                     android:visibility="gone"/>
 
@@ -89,6 +89,23 @@
                     android:layout_height="48dp"
                     android:progressTint="@color/mapwize_main_color"
                     android:indeterminateTint="@color/mapwize_main_color"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/mapwizeSearchBarRightQrCodeFrame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/mapwizeQrCodeRightButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/mapwize_qr_code"
+                    android:padding="12dp"
                     android:visibility="gone"/>
             </FrameLayout>
 

@@ -54,6 +54,19 @@
                 app:layout_constraintBottom_toTopOf="@id/mapwizeBottomSubtitleTextView"
                 android:visibility="gone"/>
 
+            <ImageButton
+                android:id="@+id/mapwizeCloseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:src="@drawable/mapwize_ic_baseline_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/mapwizeBottomSubtitleTextView"
+                android:visibility="gone"
+                android:background="@null"
+                />
+
             <TextView
                 android:id="@+id/mapwizeBottomSubtitleTextView"
                 android:layout_width="0dp"

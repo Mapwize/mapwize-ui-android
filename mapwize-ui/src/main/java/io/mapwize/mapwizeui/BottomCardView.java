@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class BottomCardView extends CardView {
     private ProgressBar progressBar;
     private ConstraintLayout directionLoadingLayout;
     private ConstraintLayout directionNotFoundLayout;
+    private ImageButton mapwizeCloseButton;
     private boolean hasDetails;
 
     public BottomCardView(@NonNull Context context) {
@@ -74,11 +76,18 @@ public class BottomCardView extends CardView {
         directionTimeTextView = findViewById(R.id.direction_info_bottom_time_text);
         directionDistanceTextView = findViewById(R.id.direction_info_bottom_distance_text);
         directionButton = findViewById(R.id.mapwizeBottomDirectionButton);
+
         directionButton.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDirectionClick();
             }
         });
+        mapwizeCloseButton = findViewById(R.id.mapwizeCloseButton);
+        mapwizeCloseButton.setOnClickListener(v -> {
+            removeContent();
+            listener.onCloseButtonClick();
+        });
+
         informationsButton = findViewById(R.id.mapwizeBottomInformationsButton);
         informationsButton.setOnClickListener(v -> {
             if (listener != null) {
@@ -171,6 +180,8 @@ public class BottomCardView extends CardView {
             detailsWebView.setVisibility(View.GONE);
         }
         directionButton.setVisibility(View.VISIBLE);
+        mapwizeCloseButton.setVisibility(View.VISIBLE);
+
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
         setVisibility(View.VISIBLE);
     }
@@ -201,6 +212,7 @@ public class BottomCardView extends CardView {
         informationsButton.setVisibility(View.INVISIBLE);
         //detailsWebView.setVisibility(View.INVISIBLE);
         directionButton.setVisibility(View.INVISIBLE);
+        mapwizeCloseButton.setVisibility(View.INVISIBLE);
         hasDetails = false;
         progressBar.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
@@ -227,6 +239,7 @@ public class BottomCardView extends CardView {
             detailsWebView.setVisibility(View.GONE);
         }
         directionButton.setVisibility(View.VISIBLE);
+        mapwizeCloseButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setVisibility(View.VISIBLE);
@@ -277,6 +290,7 @@ public class BottomCardView extends CardView {
             detailsWebView.setVisibility(View.GONE);
         }
         directionButton.setVisibility(View.VISIBLE);
+        mapwizeCloseButton.setVisibility(View.VISIBLE);
         objectInfoFrameLayout.setVisibility(View.VISIBLE);
         setVisibility(View.VISIBLE);
     }
@@ -380,6 +394,7 @@ public class BottomCardView extends CardView {
 
         void onDetailsClose();
 
+        void onCloseButtonClick();
     }
 
 }

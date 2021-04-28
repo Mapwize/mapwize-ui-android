@@ -12,9 +12,8 @@ import io.mapwize.mapwizesdk.map.MapwizeMap
 import io.mapwize.mapwizeui.MapwizeFragment
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings
 import io.mapwize.mapwizeui.MapwizeUIView
-import io.mapwize.mapwizeui.details.ButtonBig
 import io.mapwize.mapwizeui.details.ButtonSmall
-import io.mapwize.mapwizeui.details.Row
+import io.mapwize.mapwizeui.details.PlaceDetailsConfig
 import io.mapwize.mapwizeui.events.Channel
 import io.mapwize.mapwizeui.events.EventManager
 import io.mapwize.mapwizeui.events.OnEventListener
@@ -49,13 +48,15 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
                 .floorControllerHidden(true)
                 .compassHidden(true)*/
                 .build()
-        mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
-        homeFragment = HomeFragment(mapwizeFragment!!)
 
         val fm = supportFragmentManager
-        val ft = fm.beginTransaction()
-        ft.add(fragmentContainer.id, homeFragment!!)
-        ft.commit()
+        mapwizeFragment = fm.findFragmentByTag("TestFragment") as MapwizeFragment?
+        if (mapwizeFragment == null) {
+            mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
+            val ft = fm.beginTransaction()
+            ft.add(fragmentContainer.id, mapwizeFragment!!, "TestFragment")
+            ft.commit()
+        }
 
         EventManager.configure(this)
 
@@ -103,13 +104,14 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         Log.i("Debug", "" + placelist.name + " " + currentUniverse.name + " " + channel + " " + searchQuery)
     }
 
-    override fun onPlaceSelected(place: MapwizeObject?, buttonsSmall: MutableList<ButtonSmall>?, buttonsBig: MutableList<ButtonBig>?, rows: MutableList<Row>?): Boolean {
-        buttonsSmall?.forEach {
+    override fun onPlaceSelected(place: MapwizeObject?, placeDetailsConfig: PlaceDetailsConfig?): PlaceDetailsConfig? {
+        placeDetailsConfig?.buttonsSmall?.forEach {
             if (it.buttonType == ButtonSmall.CALL_BUTTON) {
 //                it.setOnClickListener({ Toast.makeText(this, "Calling from Kotlin", Toast.LENGTH_SHORT).show() })
             }
         }
-        return true
+//        placeDetailsConfig?.isPreventExpandDetails = true
+        return placeDetailsConfig
     }
 
 }
