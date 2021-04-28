@@ -4,17 +4,19 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
@@ -34,6 +36,8 @@ public class SearchDirectionView extends ConstraintLayout implements
     private SearchDirectionListener listener;
     private ConstraintLayout mapwizeDirectionMainLayout;
     private EditText fromEditText;
+    private ImageButton clearTextFrom;
+    private ImageButton clearTextTo;
     private EditText toEditText;
     private ImageView backButton;
     private ImageView swapButton;
@@ -63,7 +67,9 @@ public class SearchDirectionView extends ConstraintLayout implements
         inflate(context, R.layout.mapwize_search_direction_bar, this);
         mapwizeDirectionMainLayout = findViewById(R.id.mapwizeDirectionMainLayout);
         fromEditText = findViewById(R.id.mapwizeDirectionFromEditText);
+        clearTextFrom = findViewById(R.id.clearTextFrom);
         toEditText = findViewById(R.id.mapwizeDirectionToEditText);
+        clearTextTo = findViewById(R.id.clearTextTo);
         backButton = findViewById(R.id.mapwizeDirectionBarBackButton);
         swapButton = findViewById(R.id.mapwizeDirectionBarSwapButton);
         swapButton.setOnClickListener(v -> listener.onDirectionSwapClick());
@@ -76,14 +82,14 @@ public class SearchDirectionView extends ConstraintLayout implements
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field_selected));
                 setupFromSearch();
                 listener.onDirectionFromFieldGetFocus();
-            }
-            else {
+                clearTextFrom.setVisibility(fromEditText.getText().length() > 0 ? VISIBLE : INVISIBLE);
+            } else {
+                clearTextFrom.setVisibility(INVISIBLE);
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
-                //setTextViewValue(fromEditText, fromDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!toEditText.hasFocus()) {
                     setupDefault();
-                    InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
@@ -100,7 +106,10 @@ public class SearchDirectionView extends ConstraintLayout implements
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (fromEditText.hasFocus()) {
+                    clearTextFrom.setVisibility(fromEditText.getText().length() > 0 ? VISIBLE : INVISIBLE);
                     listener.onDirectionFromQueryChange(s.toString());
+                } else {
+                    clearTextFrom.setVisibility(INVISIBLE);
                 }
             }
 
@@ -110,26 +119,30 @@ public class SearchDirectionView extends ConstraintLayout implements
             }
         });
 
+        clearTextFrom.setOnClickListener(view -> fromEditText.setText(""));
+
         toEditText.setOnFocusChangeListener((v, hasFocus) -> {
             // If to edit text has focus, setup from search ui
             if (hasFocus) {
                 listener.onDirectionToFieldGetFocus();
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field_selected));
                 setupToSearch();
-            }
-            else {
+                clearTextTo.setVisibility(toEditText.getText().length() > 0 ? VISIBLE : INVISIBLE);
+            } else {
+                clearTextTo.setVisibility(INVISIBLE);
                 v.setBackground(getContext().getDrawable(R.drawable.mapwize_rounded_field));
-                //setTextViewValue(toEditText, toDirectionPoint);
                 // If no textfield have focus, close the keyboard
                 if (!fromEditText.hasFocus()) {
                     setupDefault();
-                    InputMethodManager imm =  (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
                 }
             }
         });
+
+        clearTextTo.setOnClickListener(view -> toEditText.setText(""));
 
         toEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -140,7 +153,10 @@ public class SearchDirectionView extends ConstraintLayout implements
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (toEditText.hasFocus()) {
+                    clearTextTo.setVisibility(toEditText.getText().length() > 0 ? VISIBLE : INVISIBLE);
                     listener.onDirectionToQueryChange(s.toString());
+                } else {
+                    clearTextTo.setVisibility(INVISIBLE);
                 }
             }
 
@@ -204,14 +220,16 @@ public class SearchDirectionView extends ConstraintLayout implements
     }
 
     public void hideSwapButton() {
-        swapButton.setVisibility(View.GONE);
+        swapButton.setVisibility(View.INVISIBLE);
     }
 
     /**
      * Configure module and ui to perform search query for the from field
      */
     void setupFromSearch() {
-        fromEditText.setText("");
+        if (fromEditText.getText().toString().equals(getResources().getString(R.string.mapwize_current_location))) {
+            fromEditText.setText("");
+        }
         setupInSearch();
     }
 
@@ -220,7 +238,9 @@ public class SearchDirectionView extends ConstraintLayout implements
      */
     void setupToSearch() {
         setupInSearch();
-        toEditText.setText("");
+        if (toEditText.getText().toString().equals(getResources().getString(R.string.mapwize_current_location))) {
+            toEditText.setText("");
+        }
     }
 
     public void setModes(List<DirectionMode> modes) {
@@ -243,7 +263,7 @@ public class SearchDirectionView extends ConstraintLayout implements
         toEditText.requestFocus();
         InputMethodManager imm =(InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(fromEditText, InputMethodManager.SHOW_IMPLICIT);
+        imm.showSoftInput(toEditText, InputMethodManager.SHOW_IMPLICIT);
         listener.onDirectionToQueryChange("");
     }
 
@@ -259,13 +279,12 @@ public class SearchDirectionView extends ConstraintLayout implements
 
     private void setTextViewValue(TextView textView, DirectionPoint directionPoint, String language) {
         if (directionPoint == null) {
-            textView.setText("");
+            return;
         }
-        else if (directionPoint instanceof Place || directionPoint instanceof Placelist) {
+        if (directionPoint instanceof Place || directionPoint instanceof Placelist) {
             MapwizeObject mapwizeObject = (MapwizeObject) directionPoint;
             textView.setText(mapwizeObject.getTranslation(language).getTitle());
-        }
-        else if (directionPoint instanceof MapwizeIndoorLocation) {
+        } else if (directionPoint instanceof MapwizeIndoorLocation) {
             textView.setText(getResources().getString(R.string.mapwize_current_location));
         }
     }
