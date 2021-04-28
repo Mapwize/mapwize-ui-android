@@ -496,7 +496,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     }
 
     private void setOccupiedLabel(List<Map<String, Object>> events, String timezone) {
-        if (events == null || events.size() < 1) {
+        if (events == null) {
             sheetContent.setCalendarLabelVisibility(false);
             return;
         }
@@ -566,9 +566,10 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         rows.add(capacityRow);
         Row mapwize_details_occupancy = new Occupancy(
                 context,
-                "Currently occupied", events,
+                "Currently occupied",
+                events,
                 R.drawable.mapwize_details_ic_calendar,
-                events != null && events.size() > 0,
+                events != null,
                 Row.OCCUPANCY_ROW,
                 calendar,
                 null
