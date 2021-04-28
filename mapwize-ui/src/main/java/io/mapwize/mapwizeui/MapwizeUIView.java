@@ -449,6 +449,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
+    public void setLanguage(String language) {
+        this.searchResultList.setLanguage(language);
+    }
+
+    @Override
     public void showDirectionError() {
         bottomCardView.showDirectionError();
     }
@@ -704,7 +709,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             return true;
         }
         if (infoVisible) {
-            hideInfo();
+            presenter.unselectContent();
             return true;
         }
         return false;

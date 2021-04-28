@@ -40,4 +40,5 @@ interface BasePresenter {
     void grantAccess(String accessKey, ApiCallback<Boolean> callback);
     void refreshSearchData();
     boolean onBackButtonPressed();
+    void unselectContent();
 }
