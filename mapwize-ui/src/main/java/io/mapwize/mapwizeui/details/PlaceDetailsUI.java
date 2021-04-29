@@ -101,13 +101,11 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
         dp = getResources().getDisplayMetrics().density;
 
-        //Status bar
-        int statusBarHeight = getStatusBarHeightAndSetHideButton(context);
 
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-        screenHeight = displayMetrics.heightPixels - statusBarHeight;
+        screenHeight = displayMetrics.heightPixels;
 
         SetPhotosRecyclerView(context, photosRecyclerView);
 
@@ -255,35 +253,10 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         });
     }
 
-    private int getStatusBarHeightAndSetHideButton(Context context) {
-        int resource = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarHeight = 0;
-        boolean statusBarHidden = isStatusBarHidden(context);
-        if (resource > 0 && !statusBarHidden) {
-            statusBarHeight = context.getResources().getDimensionPixelSize(resource);
-        }
-        if (statusBarHidden) {
-            statusBarHeight = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? 24 : 25;
-            fakeHeight = statusBarHeight;
-            //Setting hide button margin
-            LayoutParams layoutParams = (LayoutParams) hideBottomSheetButton.getLayoutParams();
-            layoutParams.topMargin = (int) ((statusBarHeight + 16) * dp);
-            hideBottomSheetButton.setLayoutParams(layoutParams);
-        }
-        return statusBarHeight;
-    }
-
     private void onSlideNotify(float offset, float imageOffset) {
         if (slideListener != null) {
             slideListener.onSlide(offset, imageOffset);
         }
-    }
-
-    public boolean isStatusBarHidden(Context context) {
-        Window window = ((Activity) context).getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        int flags = lp.flags;
-        return (flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) == WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
     }
 
     private void updateShouldScroll() {
@@ -646,6 +619,13 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         bottomSheetBehavior.setHalfExpandedRatio(halfExpandedRatio);
         updateShouldScroll();
 
+    }
+
+    public void setMaxUiHeight(int height) {
+        screenHeight = height;
+        ViewGroup.LayoutParams sheetFullLayoutParams = sheetFull.getLayoutParams();
+        sheetFullLayoutParams.height = (int) (screenHeight - placeTitle.getHeight() - bigImageRatio * screenHeight);
+        sheetFull.setLayoutParams(sheetFullLayoutParams);
     }
 
     public interface SlideListener {
