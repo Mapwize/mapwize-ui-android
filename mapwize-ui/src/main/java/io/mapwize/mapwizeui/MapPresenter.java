@@ -1193,6 +1193,8 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             } else if (directionPoint instanceof MapwizeIndoorLocation) {
                 saveInstanceState.putParcelable(key, (MapwizeIndoorLocation) directionPoint);
             }
+        } else if (selectedPlacePreview != null) {
+            selectPlace(selectedPlacePreview);
         }
     }
 

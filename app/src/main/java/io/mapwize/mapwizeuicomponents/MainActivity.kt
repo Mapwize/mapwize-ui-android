@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         Toast.makeText(applicationContext, "Menu click", Toast.LENGTH_LONG).show()
     }
 
+    private var homeFragment: HomeFragment? = null
     private var mapwizeFragment: MapwizeFragment? = null
     private var mapwizeMap: MapwizeMap? = null
     private var provider: ManualIndoorLocationProvider? = null
