@@ -1,35 +1,39 @@
 # UI Components Changelog
 
 
+## 2.6.1
+
+- Fixing Place Details UI issue
+
 ## 2.6.0
 
 - Using floor translation in search result and place details view
-- Updating sdk to version `3.7.0`.
+- Updating sdk to version `3.7.0`
 
 ## 2.5.3
 
-- Using a floor object instead of a number in `PlaceDetails`.
-- Updating sdk to version `3.6.3`.
+- Using a floor object instead of a number in `PlaceDetails`
+- Updating sdk to version `3.6.3`
 
 
 ## 2.5.2
 
--  Setting occupancy to available if events are null.
+-  Setting occupancy to available if events are null
 
 ## 2.5.1
 
--  Adding preventExpandDetails option to PlaceDetailsConfig.
+-  Adding preventExpandDetails option to PlaceDetailsConfig
 
 ## 2.5.0
 
-- Adding place details UI.
-- Updating sdk to version 3.6.0.
+- Adding place details UI
+- Updating sdk to version 3.6.0
 
 ## 2.4.2
 
-- Adding Italian translation.
-- Fixing onBackPressedCallback() issue.
-- Updating sdk to version 3.5.2.
+- Adding Italian translation
+- Fixing onBackPressedCallback() issue
+- Updating sdk to version 3.5.2
 
 ## 2.4.1
 
@@ -77,7 +81,7 @@
 
 ## 2.3.5
 
-- Fixing an issue to support Android 11.
+- Fixing an issue to support Android 11
 - Updating sdk version to 3.4.4
 
 ## 2.3.4
