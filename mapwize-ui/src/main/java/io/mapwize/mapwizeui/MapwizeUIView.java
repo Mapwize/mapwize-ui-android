@@ -152,6 +152,9 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         headerLayout = cv.findViewById(R.id.headerFrameLayout);
         placeDetailsUI = cv.findViewById(R.id.placeDetails);
         dp = getResources().getDisplayMetrics().density;
+
+        cv.post(() -> placeDetailsUI.setMaxUiHeight(cv.getMeasuredHeight()));
+
         placeDetailsUI.setOnSlideListener((offset, halfExpandedOffset) -> {
             if (languagesButton != null && offset < halfExpandedOffset) {
                 setMarginBottom((int) (offset));
