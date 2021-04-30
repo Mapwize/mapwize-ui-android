@@ -15,7 +15,7 @@ public class IssueTypeView extends LinearLayout {
     Context context;
     private TextView mapwize_issue_issueType;
     private boolean selected = false;
-    private String id;
+    private String id = null;
 
     public IssueTypeView(@NonNull Context context, String id, String name, boolean selected, OnClickListener onClickListener) {
         super(context);

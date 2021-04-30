@@ -50,4 +50,7 @@
     <string name="information_not_available">Information not available</string>
     <string name="issue_reported">Thank you for reporting this issue, it has been reported to the building administrator</string>
     <string name="issue_error">Sorry! the issue can\'t be reported</string>
+    <string name="field_required">This field is required</string>
+    <string name="summary">Summary</string>
+    <string name="description">Description</string>
 </resources>

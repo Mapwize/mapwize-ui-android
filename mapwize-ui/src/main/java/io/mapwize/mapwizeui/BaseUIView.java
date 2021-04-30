@@ -7,6 +7,7 @@ import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.Issue;
+import io.mapwize.mapwizesdk.api.IssueError;
 import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
@@ -94,7 +95,7 @@ interface BaseUIView {
 
     void onReportFailed(Throwable t);
 
-    void showReporterName(String displayName);
+    void setReporterEmail(String displayName);
 
-    void hideReporterName();
+    void onReportIssueFailed(IssueError issueError);
 }

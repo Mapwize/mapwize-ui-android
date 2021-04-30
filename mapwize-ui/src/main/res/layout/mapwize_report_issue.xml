@@ -126,7 +126,6 @@
         android:id="@+id/mapwize_issue_display_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:paddingVertical="16dp">
 
         <ImageView
@@ -138,13 +137,14 @@
             android:src="@drawable/mapwize_issue_ic_baseline_person_24"
             app:tint="@color/mapwize_main_color" />
 
-        <TextView
-            android:id="@+id/mapwize_issue_userLabel"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/mapwize_issue_emailEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
-            android:text="Lakhdar Meftah"
+            android:layout_marginEnd="32dp"
+            android:hint="Email address"
             android:textColor="@color/mapwize_details_row_text_color"
             android:textSize="@dimen/mapwize_details_row_text_size" />
     </LinearLayout>
@@ -170,7 +170,6 @@
             app:tint="@color/mapwize_main_color" />
 
         <TextView
-            android:id="@+id/mapwize_issue_issueTypeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -179,7 +178,20 @@
             android:text="Issue Type"
             android:textColor="#777"
             android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/mapwize_issue_issueTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="This field is required"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:visibility="gone"/>
     </LinearLayout>
+
     <GridLayout
         android:id="@+id/mapwize_issue_gridLayout"
         android:layout_width="match_parent"
@@ -218,7 +230,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:text="Summary"
+            android:text="@string/summary"
             android:textColor="#777"
             android:textSize="12sp" />
     </LinearLayout>
@@ -233,9 +245,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-            app:tint="@color/mapwize_main_color" />
+            android:layout_marginStart="16dp" />
 
         <EditText
             android:id="@+id/mapwize_issue_summaryEditText"
@@ -244,8 +254,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:text="Phone number is missing"
             android:textColor="@color/mapwize_details_row_text_color"
+            android:hint="@string/summary"
             android:textSize="@dimen/mapwize_details_row_text_size" />
     </LinearLayout>
 
@@ -275,7 +285,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:text="Description"
+            android:text="@string/description"
             android:textColor="#777"
             android:textSize="12sp" />
     </LinearLayout>
@@ -290,9 +300,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/mapwize_issue_ic_baseline_room_24"
-            app:tint="@color/mapwize_main_color" />
+            android:layout_marginStart="16dp" />
 
         <EditText
             android:id="@+id/mapwize_issue_descriptionEditText"
@@ -301,8 +309,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:text="Here is the valid phone number\n +33 00 11 22 33\nPlease update it as soon as possible"
             android:textColor="@color/mapwize_details_row_text_color"
+            android:hint="@string/description"
             android:textSize="@dimen/mapwize_details_row_text_size" />
     </LinearLayout>
 

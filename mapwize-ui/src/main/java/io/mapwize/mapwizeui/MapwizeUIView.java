@@ -20,25 +20,22 @@ import java.util.List;
 import java.util.TimeZone;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import io.mapwize.mapwizesdk.api.ApiCallback;
-import io.mapwize.mapwizesdk.api.ApiFilter;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.FloorDetails;
 import io.mapwize.mapwizesdk.api.Issue;
+import io.mapwize.mapwizesdk.api.IssueError;
 import io.mapwize.mapwizesdk.api.IssueType;
-import io.mapwize.mapwizesdk.api.MapwizeApiFactory;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.PlaceDetails;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Translation;
 import io.mapwize.mapwizesdk.api.Universe;
-import io.mapwize.mapwizesdk.api.UserInfo;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.FollowUserMode;
@@ -560,16 +557,15 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
-    public void showReporterName(String displayName) {
+    public void setReporterEmail(String displayName) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            report.setDisplayNameVisibility(true);
-            report.setDisplayName(displayName);
+            report.setEmail(displayName);
         });
     }
 
     @Override
-    public void hideReporterName() {
-        new Handler(Looper.getMainLooper()).post(() -> report.setDisplayNameVisibility(false));
+    public void onReportIssueFailed(IssueError issueError) {
+        new Handler(Looper.getMainLooper()).post(() -> report.handleIssueError(issueError));
     }
 
     @Override

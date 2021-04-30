@@ -10,11 +10,13 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.ApiIssueCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.Issue;
+import io.mapwize.mapwizesdk.api.IssueError;
 import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.LatLngFloor;
 import io.mapwize.mapwizesdk.api.LatLngFloorInVenue;
@@ -1185,12 +1187,11 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             @Override
             public void onSuccess(@NonNull UserInfo userInfo) {
                 reporterEmail[0] = userInfo.getEmail();
-                fragment.showReporterName(userInfo.getDisplayName());
+                fragment.setReporterEmail(userInfo.getDisplayName());
             }
 
             @Override
-            public void onFailure(@NonNull Throwable t) {
-                fragment.hideReporterName();
+            public void onFailure(@NonNull Throwable t) {//TODO manage this error
             }
         });
 
@@ -1205,14 +1206,19 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                     summary,
                     description,
                     issueTypeId);
-            api.reportIssue(issue, new ApiCallback<Issue>() {
+            api.reportIssue(issue, new ApiIssueCallback() {
                 @Override
                 public void onSuccess(@NonNull Issue issue) {
                     fragment.onIssueReported(issue);
                 }
 
                 @Override
-                public void onFailure(@NonNull Throwable t) {
+                public void onFailure(@NonNull IssueError issueError) {
+                    fragment.onReportIssueFailed(issueError);
+                }
+
+                @Override
+                public void onParseError(@NonNull Throwable t) {
                     fragment.onReportFailed(t);
                 }
             });
