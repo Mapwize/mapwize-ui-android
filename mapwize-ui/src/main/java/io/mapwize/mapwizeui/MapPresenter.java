@@ -1180,13 +1180,15 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
 
     }
 
+    String lastReportedPlaceId = "";
     @Override
     public void reportPlace(Place place, List<IssueType> issueTypes) {
-        final String[] reporterEmail = {null};
+        if (issueTypes == null) {
+            return;
+        }
         api.getUserInfo(new ApiCallback<UserInfo>() {
             @Override
             public void onSuccess(@NonNull UserInfo userInfo) {
-                reporterEmail[0] = userInfo.getEmail();
                 fragment.setReporterEmail(userInfo.getDisplayName());
             }
 
@@ -1195,12 +1197,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
             }
         });
 
-        Report.ReportIssueListener reportIssueListener = (summary, description, issueTypeId) -> {
+        Report.ReportIssueListener reportIssueListener = (email, summary, description, issueTypeId) -> {
             Issue issue = new Issue(null,
                     venue.getId(),
                     venue.getOwner(),
                     place.getId(),
-                    reporterEmail[0],
+                    email,
                     Issue.ISSUE_STATUS_OPEN,
                     Issue.ISSUE_PRIORITY_MEDIUM,
                     summary,
@@ -1223,6 +1225,12 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 }
             });
         };
+
+        if (!place.getPlaceTypeId().equals(lastReportedPlaceId)) {
+            fragment.clearReportViews();
+        }
+
+        lastReportedPlaceId = place.getPlaceTypeId();
         fragment.reportPlace(place.getTranslation(venueLanguage).getTitle(), venue.getTranslation(venueLanguage).getTitle(), issueTypes, venueLanguage, reportIssueListener);
     }
 

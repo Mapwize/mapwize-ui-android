@@ -3,31 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
     android:animateLayoutChanges="true">
 
-    <View
-        android:id="@+id/title_view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#999"
-        />
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/title_view"
-        app:layout_constraintBottom_toTopOf="@id/footer_view"
-        >
-    </FrameLayout>
-    <View
-        android:id="@+id/footer_view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:layout_constraintTop_toBottomOf="@id/fragmentContainer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="#444"
-        />
+        android:layout_height="match_parent"
+    />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -122,20 +122,55 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#eee" />
+
     <LinearLayout
-        android:id="@+id/mapwize_issue_display_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="16dp">
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/mapwize_issue_userIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/mapwize_issue_ic_baseline_person_24"
             app:tint="@color/mapwize_main_color" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/email_address"
+            android:layout_weight="1"
+            android:textColor="#777"
+            android:textSize="12sp" />
+        <TextView
+            android:id="@+id/mapwize_issue_email_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/this_field_is_required"
+            android:gravity="end"
+            android:layout_weight="1"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        >
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"/>
 
         <EditText
             android:id="@+id/mapwize_issue_emailEditText"
@@ -144,8 +179,9 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:hint="Email address"
             android:textColor="@color/mapwize_details_row_text_color"
+            android:hint="@string/email_address"
+            android:inputType="textEmailAddress"
             android:textSize="@dimen/mapwize_details_row_text_size" />
     </LinearLayout>
 
@@ -153,6 +189,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#eee" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -164,6 +201,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/mapwize_issue_ic_baseline_format_list_bulleted_24"
             app:tint="@color/mapwize_main_color" />
         <TextView
@@ -172,16 +210,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="16dp"
+            android:layout_gravity="center_vertical"
             android:text="Issue Type"
             android:layout_weight="1"
             android:textColor="#777"
             android:textSize="12sp" />
         <TextView
-            android:id="@+id/mapwize_issue_issueTypeLabel"
+            android:id="@+id/mapwize_issue_issueType_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:text="This field is required"
+            android:layout_gravity="center_vertical"
+            android:text="@string/this_field_is_required"
+            android:gravity="end"
+            android:layout_weight="1"
             android:textColor="@color/colorPrimary"
             android:textSize="12sp"/>
     </LinearLayout>
@@ -202,32 +244,45 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#eee" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="16dp">
+        android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/mapwize_issue_summaryIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/mapwize_details_ic_baseline_info_24"
             app:tint="@color/mapwize_main_color" />
-
         <TextView
             android:id="@+id/mapwize_issue_summaryLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="center_vertical"
             android:text="@string/summary"
+            android:layout_weight="1"
             android:textColor="#777"
             android:textSize="12sp" />
+        <TextView
+            android:id="@+id/mapwize_issue_summary_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/this_field_is_required"
+            android:gravity="end"
+            android:layout_weight="1"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -257,32 +312,44 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#eee" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="16dp">
 
-        <ImageView
-            android:id="@+id/mapwize_issue_descriptionIcon"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/mapwize_details_ic_baseline_info_24"
-            app:tint="@color/mapwize_main_color" />
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
 
-        <TextView
-            android:id="@+id/mapwize_issue_descriptionLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:text="@string/description"
-            android:textColor="#777"
-            android:textSize="12sp" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/mapwize_issue_descriptionIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/mapwize_details_ic_baseline_info_24"
+                app:tint="@color/mapwize_main_color" />
+            <TextView
+                android:id="@+id/mapwize_issue_descriptionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_gravity="center_vertical"
+                android:text="@string/description"
+                android:layout_weight="1"
+                android:textColor="#777"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/mapwize_issue_description_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_gravity="center_vertical"
+                android:text="@string/this_field_is_required"
+                android:gravity="end"
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"/>
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

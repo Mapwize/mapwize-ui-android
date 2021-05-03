@@ -2,7 +2,6 @@ package io.mapwize.mapwizeui.report;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -35,11 +34,15 @@ public class Report extends LinearLayout {
     private IssueTypeView selectedIssueType;
     private ImageView mapwize_issue_sendIcon;
     private ReportIssueListener reportIssueListener;
-    private View mapwize_issue_display_name_layout;
-    private EditText mapwize_issue_emailEditText;
-    private EditText mapwize_issue_summaryEditText;
-    private EditText mapwize_issue_descriptionEditText;
-    private TextView mapwize_issue_issueTypeLabel;
+    private EditText
+            mapwize_issue_emailEditText,
+            mapwize_issue_summaryEditText,
+            mapwize_issue_descriptionEditText;
+    private TextView
+            mapwize_issue_email_warning,
+            mapwize_issue_issueType_warning,
+            mapwize_issue_summary_warning,
+            mapwize_issue_description_warning;
 
     public Report(@NonNull Context context) {
         super(context);
@@ -63,24 +66,31 @@ public class Report extends LinearLayout {
         mapwize_issue_summaryEditText = findViewById(R.id.mapwize_issue_summaryEditText);
         mapwize_issue_descriptionEditText = findViewById(R.id.mapwize_issue_descriptionEditText);
         mapwize_issue_gridLayout = findViewById(R.id.mapwize_issue_gridLayout);
-        mapwize_issue_issueTypeLabel = findViewById(R.id.mapwize_issue_issueTypeLabel);
-        mapwize_issue_display_name_layout = findViewById(R.id.mapwize_issue_display_name_layout);
         mapwize_issue_emailEditText = findViewById(R.id.mapwize_issue_emailEditText);
+
+        mapwize_issue_email_warning = findViewById(R.id.mapwize_issue_email_warning);
+        mapwize_issue_issueType_warning = findViewById(R.id.mapwize_issue_issueType_warning);
+        mapwize_issue_summary_warning = findViewById(R.id.mapwize_issue_summary_warning);
+        mapwize_issue_description_warning = findViewById(R.id.mapwize_issue_description_warning);
+
         mapwize_issue_venueLabel = findViewById(R.id.mapwize_issue_venueLabel);
         mapwize_issue_placeLabel = findViewById(R.id.mapwize_issue_placeLabel);
         mapwize_issue_backIcon = findViewById(R.id.mapwize_issue_backIcon);
         mapwize_issue_backIcon.setOnClickListener(v -> dismiss());
         mapwize_issue_sendIcon = findViewById(R.id.mapwize_issue_sendIcon);
         mapwize_issue_sendIcon.setOnClickListener(v -> {
+            String email = mapwize_issue_emailEditText.getText().toString();
+
             String issueTypeId = null;
             if (selectedIssueType != null) {
                 issueTypeId = selectedIssueType.getIssueTypeViewId();
             }
             String summary = mapwize_issue_summaryEditText.getText().toString();
             String description = mapwize_issue_descriptionEditText.getText().toString();
-            reportIssueListener.reportIssue(summary, description, issueTypeId);
+            reportIssueListener.reportIssue(email, summary, description, issueTypeId);
 
         });
+        resetErrors();
     }
 
     public void dismiss() {
@@ -105,10 +115,6 @@ public class Report extends LinearLayout {
                 selectedIssueType.setSelected(true);
             });
             mapwize_issue_gridLayout.addView(issueTypeView);
-//            if (i == 0) {
-//                selectedIssueType = issueTypeView;
-//                selectedIssueType.setSelected(true);
-//            }
             i++;
         }
     }
@@ -134,33 +140,16 @@ public class Report extends LinearLayout {
         for (IssueError.IssueFieldError issueFieldError: issueError.getErrors()) {
             switch (issueFieldError.getErrorField()) {
                 case ERROR_FIELD_SUMMARY:
-                    if (issueFieldError.getErrorCode().equals(ERROR_CODE_REQUIRED)) {
-                        mapwize_issue_summaryEditText.setError(getContext().getString(R.string.field_required));
-                    } else {
-                        mapwize_issue_summaryEditText.setError(issueFieldError.getMessage());
-                    }
+                    handleError(issueFieldError, mapwize_issue_summary_warning);
                     break;
                 case ERROR_FIELD_DESCRIPTION:
-                    if (issueFieldError.getErrorCode().equals(ERROR_CODE_REQUIRED)) {
-                        mapwize_issue_descriptionEditText.setError(getContext().getString(R.string.field_required));
-                    } else {
-                        mapwize_issue_descriptionEditText.setError(issueFieldError.getMessage());
-                    }
+                    handleError(issueFieldError, mapwize_issue_description_warning);
                     break;
                 case ERROR_FIELD_REPORTER_EMAIL:
-                    if (issueFieldError.getErrorCode().equals(ERROR_CODE_REQUIRED)) {
-                        mapwize_issue_emailEditText.setError(getContext().getString(R.string.field_required));
-                    } else {
-                        mapwize_issue_emailEditText.setError(issueFieldError.getMessage());
-                    }
+                    handleError(issueFieldError, mapwize_issue_email_warning);
                     break;
                 case ERROR_FIELD_ISSUE_TYPE_ID:
-                    if (issueFieldError.getErrorCode().equals(ERROR_CODE_REQUIRED)) {
-                        mapwize_issue_issueTypeLabel.setVisibility(VISIBLE);
-                    } else {
-                        mapwize_issue_issueTypeLabel.setVisibility(VISIBLE);
-                        mapwize_issue_issueTypeLabel.setText(issueFieldError.getMessage());
-                    }
+                    handleError(issueFieldError, mapwize_issue_issueType_warning);
                     break;
                 default:
                     Toast.makeText(getContext(), issueError.getMessage(), Toast.LENGTH_LONG).show();
@@ -169,15 +158,34 @@ public class Report extends LinearLayout {
         }
     }
 
+    private void handleError(IssueError.IssueFieldError issueFieldError, TextView warningTextView) {
+        warningTextView.setVisibility(VISIBLE);
+        if (issueFieldError.getErrorCode().equals(ERROR_CODE_REQUIRED)) {
+            warningTextView.setText(getContext().getString(R.string.this_field_is_required));
+        } else {
+            warningTextView.setText(issueFieldError.getMessage());
+        }
+    }
+
     private void resetErrors() {
-        mapwize_issue_issueTypeLabel.setVisibility(GONE);
-        mapwize_issue_emailEditText.setError(null);
-        mapwize_issue_descriptionEditText.setError(null);
-        mapwize_issue_summaryEditText.setError(null);
+        mapwize_issue_email_warning.setVisibility(GONE);
+        mapwize_issue_issueType_warning.setVisibility(GONE);
+        mapwize_issue_summary_warning.setVisibility(GONE);
+        mapwize_issue_description_warning.setVisibility(GONE);
+    }
+
+    public void clearViews() {
+        mapwize_issue_emailEditText.setText("");
+        mapwize_issue_summaryEditText.setText("");
+        mapwize_issue_descriptionEditText.setText("");
+        if (selectedIssueType != null) {
+            selectedIssueType.setSelected(false);
+        }
+        selectedIssueType = null;
     }
 
     public interface ReportIssueListener {
-        void reportIssue(String summary, String description, String issueTypeId);
+        void reportIssue(String email, String summary, String description, String issueTypeId);
     }
 
 }

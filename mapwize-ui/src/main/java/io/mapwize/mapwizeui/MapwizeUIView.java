@@ -568,6 +568,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     }
 
     @Override
+    public void clearReportViews() {
+        report.clearViews();
+    }
+
+    @Override
     public void showPlacelistInfo(Placelist placelist, String language) {
         placeDetailsUI.show();
         setInfoVisible(true);

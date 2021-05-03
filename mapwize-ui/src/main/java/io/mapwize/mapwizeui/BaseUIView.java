@@ -98,4 +98,6 @@ interface BaseUIView {
     void setReporterEmail(String displayName);
 
     void onReportIssueFailed(IssueError issueError);
+
+    void clearReportViews();
 }
