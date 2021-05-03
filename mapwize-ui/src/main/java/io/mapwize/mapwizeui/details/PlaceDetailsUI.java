@@ -1,14 +1,11 @@
 package io.mapwize.mapwizeui.details;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -401,8 +398,13 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         this.detailsStateListener = detailsStateListener;
     }
 
-    public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, String sharingLink, String timezone, List<Map<String, Object>> events, Integer capacity, DetailsReadyListener detailsReadyListener) {
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        setMaxUiHeight(h);
+    }
 
+    public void showDetails(String title, String subTitle, String details, String floor, List<String> photos, List<Map<String, Object>> openingHours, String phone, String website, String sharingLink, String timezone, List<Map<String, Object>> events, Integer capacity, DetailsReadyListener detailsReadyListener) {
         PlaceDetailsConfig placeDetailsConfig = createDetailsConfig(title, floor, photos, openingHours, timezone, phone, website, sharingLink, events, capacity, detailsReadyListener);
 
         if (this.initalDetailsReadyListener != null) {
