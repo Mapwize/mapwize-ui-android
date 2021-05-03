@@ -1,6 +1,12 @@
 # UI Components Changelog
 
 
+
+## 2.6.2
+
+- Fixing Place Details dynamic height changes.
+
+
 ## 2.6.1
 
 - Fixing Place Details UI issue
