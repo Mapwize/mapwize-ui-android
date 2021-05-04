@@ -441,14 +441,15 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                 }
                             }
 
-                            Row reportRow = new Row(getContext(),
-                                    "Report",
-                                    R.drawable.ic_baseline_report_problem_24,
-                                    true,
-                                    Row.REPORT_ROW,
-                                    v -> presenter.reportPlace(place, placeDetails.getIssueTypes()));
-                            placeDetailsConfig.getRows().add(reportRow);
-
+                            if (listener.shouldDisplayReportButton(place)) {
+                                Row reportRow = new Row(getContext(),
+                                        "Report",
+                                        R.drawable.ic_baseline_report_problem_24,
+                                        true,
+                                        Row.REPORT_ROW,
+                                        v -> presenter.reportPlace(place, placeDetails.getIssueTypes()));
+                                placeDetailsConfig.getRows().add(reportRow);
+                            }
 
                             Iterator<ButtonSmall> iterSmallButtons = placeDetailsConfig.getButtonsSmall().iterator();
                             while (iterSmallButtons.hasNext()) {
@@ -1101,6 +1102,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
             return false;
         }
+
+        default boolean shouldDisplayReportButton(MapwizeObject mapwizeObject) {
+            return false;
+        }
+
 
         default boolean shouldDisplayFloorController(List<Floor> floors) {
             return true;
