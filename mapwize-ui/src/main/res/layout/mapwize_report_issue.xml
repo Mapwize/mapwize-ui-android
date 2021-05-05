@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFF"
     android:weightSum="1"
+    android:paddingTop="@dimen/mapwize_ui_padding_top"
     android:orientation="vertical">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
