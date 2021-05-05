@@ -13,20 +13,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-        <ImageButton
-            android:id="@+id/hideBottomSheetButton"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:padding="8dp"
-            android:src="@drawable/mapwize_details_ic_baseline_arrow_back_24"
-            android:background="@drawable/mapwize_details_ripple_button_gray"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:paddingTop="@dimen/mapwize_ui_padding_top"
             android:elevation="16dp"
-            android:tint="#FFF"
-            />
+            >
+            <ImageButton
+                android:id="@+id/hideBottomSheetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:padding="8dp"
+                android:src="@drawable/mapwize_details_ic_baseline_arrow_back_24"
+                android:background="@drawable/mapwize_details_ripple_button_gray"
+                android:tint="#FFF"
+                />
+        </LinearLayout>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
