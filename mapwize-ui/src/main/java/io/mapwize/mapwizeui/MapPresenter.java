@@ -1189,7 +1189,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         api.getUserInfo(new ApiCallback<UserInfo>() {
             @Override
             public void onSuccess(@NonNull UserInfo userInfo) {
-                fragment.setReporterEmail(userInfo.getDisplayName());
+                fragment.setReporterEmail(userInfo.getEmail());
             }
 
             @Override
