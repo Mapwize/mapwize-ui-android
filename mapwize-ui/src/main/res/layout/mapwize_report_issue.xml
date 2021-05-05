@@ -136,7 +136,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/mapwize_issue_ic_baseline_person_24"
+            android:src="@drawable/mapwize_ic_issue_mail"
             app:tint="@color/mapwize_main_color" />
         <TextView
             android:layout_width="wrap_content"
@@ -203,7 +203,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/mapwize_issue_ic_baseline_format_list_bulleted_24"
+            android:src="@drawable/mapwize_ic_issue_type"
             app:tint="@color/mapwize_main_color" />
         <TextView
             android:id="@+id/mapwize_issue_label_text"
@@ -258,7 +258,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/mapwize_details_ic_baseline_info_24"
+            android:src="@drawable/mapwize_ic_issue_summary"
             app:tint="@color/mapwize_main_color" />
         <TextView
             android:id="@+id/mapwize_issue_summaryLabel"
@@ -326,7 +326,7 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/mapwize_details_ic_baseline_info_24"
+                android:src="@drawable/mapwize_ic_issue_description"
                 app:tint="@color/mapwize_main_color" />
             <TextView
                 android:id="@+id/mapwize_issue_descriptionLabel"
