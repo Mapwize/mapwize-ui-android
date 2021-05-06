@@ -6,6 +6,9 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.Issue;
+import io.mapwize.mapwizesdk.api.IssueError;
+import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.PlaceDetails;
@@ -15,6 +18,7 @@ import io.mapwize.mapwizesdk.map.FollowUserMode;
 import io.mapwize.mapwizesdk.map.MapwizeMap;
 import io.mapwize.mapwizesdk.map.NavigationInfo;
 import io.mapwize.mapwizesdk.map.PlacePreview;
+import io.mapwize.mapwizeui.report.Report;
 
 interface BaseUIView {
 
@@ -84,4 +88,16 @@ interface BaseUIView {
     void invalidateOnBackPressedCallbackState();
 
     void showPreviewOnly(PlacePreview selectedPlacePreview);
+    
+    void reportPlace(String placeTitle, String venueTitle, List<IssueType> issueTypes, String venueLanguage, Report.ReportIssueListener reportIssueListener);
+
+    void onIssueReported(Issue issue);
+
+    void onReportFailed(Throwable t);
+
+    void setReporterEmail(String displayName);
+
+    void onReportIssueFailed(IssueError issueError);
+
+    void clearReportViews();
 }

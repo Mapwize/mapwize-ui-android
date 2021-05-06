@@ -2,11 +2,14 @@ package io.mapwize.mapwizeui;
 
 import android.os.Bundle;
 
+import java.util.List;
+
 import io.mapwize.mapwizesdk.api.ApiCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.Universe;
@@ -56,4 +59,6 @@ interface BasePresenter {
     void onCreate(Bundle savedInstanceState);
 
     void onSaveInstanceState(Bundle saveInstanceState);
+
+    void reportPlace(Place place, List<IssueType> issueTypes);
 }

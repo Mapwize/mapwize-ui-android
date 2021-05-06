@@ -10,10 +10,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.mapwize.mapwizesdk.api.ApiCallback;
+import io.mapwize.mapwizesdk.api.ApiIssueCallback;
 import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.Issue;
+import io.mapwize.mapwizesdk.api.IssueError;
+import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.LatLngFloor;
 import io.mapwize.mapwizesdk.api.LatLngFloorInVenue;
 import io.mapwize.mapwizesdk.api.MapwizeApi;
@@ -24,6 +28,7 @@ import io.mapwize.mapwizesdk.api.PlaceDetails;
 import io.mapwize.mapwizesdk.api.Placelist;
 import io.mapwize.mapwizesdk.api.SearchParams;
 import io.mapwize.mapwizesdk.api.Universe;
+import io.mapwize.mapwizesdk.api.UserInfo;
 import io.mapwize.mapwizesdk.api.Venue;
 import io.mapwize.mapwizesdk.core.MapwizeConfiguration;
 import io.mapwize.mapwizesdk.map.ClickEvent;
@@ -42,6 +47,7 @@ import io.mapwize.mapwizesdk.map.PreviewCallback;
 import io.mapwize.mapwizesdk.map.VenuePreview;
 import io.mapwize.mapwizeui.events.Channel;
 import io.mapwize.mapwizeui.events.EventManager;
+import io.mapwize.mapwizeui.report.Report;
 
 import static io.mapwize.mapwizesdk.map.MapwizeConstants.DEFAULT_DIRECTION_END_MARKER_NAME;
 import static io.mapwize.mapwizesdk.map.MapwizeConstants.DEFAULT_DIRECTION_START_MARKER_NAME;
@@ -1005,20 +1011,20 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 .iconName(DEFAULT_DIRECTION_END_MARKER_NAME);
 
         if (from instanceof Place) {
-            startMarkerOptionsBuilder.title(((Place) from).getTranslation(language).getTitle());
+            startMarkerOptionsBuilder.title(((Place) from).getTranslation(venueLanguage).getTitle());
         } else if (from instanceof PlacePreview) {
             startMarkerOptionsBuilder.title(((PlacePreview) from).getTitle());
         } else if (from instanceof Placelist) {
-            startMarkerOptionsBuilder.title(((Placelist) from).getTranslation(language).getTitle());
+            startMarkerOptionsBuilder.title(((Placelist) from).getTranslation(venueLanguage).getTitle());
         }
         MarkerOptions startMarkerOptions = startMarkerOptionsBuilder.build();
 
         if (to instanceof Place) {
-            endMarkerOptionsBuilder.title(((Place) to).getTranslation(language).getTitle());
+            endMarkerOptionsBuilder.title(((Place) to).getTranslation(venueLanguage).getTitle());
         } else if (to instanceof PlacePreview) {
             endMarkerOptionsBuilder.title(((PlacePreview) to).getTitle());
         } else if (to instanceof Placelist) {
-            endMarkerOptionsBuilder.title(((Placelist) to).getTranslation(language).getTitle());
+            endMarkerOptionsBuilder.title(((Placelist) to).getTranslation(venueLanguage).getTitle());
         }
         MarkerOptions endMarkerOptions = endMarkerOptionsBuilder.build();
 
@@ -1172,6 +1178,60 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
         saveInstanceState.putParcelableArrayList(directionModes_KEY, (ArrayList) directionModes);
 
 
+    }
+
+    String lastReportedPlaceId = "";
+    @Override
+    public void reportPlace(Place place, List<IssueType> issueTypes) {
+        if (issueTypes == null) {
+            return;
+        }
+        api.getUserInfo(new ApiCallback<UserInfo>() {
+            @Override
+            public void onSuccess(@NonNull UserInfo userInfo) {
+                fragment.setReporterEmail(userInfo.getEmail());
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {//TODO manage this error
+            }
+        });
+
+        Report.ReportIssueListener reportIssueListener = (email, summary, description, issueTypeId) -> {
+            Issue issue = new Issue(null,
+                    venue.getId(),
+                    venue.getOwner(),
+                    place.getId(),
+                    email,
+                    Issue.ISSUE_STATUS_OPEN,
+                    Issue.ISSUE_PRIORITY_MEDIUM,
+                    summary,
+                    description,
+                    issueTypeId);
+            api.reportIssue(issue, new ApiIssueCallback() {
+                @Override
+                public void onSuccess(@NonNull Issue issue) {
+                    fragment.onIssueReported(issue);
+                }
+
+                @Override
+                public void onFailure(@NonNull IssueError issueError) {
+                    fragment.onReportIssueFailed(issueError);
+                }
+
+                @Override
+                public void onParseError(@NonNull Throwable t) {
+                    fragment.onReportFailed(t);
+                }
+            });
+        };
+
+        if (!place.getPlaceTypeId().equals(lastReportedPlaceId)) {
+            fragment.clearReportViews();
+        }
+
+        lastReportedPlaceId = place.getPlaceTypeId();
+        fragment.reportPlace(place.getTranslation(venueLanguage).getTitle(), venue.getTranslation(venueLanguage).getTitle(), issueTypes, venueLanguage, reportIssueListener);
     }
 
     private void saveDirectionPoint(Bundle saveInstanceState, DirectionPoint directionPoint, String key) {
