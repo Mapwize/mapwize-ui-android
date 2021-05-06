@@ -1,6 +1,10 @@
 # UI Components Changelog
 
 
+## 2.6.3
+
+- Adding report Issue feature
+- Updating sdk to version `3.7.1`
 
 ## 2.6.2
 
