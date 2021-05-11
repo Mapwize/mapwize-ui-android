@@ -570,7 +570,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
 
     @Override
     public void clearReportViews() {
-        report.clearViews();
+        new Handler(Looper.getMainLooper()).post(() -> report.clearViews());
     }
 
     @Override

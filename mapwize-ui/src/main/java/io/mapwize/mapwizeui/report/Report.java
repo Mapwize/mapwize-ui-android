@@ -77,25 +77,7 @@ public class Report extends LinearLayout {
         mapwize_issue_gridLayout = findViewById(R.id.mapwize_issue_gridLayout);
         mapwize_issue_emailEditText = findViewById(R.id.mapwize_issue_emailEditText);
 
-        //Manage Next & Done buttons on the keyboard
-        mapwize_issue_emailEditText.setOnKeyListener((v, keyCode, event) -> {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                mapwize_issue_emailEditText.clearFocus();
-                mapwize_issue_summaryEditText.requestFocus();
-                return true;
-            }
-            return false;
-        });
-        mapwize_issue_summaryEditText.setOnKeyListener((v, keyCode, event) -> {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                mapwize_issue_summaryEditText.clearFocus();
-                mapwize_issue_descriptionEditText.requestFocus();
-                return true;
-            }
-            return false;
-        });
+        //Manage Done button on the keyboard
         mapwize_issue_descriptionEditText.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -109,17 +91,17 @@ public class Report extends LinearLayout {
         //Scroll to EditText
         mapwize_issue_summaryEditText.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !imm.isAcceptingText()) {
-                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_summaryEditText.getBottom()));
+                mapwize_reportScroll.post(()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_summaryEditText.getBottom()));
             }
         });
         mapwize_issue_descriptionEditText.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !imm.isAcceptingText()) {
-                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_descriptionEditText.getBottom()));
+                mapwize_reportScroll.post(()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_descriptionEditText.getBottom()));
             }
         });
         mapwize_issue_emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus && !imm.isAcceptingText()) {
-                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_emailEditText.getBottom()));
+                mapwize_reportScroll.post(()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_emailEditText.getBottom()));
             }
         });
 
@@ -237,6 +219,7 @@ public class Report extends LinearLayout {
     }
 
     public void clearViews() {
+        mapwize_reportScroll.post(()-> mapwize_reportScroll.smoothScrollTo(0, 0));
         mapwize_issue_emailEditText.setText("");
         mapwize_issue_summaryEditText.setText("");
         mapwize_issue_descriptionEditText.setText("");

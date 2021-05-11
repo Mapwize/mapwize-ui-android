@@ -60,7 +60,8 @@
         android:id="@+id/mapwize_reportScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:scrollbars="none">
 
     <LinearLayout
         android:id="@+id/scroll_inner_layout"
@@ -184,7 +185,9 @@
             android:textColor="@color/mapwize_details_row_text_color"
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
-            android:textSize="@dimen/mapwize_details_row_text_size" />
+            android:textSize="@dimen/mapwize_details_row_text_size"
+            android:nextFocusDown="@id/mapwize_issue_summaryEditText"
+            android:singleLine="true"/>
     </LinearLayout>
 
     <LinearLayout
@@ -307,7 +310,9 @@
             android:layout_marginEnd="32dp"
             android:textColor="@color/mapwize_details_row_text_color"
             android:hint="@string/summary"
-            android:textSize="@dimen/mapwize_details_row_text_size" />
+            android:textSize="@dimen/mapwize_details_row_text_size"
+            android:nextFocusDown="@id/mapwize_issue_descriptionEditText"
+            android:singleLine="true" />
     </LinearLayout>
 
     <LinearLayout
@@ -374,6 +379,9 @@
             android:layout_marginEnd="32dp"
             android:textColor="@color/mapwize_details_row_text_color"
             android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            android:gravity="top|start"
             android:textSize="@dimen/mapwize_details_row_text_size" />
     </LinearLayout>
 

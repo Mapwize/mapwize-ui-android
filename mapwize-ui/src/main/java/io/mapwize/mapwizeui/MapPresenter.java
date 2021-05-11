@@ -1212,6 +1212,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
                 @Override
                 public void onSuccess(@NonNull Issue issue) {
                     fragment.onIssueReported(issue);
+                    fragment.clearReportViews();
                 }
 
                 @Override
