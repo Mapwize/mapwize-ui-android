@@ -48,6 +48,7 @@ public class Report extends LinearLayout {
             mapwize_issue_description_warning;
     private ScrollView mapwize_reportScroll;
     private LinearLayout scroll_inner_layout;
+    private InputMethodManager imm;
 
     public Report(@NonNull Context context) {
         super(context);
@@ -103,20 +104,21 @@ public class Report extends LinearLayout {
             }
             return false;
         });
+        imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         //Scroll to EditText
         mapwize_issue_summaryEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, 600));
+            if (hasFocus && !imm.isAcceptingText()) {
+                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_summaryEditText.getBottom()));
             }
         });
         mapwize_issue_descriptionEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, 600));
+            if (hasFocus && !imm.isAcceptingText()) {
+                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_descriptionEditText.getBottom()));
             }
         });
         mapwize_issue_emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+            if (hasFocus && !imm.isAcceptingText()) {
                 mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_emailEditText.getBottom()));
             }
         });
@@ -153,7 +155,6 @@ public class Report extends LinearLayout {
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if(imm.isAcceptingText()) { // verify if the soft keyboard is open
             imm.hideSoftInputFromWindow(mapwize_issue_summaryEditText.getWindowToken(), 0);
         }
