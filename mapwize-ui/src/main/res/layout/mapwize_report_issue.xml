@@ -63,6 +63,7 @@
         android:layout_weight="1">
 
     <LinearLayout
+        android:id="@+id/scroll_inner_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -383,7 +384,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="400dp"
             android:background="#FFF" />
     </LinearLayout>
     </ScrollView>

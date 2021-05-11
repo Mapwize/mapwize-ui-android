@@ -2,10 +2,13 @@ package io.mapwize.mapwizeui.report;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +46,8 @@ public class Report extends LinearLayout {
             mapwize_issue_issueType_warning,
             mapwize_issue_summary_warning,
             mapwize_issue_description_warning;
+    private ScrollView mapwize_reportScroll;
+    private LinearLayout scroll_inner_layout;
 
     public Report(@NonNull Context context) {
         super(context);
@@ -63,10 +68,58 @@ public class Report extends LinearLayout {
         inflate(context, R.layout.mapwize_report_issue, this);
         this.context = context;
         this.dp = getResources().getDisplayMetrics().density;
+        mapwize_reportScroll = findViewById(R.id.mapwize_reportScroll);
+        scroll_inner_layout = findViewById(R.id.scroll_inner_layout);
+
         mapwize_issue_summaryEditText = findViewById(R.id.mapwize_issue_summaryEditText);
         mapwize_issue_descriptionEditText = findViewById(R.id.mapwize_issue_descriptionEditText);
         mapwize_issue_gridLayout = findViewById(R.id.mapwize_issue_gridLayout);
         mapwize_issue_emailEditText = findViewById(R.id.mapwize_issue_emailEditText);
+
+        //Manage Next & Done buttons on the keyboard
+        mapwize_issue_emailEditText.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                mapwize_issue_emailEditText.clearFocus();
+                mapwize_issue_summaryEditText.requestFocus();
+                return true;
+            }
+            return false;
+        });
+        mapwize_issue_summaryEditText.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                mapwize_issue_summaryEditText.clearFocus();
+                mapwize_issue_descriptionEditText.requestFocus();
+                return true;
+            }
+            return false;
+        });
+        mapwize_issue_descriptionEditText.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                hideKeyboard();
+                return true;
+            }
+            return false;
+        });
+
+        //Scroll to EditText
+        mapwize_issue_summaryEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, 600));
+            }
+        });
+        mapwize_issue_descriptionEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, 600));
+            }
+        });
+        mapwize_issue_emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                mapwize_reportScroll.post( ()-> mapwize_reportScroll.smoothScrollTo(0, mapwize_issue_emailEditText.getBottom()));
+            }
+        });
 
         mapwize_issue_email_warning = findViewById(R.id.mapwize_issue_email_warning);
         mapwize_issue_issueType_warning = findViewById(R.id.mapwize_issue_issueType_warning);
@@ -79,6 +132,7 @@ public class Report extends LinearLayout {
         mapwize_issue_backIcon.setOnClickListener(v -> dismiss());
         mapwize_issue_sendIcon = findViewById(R.id.mapwize_issue_sendIcon);
         mapwize_issue_sendIcon.setOnClickListener(v -> {
+            hideKeyboard();
             String email = mapwize_issue_emailEditText.getText().toString();
 
             String issueTypeId = null;
@@ -88,7 +142,6 @@ public class Report extends LinearLayout {
             String summary = mapwize_issue_summaryEditText.getText().toString();
             String description = mapwize_issue_descriptionEditText.getText().toString();
             reportIssueListener.reportIssue(email, summary, description, issueTypeId);
-
         });
         resetErrors();
     }
@@ -96,6 +149,14 @@ public class Report extends LinearLayout {
     public void dismiss() {
         this.mapwize_issue_gridLayout.removeAllViews();
         setVisibility(GONE);
+        hideKeyboard();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm.isAcceptingText()) { // verify if the soft keyboard is open
+            imm.hideSoftInputFromWindow(mapwize_issue_summaryEditText.getWindowToken(), 0);
+        }
     }
 
     public void setPlaceName(String name) {
