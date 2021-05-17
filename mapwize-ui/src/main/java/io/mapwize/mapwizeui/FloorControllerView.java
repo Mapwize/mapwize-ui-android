@@ -64,12 +64,12 @@ public class FloorControllerView extends ScrollView {
     }
 
 
-    public void setFloors(@NonNull List<Floor> floors) {
+    public void setFloors(@NonNull List<Floor> floors, String language) {
         linearLayout.removeAllViews();
         List<Floor> reversedFloor = new ArrayList<>(floors);
         Collections.reverse(reversedFloor);
         for (Floor floor : reversedFloor) {
-            FloorView floorView = new FloorView(getContext(), floor);
+            FloorView floorView = new FloorView(getContext(), floor, language);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     viewSize,viewSize
             );

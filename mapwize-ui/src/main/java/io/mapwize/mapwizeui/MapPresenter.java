@@ -15,6 +15,7 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.FloorTranslation;
 import io.mapwize.mapwizesdk.api.Issue;
 import io.mapwize.mapwizesdk.api.IssueError;
 import io.mapwize.mapwizesdk.api.IssueType;
@@ -229,7 +230,7 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public void onFloorsChange(@NonNull List<Floor> floors) {
         this.floors = floors;
-        fragment.showAccessibleFloors(floors);
+        fragment.showAccessibleFloors(floors, venueLanguage);
     }
 
     @Override
@@ -581,6 +582,10 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     @Override
     public String getFloor() {
         if (mapwizeMap != null && mapwizeMap.getFloor() != null) {
+            FloorTranslation floorTranslation = mapwizeMap.getFloor().getTranslation(venueLanguage);
+            if (floorTranslation != null) {
+                return floorTranslation.getTitle();
+            }
             return mapwizeMap.getFloor().getName();
         }
         return "";

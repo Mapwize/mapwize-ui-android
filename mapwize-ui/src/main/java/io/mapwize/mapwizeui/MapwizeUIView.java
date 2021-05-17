@@ -698,13 +698,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         universesButton.showIfNeeded();
     }
 
-    public void showAccessibleFloors(List<Floor> floors) {
+    @Override
+    public void showAccessibleFloors(List<Floor> floors, String language) {
         if (initializeUiSettings.isFloorControllerHidden()) {
             floorControllerView.setVisibility(View.GONE);
             return;
         }
         if (listener.shouldDisplayFloorController(floors)) {
-            floorControllerView.setFloors(floors);
+            floorControllerView.setFloors(floors, language);
         }
     }
 

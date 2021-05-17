@@ -47,7 +47,7 @@ interface BaseUIView {
     void hideVenueLoading();
     void showSearch();
     void hideSearch();
-    void showAccessibleFloors(List<Floor> floors);
+    void showAccessibleFloors(List<Floor> floors, String language);
     void showLoadingFloor(Floor floor);
     void showActiveFloor(Floor floor);
     void showSearchResultsList();
