@@ -16,10 +16,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import io.mapwize.mapwizesdk.api.Floor;
+import io.mapwize.mapwizesdk.api.FloorTranslation;
 
 public class FloorView extends FrameLayout {
 
     private Floor floor;
+    private String language;
     private TextView textView;
     private View animationView;
     private ObjectAnimator scale;
@@ -27,9 +29,10 @@ public class FloorView extends FrameLayout {
     private ObjectAnimator colorAnim;
     private boolean selected;
 
-    public FloorView(@NonNull Context context, @NonNull Floor floor) {
+    public FloorView(@NonNull Context context, @NonNull Floor floor, String language) {
         super(context);
         this.floor = floor;
+        this.language = language;
         this.initialize(context);
     }
 
@@ -45,7 +48,12 @@ public class FloorView extends FrameLayout {
 
         textView = new TextView(context);
         oldTvColors = textView.getTextColors();
-        textView.setText(floor.getName());
+        FloorTranslation floorTranslation = floor.getTranslation(this.language);
+        if (floorTranslation != null) {
+            textView.setText(floorTranslation.getShortTitle());
+        } else {
+            textView.setText(floor.getName());
+        }
         textView.setGravity(Gravity.CENTER);
         textView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         this.addView(textView);

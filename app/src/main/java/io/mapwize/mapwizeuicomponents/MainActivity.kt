@@ -88,6 +88,10 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
         return mapwizeObject?.name?.startsWith("B")!!
     }
 
+    override fun shouldDisplayReportButton(mapwizeObject: MapwizeObject?): Boolean {
+        return false
+    }
+
     override fun onContentSelect(place: Place,
                                  currentUniverse: Universe,
                                  searchResultUniverse: Universe,

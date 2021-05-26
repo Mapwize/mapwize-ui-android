@@ -22,6 +22,7 @@ public class Row extends LinearLayout {
     public static final int WEBSITE_ROW = 3;
     public static final int CAPACITY_ROW = 4;
     public static final int OCCUPANCY_ROW = 5;
+    public static final int REPORT_ROW = 6;
     ImageView iconImageView;
     Context context;
     TextView rowLabel;

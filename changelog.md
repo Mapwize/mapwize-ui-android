@@ -1,6 +1,21 @@
 # UI Components Changelog
 
 
+## 2.6.4
+
+- Using shortTitle for Floor in FloorController
+- Updating sdk to version `3.7.3`
+
+## 2.6.3
+
+- Adding report Issue feature
+- Updating sdk to version `3.7.1`
+
+## 2.6.2
+
+- Fixing Place Details dynamic height changes.
+
+
 ## 2.6.1
 
 - Fixing Place Details UI issue

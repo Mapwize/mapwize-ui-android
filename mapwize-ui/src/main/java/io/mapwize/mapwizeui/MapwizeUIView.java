@@ -30,6 +30,9 @@ import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
 import io.mapwize.mapwizesdk.api.FloorDetails;
+import io.mapwize.mapwizesdk.api.Issue;
+import io.mapwize.mapwizesdk.api.IssueError;
+import io.mapwize.mapwizesdk.api.IssueType;
 import io.mapwize.mapwizesdk.api.MapwizeObject;
 import io.mapwize.mapwizesdk.api.Place;
 import io.mapwize.mapwizesdk.api.PlaceDetails;
@@ -50,6 +53,7 @@ import io.mapwize.mapwizeui.details.ButtonSmall;
 import io.mapwize.mapwizeui.details.PlaceDetailsConfig;
 import io.mapwize.mapwizeui.details.PlaceDetailsUI;
 import io.mapwize.mapwizeui.details.Row;
+import io.mapwize.mapwizeui.report.Report;
 
 public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarView.SearchBarListener,
         SearchResultList.SearchResultListListener, FloorControllerView.OnFloorClickListener,
@@ -86,12 +90,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
     private CompassView compassView;
     private ConstraintLayout mainLayout;
     private FrameLayout headerLayout;
+    private FrameLayout reportIssueViewContainer;
     private float marginBottom = 16;
     private float dp;
 
     // Component listener
     private OnViewInteractionListener listener;
     private boolean infoVisible;
+    private Report report;
 
     public MapwizeUIView(Context context) {
         super(context);
@@ -160,9 +166,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         mainLayout = cv.findViewById(R.id.mapwizeFragmentLayout);
         headerLayout = cv.findViewById(R.id.headerFrameLayout);
         placeDetailsUI = cv.findViewById(R.id.placeDetails);
+
+        reportIssueViewContainer = cv.findViewById(R.id.reportIssueViewContainer);
+        report = new Report(getContext());
+        report.setVisibility(GONE);
+        reportIssueViewContainer.addView(report);
+
         dp = getResources().getDisplayMetrics().density;
 
-        cv.post(() -> placeDetailsUI.setMaxUiHeight(cv.getMeasuredHeight()));
 
         placeDetailsUI.setOnSlideListener((offset, halfExpandedOffset) -> {
             if (languagesButton != null && offset < halfExpandedOffset) {
@@ -302,6 +313,10 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
             if (presenter.onBackButtonPressed()) {
                 return;
             }
+            if (report.getVisibility() == VISIBLE) {
+                report.dismiss();
+                return;
+            }
             if (infoVisible) {
                 presenter.unselectContent();
             }
@@ -437,6 +452,16 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                                 }
                             }
 
+                            if (listener.shouldDisplayReportButton(place)) {
+                                Row reportRow = new Row(getContext(),
+                                        "Report",
+                                        R.drawable.ic_baseline_report_problem_24,
+                                        true,
+                                        Row.REPORT_ROW,
+                                        v -> presenter.reportPlace(place, placeDetails.getIssueTypes()));
+                                placeDetailsConfig.getRows().add(reportRow);
+                            }
+
                             Iterator<ButtonSmall> iterSmallButtons = placeDetailsConfig.getButtonsSmall().iterator();
                             while (iterSmallButtons.hasNext()) {
                                 ButtonSmall buttonBig = iterSmallButtons.next();
@@ -516,6 +541,47 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         placeDetailsUI.show();
         setInfoVisible(true);
         showPlaceDetails(place, placeDetails, language);
+    }
+
+    @Override
+    public void reportPlace(String placeTitle, String venueTitle, List<IssueType> issueTypes, String venueLanguage, Report.ReportIssueListener reportIssueListener) {
+        report.setVisibility(View.VISIBLE);
+        report.setPlaceName(placeTitle);
+        report.setVenueName(venueTitle);
+        report.setIssuesTypes(issueTypes, venueLanguage);
+        report.setReportListener(reportIssueListener);
+    }
+
+    @Override
+    public void onIssueReported(Issue issue) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(getContext(), getResources().getString(R.string.issue_reported), Toast.LENGTH_LONG).show();
+            report.dismiss();
+        });
+    }
+
+    @Override
+    public void onReportFailed(Throwable t) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(getContext(), getResources().getString(R.string.issue_error)  + "\n" + t.getMessage(), Toast.LENGTH_LONG).show();
+        });
+    }
+
+    @Override
+    public void setReporterEmail(String displayName) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            report.setEmail(displayName);
+        });
+    }
+
+    @Override
+    public void onReportIssueFailed(IssueError issueError) {
+        new Handler(Looper.getMainLooper()).post(() -> report.handleIssueError(issueError));
+    }
+
+    @Override
+    public void clearReportViews() {
+        new Handler(Looper.getMainLooper()).post(() -> report.clearViews());
     }
 
     @Override
@@ -645,13 +711,14 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         }
     }
 
-    public void showAccessibleFloors(List<Floor> floors) {
+    @Override
+    public void showAccessibleFloors(List<Floor> floors, String language) {
         if (initializeUiSettings.isFloorControllerHidden()) {
             floorControllerView.setVisibility(View.GONE);
             return;
         }
         if (listener.shouldDisplayFloorController(floors)) {
-            floorControllerView.setFloors(floors);
+            floorControllerView.setFloors(floors, language);
         }
     }
 
@@ -1064,6 +1131,11 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         default boolean shouldDisplayInformationButton(MapwizeObject mapwizeObject) {
             return false;
         }
+
+        default boolean shouldDisplayReportButton(MapwizeObject mapwizeObject) {
+            return false;
+        }
+
 
         default boolean shouldDisplayFloorController(List<Floor> floors) {
             return true;

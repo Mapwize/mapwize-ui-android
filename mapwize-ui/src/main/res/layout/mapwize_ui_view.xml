@@ -15,6 +15,13 @@
         android:id="@+id/mapViewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <FrameLayout
+        android:id="@+id/reportIssueViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="16dp"
+        android:translationZ="16dp"
+        android:clipToPadding="false"/>
 
     <FrameLayout
         android:id="@+id/headerFrameLayout"
