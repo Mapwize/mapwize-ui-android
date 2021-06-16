@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity(), MapwizeUIView.OnViewInteractionListene
 
         // Uncomment and fill place holder to test MapwizeUI on your venue
         val opts = MapOptions.Builder()
-                //.restrictContentToOrganization("YOUR_ORGANIZATION_ID")
+                .restrictContentToOrganization("Euratechnologies")
                 //.restrictContentToVenue("YOUR_VENUE_ID")
-                .centerOnVenue("56b20714c3fa800b00d8f0b5")
-//                .centerOnPlace("5d08d8a4efe1d20012809ee5")
+                .centerOnVenue("Euratechnologies>>Euratechnologies")
+//                .centerOnPlace("Euratechnologies>>Euratechnologies>>Mapwize")
                 .build()
 
         // Uncomment and change value to test different settings configuration

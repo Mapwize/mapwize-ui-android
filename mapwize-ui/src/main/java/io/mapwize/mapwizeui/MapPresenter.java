@@ -798,11 +798,21 @@ public class MapPresenter implements BasePresenter, MapwizeMap.OnVenueEnterListe
     public void onMapLoaded(MapwizeMap mapwizeMap) {
         fragment.dispatchMapwizeReady(mapwizeMap);
         if (mapOptions.getCenterOnPlaceId() != null) {
-            api.getPlace(mapOptions.getCenterOnPlaceId(), new ApiCallback<Place>() {
+            api.getPlaceDetails(mapOptions.getCenterOnPlaceId(), new ApiCallback<PlaceDetails>() {
                 @Override
-                public void onSuccess(@NonNull Place place) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        selectPlace(place, universe);
+                public void onSuccess(@NonNull PlaceDetails place) {
+                    api.getPlace(place.getId(), new ApiCallback<Place>() {
+                        @Override
+                        public void onSuccess(@NonNull Place place) {
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                selectPlace(place, universe);
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Throwable t) {
+
+                        }
                     });
                 }
 
