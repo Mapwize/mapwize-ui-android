@@ -1,6 +1,10 @@
 # UI Components Changelog
 
 
+## 2.7.0
+
+- Updating sdk to version `3.8.1`
+
 ## 2.6.4
 
 - Using shortTitle for Floor in FloorController
