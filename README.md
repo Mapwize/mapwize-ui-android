@@ -1,5 +1,9 @@
 # Mapwize UI
 
+![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline/mapwize/mapwize-ui-android-mirror/master)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/mapwize/mapwize-ui-android)
+![JitPack](https://img.shields.io/jitpack/v/github/mapwize/mapwize-ui-android)
+
 Fully featured and ready to use Fragment to add Mapwize Indoor Maps and Navigation in your Android app.
 
 And it's open-source !
