@@ -51,7 +51,13 @@ android {
 
     testOptions.unitTests.includeAndroidResources = true
 
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
 }
+
 Properties localProps = new Properties()
 try {
     File file = new File('local.properties')
