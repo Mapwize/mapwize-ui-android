@@ -1,6 +1,10 @@
 # UI Components Changelog
 
 
+## 2.7.1
+
+- Updating sdk to version `3.8.2`
+
 ## 2.7.0
 
 - Updating sdk to version `3.8.1`
