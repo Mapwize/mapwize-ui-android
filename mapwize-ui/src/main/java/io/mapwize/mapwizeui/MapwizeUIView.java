@@ -215,10 +215,13 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         view.setLayoutParams(viewLayoutParams);
     }
 
+    boolean firstTime = true;
+
     private void setMarginBottom(int margin) {
-        if (margin == lastMargin) {
+        if (margin == lastMargin && !firstTime) {
             return;
         }
+        firstTime = false;
         lastMargin = margin;
         float logoMargin = (marginBottom + 16) * dp;
         int newMargin = (int) (margin < logoMargin ? logoMargin : margin + marginBottom * dp);
