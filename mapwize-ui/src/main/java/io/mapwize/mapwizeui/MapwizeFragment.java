@@ -173,7 +173,6 @@ public class MapwizeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Mapbox.getInstance(container.getContext(), "pk.mapwize");
         return inflater.inflate(R.layout.mapwize_fragment, container, false);
     }
 
