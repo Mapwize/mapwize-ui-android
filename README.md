@@ -83,7 +83,7 @@ public static MapwizeFragment newInstance(@NonNull MapwizeConfiguration mapwizeC
 
 ### Access to MapwizeMap
 
-The `void onFragmentReady(MapwizeMap mapwizeMap);` contains both Mapbox map and Mapwize plugin. Once this method is called you can store and use them.
+The `void onFragmentReady(MapwizeMap mapwizeMap);` contains both Mapbox map and Mapwize map. Once this method is called you can store and use them.
 
 ### Simple example
 
