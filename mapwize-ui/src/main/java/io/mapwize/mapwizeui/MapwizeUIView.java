@@ -382,6 +382,36 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         });
     }
 
+    @Override
+    public void showPlacelistInfo(Placelist placelist, String language) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        this.placeDetailsUI.showUnexpandedDetails(
+                placelist.getTranslation(language).getTitle(),
+                placelist.getTranslation(language).getSubtitle(),
+                new PlaceDetailsUI.DetailsReadyListener() {
+                    @Override
+                    public PlaceDetailsConfig onReady(PlaceDetailsConfig placeDetailsConfig) {
+
+                        if (listener.shouldDisplayInformationButton(placelist)) {
+                            ButtonSmall buttonSmall = new ButtonSmall(
+                                    getContext(),
+                                    "Information",
+                                    R.drawable.mapwize_details_ic_baseline_info_24,
+                                    false, ButtonSmall.INFORMATION_BUTTON,
+                                    view -> presenter.onInformationClick()
+                            );
+                            placeDetailsConfig.getButtonsSmall().add(buttonSmall);
+                        }
+
+                        return listener.onPlaceSelected(placelist, placeDetailsConfig);
+                    }
+                }
+        );
+
+        placeDetailsUI.setLoading(false);
+        floorControllerView.smoothScroll();
+        }, 500);
+    }
     private void showPlaceDetails(Place place, PlaceDetails placeDetails, String language) {
         if (placeDetails == null) {
             showPlace(place, language);
@@ -576,36 +606,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
         new Handler(Looper.getMainLooper()).post(() -> report.clearViews());
     }
 
-    @Override
-    public void showPlacelistInfo(Placelist placelist, String language) {
-        placeDetailsUI.show();
-        setInfoVisible(true);
-        this.placeDetailsUI.showUnexpandedDetails(
-                placelist.getTranslation(language).getTitle(),
-                placelist.getTranslation(language).getSubtitle(),
-                new PlaceDetailsUI.DetailsReadyListener() {
-                    @Override
-                    public PlaceDetailsConfig onReady(PlaceDetailsConfig placeDetailsConfig) {
 
-                        if (listener.shouldDisplayInformationButton(placelist)) {
-                            ButtonSmall buttonSmall = new ButtonSmall(
-                                    getContext(),
-                                    "Information",
-                                    R.drawable.mapwize_details_ic_baseline_info_24,
-                                    false, ButtonSmall.INFORMATION_BUTTON,
-                                    view -> presenter.onInformationClick()
-                            );
-                            placeDetailsConfig.getButtonsSmall().add(buttonSmall);
-                        }
-
-                        return listener.onPlaceSelected(placelist, placeDetailsConfig);
-                    }
-                }
-        );
-
-        placeDetailsUI.setLoading(false);
-        floorControllerView.smoothScroll();
-    }
 
     @Override
     public void showVenueLoading() {

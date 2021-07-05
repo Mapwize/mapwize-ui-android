@@ -379,17 +379,6 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         updateShouldScroll();
     }
 
-    public void showPlacelist(List<Map<String, Object>> distances, DistanceItemClickListener distanceItemClickListener) {
-        show();
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        sheetContent.showPlacelist(distances, distanceItemClickListener);
-        bottomSheetBehavior.setDraggable(false);
-        dontExpand = true;
-        sheetContent.setDistancesVisibility(true);
-        invalidate();
-        requestLayout();
-    }
-
     public void setSubTitleVisibility(boolean visible) {
         sheetContent.setSubTitleVisibility(visible);
     }
@@ -455,9 +444,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
 
         setTitle(title != null ? title : "");
         setSubTitle(subTitle != null ? subTitle : "");
-
         setSmallButtons(placeDetailsConfig.getButtonsSmall());
-        setSmallButtonsVisibility(true);
 
         dragBar.setVisibility(INVISIBLE);
         sheetContent.setCalendarLabelVisibility(false);
@@ -465,6 +452,9 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setDraggable(false);
         dontExpand = true;
+
+        setSmallButtonsVisibility(true);
+        this.onLayoutChange(null, -1, -1, -1, -1, -1, -1, -1, -1);
 
         invalidate();
         requestLayout();
@@ -510,6 +500,7 @@ public class PlaceDetailsUI extends ConstraintLayout implements SheetFull.Scroll
     public PlaceDetailsConfig createUnexpandedDetailsConfig(DetailsReadyListener detailsReadyListener) {
         List<Row> rows = new ArrayList<>();
         List<ButtonBig> buttonsBig = new ArrayList<>();
+
 
         List<ButtonSmall> buttonsSmall = new ArrayList<>();
         ButtonSmall directionSmallButton = new ButtonSmall(context, context.getString(R.string.mapwize_details_direction), R.drawable.mapwize_details_ic_baseline_directions_24, true, ButtonBig.DIRECTION_BUTTON, null);
