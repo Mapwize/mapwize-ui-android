@@ -1,6 +1,10 @@
 # UI Components Changelog
 
 
+## 2.7.3
+
+- Fixing a Placelist UI issue.
+
 ## 2.7.2
 
 - Updating sdk to version `3.8.3`
