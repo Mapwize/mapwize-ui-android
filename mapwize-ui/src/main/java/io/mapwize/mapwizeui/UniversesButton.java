@@ -48,7 +48,7 @@ public class UniversesButton extends AppCompatImageButton {
     }
 
     private void initialize() {
-        setVisibility(View.INVISIBLE);
+        setVisibility(View.GONE);
         // On click, an alert is shown that allow user to select a universe
         this.setOnClickListener(view -> {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
