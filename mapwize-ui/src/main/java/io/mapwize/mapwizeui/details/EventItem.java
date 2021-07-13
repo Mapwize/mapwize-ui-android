@@ -8,7 +8,7 @@ import io.mapwize.mapwizeui.R;
 
 public class EventItem extends LinearLayout {
 
-    public static final float hourUnit = 26f;
+    public static final float hourUnit = 25f;
     private final float start;
     private final float dp;
     private final float end;
@@ -27,8 +27,8 @@ public class EventItem extends LinearLayout {
 
     public void setMarginParams() {
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
-        marginLayoutParams.leftMargin = (int) ((start * hourUnit - 2) * dp);
-        marginLayoutParams.width = (int) ((end - start) * hourUnit * dp);
+        marginLayoutParams.leftMargin = (int) ((start * (hourUnit + 1)  ) * dp);
+        marginLayoutParams.width = (int) ((end - start) * (hourUnit - 1) * dp);
         setLayoutParams(marginLayoutParams);
     }
 
