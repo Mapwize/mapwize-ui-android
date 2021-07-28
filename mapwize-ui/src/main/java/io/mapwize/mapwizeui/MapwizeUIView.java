@@ -26,7 +26,6 @@ import io.mapwize.mapwizesdk.api.Direction;
 import io.mapwize.mapwizesdk.api.DirectionMode;
 import io.mapwize.mapwizesdk.api.DirectionPoint;
 import io.mapwize.mapwizesdk.api.Floor;
-import io.mapwize.mapwizesdk.api.FloorDetails;
 import io.mapwize.mapwizesdk.api.Issue;
 import io.mapwize.mapwizesdk.api.IssueError;
 import io.mapwize.mapwizesdk.api.IssueType;
@@ -433,7 +432,7 @@ public class MapwizeUIView extends FrameLayout implements BaseUIView, SearchBarV
                 timezone = TimeZone.getDefault().getID();
             }
             String floorName = "";
-            FloorDetails floorObject = placeDetails.getFloor();
+            Floor floorObject = placeDetails.getFloor();
             if (floorObject != null) {
                 if (placeDetails.getFloor() != null) {
                     floorName = placeDetails.getFloor().getTranslation(language).getTitle();
