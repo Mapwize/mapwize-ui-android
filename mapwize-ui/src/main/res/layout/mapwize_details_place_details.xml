@@ -90,6 +90,8 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="4dp"
                     android:text=""
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textAlignment="textStart"
                     android:textColor="#333"
                     android:textSize="24sp"

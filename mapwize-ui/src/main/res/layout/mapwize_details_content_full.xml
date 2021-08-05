@@ -12,6 +12,8 @@
         android:paddingHorizontal="16dp"
         android:paddingBottom="8dp"
         android:text=""
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textAlignment="textStart"
         android:textColor="#555"
         android:textSize="18sp"

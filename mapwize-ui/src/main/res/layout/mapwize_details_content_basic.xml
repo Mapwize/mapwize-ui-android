@@ -31,7 +31,9 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="4dp"
             android:paddingStart="16dp"
-            android:text="Subtitle"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text=""
             android:textSize="16sp" />
 
         <TextView
