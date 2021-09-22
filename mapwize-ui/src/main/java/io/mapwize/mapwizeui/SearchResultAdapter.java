@@ -267,7 +267,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                             }
                         }
                         if (universe == null && universeById != null) {
-                            universe = universeById.get(((Place) object).getUniverses().get(0).getId());
+                            List<Universe> tempUniverses = ((Place) object).getUniverses();
+                            for (Universe tempUniverse: tempUniverses) {
+                                if (universeById.containsKey(tempUniverse.getId())) {
+                                    universe = tempUniverse;
+                                    break;
+                                }
+                            }
                         }
                         mListener.onSearchResult((Place) object, universe);
                     }
