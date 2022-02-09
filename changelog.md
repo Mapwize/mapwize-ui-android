@@ -1,9 +1,13 @@
 # UI Components Changelog
 
 
+## 2.7.4
+
+- Updating sdk to version `4.0.0`
+
 ## 2.7.3
 
-- Fixing a Placelist UI issue.
+- Fixing a Placelist UI issue
 
 ## 2.7.2
 
@@ -29,7 +33,7 @@
 
 ## 2.6.2
 
-- Fixing Place Details dynamic height changes.
+- Fixing Place Details dynamic height changes
 
 
 ## 2.6.1
